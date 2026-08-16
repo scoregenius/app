@@ -18,6 +18,7 @@ import assert from "node:assert/strict";
 import {
   formatStat,
   statValue,
+  perGame,
   columnRange,
   barWidth,
   seasonLabel,
@@ -112,6 +113,54 @@ describe("formatStat — the scales each feed actually sends", () => {
   });
 });
 
+describe("formatStat — the NBA players table (defect 61)", () => {
+  // The players tab is the one table whose counting stats are season
+  // totals sitting under the headers every stats site uses for per-game
+  // averages, so its cells are the ones a reader is likeliest to
+  // misread. Fixtures are a single real row — Jalen Brunson — taken from
+  // the production feed on 2026-08-16.
+
+  test("both percentage columns arrive as proportions", () => {
+    // Defect 55's shape on a different screen: a proportion under a %
+    // header. Dropping either key from proportionKeys renders "0.4"
+    // under "3P%", and nothing else would catch it.
+    assert.equal(formatStat(0.3676222596964587, "three_pct"), "36.8%");
+    assert.equal(formatStat(0.8496993987975952, "ft_pct"), "85.0%");
+  });
+
+  test("minutes is the one counting stat that arrives fractional", () => {
+    // 3002.85 season minutes against 85 games. Every other cell on this
+    // table is already an integer, so minutes is the only one that would
+    // expose a change to zeroDecimalKeys.
+    assert.equal(formatStat(3002.85, "minutes"), "3003");
+  });
+
+  test("the counting stats take no decimals", () => {
+    assert.equal(formatStat(2212, "points"), "2212");
+    assert.equal(formatStat(280, "rebounds"), "280");
+    assert.equal(formatStat(566, "assists"), "566");
+    assert.equal(formatStat(85, "games_played"), "85");
+  });
+
+  test("formatting never divides — the derivation is a separate step", () => {
+    // Defect 61 is closed by dividing the totals by games played, but
+    // that happens once per row in `perGame` and lands on its own key.
+    // A cell holding a total still renders the total, so a column that
+    // was missed in the derivation shows 2212 rather than a plausible
+    // 26.0 — which is what makes the mistake visible.
+    assert.equal(formatStat(2212, "points"), "2212");
+  });
+
+  test("the derived per-game columns take one decimal", () => {
+    // 2212 / 85 and 3002.85 / 85. One decimal is what every stats site
+    // shows an average to, and a whole number here would read as a
+    // total again.
+    assert.equal(formatStat(26.023529411764706, "points_per_game"), "26.0");
+    assert.equal(formatStat(35.327647058823529, "minutes_per_game"), "35.3");
+    assert.equal(formatStat(6.658823529411765, "assists_per_game"), "6.7");
+  });
+});
+
 describe("formatStat — time of possession", () => {
   test("seconds become m:ss", () => {
     assert.equal(formatStat(1682.8823529411766, "possessionTimeAvgSec"), "28:03");
@@ -158,6 +207,38 @@ describe("statValue", () => {
   test("returns null for absence", () => {
     assert.equal(statValue(null, "srs"), null);
     assert.equal(statValue(undefined, "srs"), null);
+  });
+});
+
+describe("perGame — defect 61", () => {
+  // Jalen Brunson's 2025-26 line as the feed sends it.
+  test("divides a season total by games played", () => {
+    assert.equal(perGame(2212, 85).toFixed(1), "26.0");
+    assert.equal(perGame(566, 85).toFixed(1), "6.7");
+    assert.equal(perGame(3003, 85).toFixed(1), "35.3");
+  });
+
+  test("no games played is absence, not zero", () => {
+    assert.equal(perGame(0, 0), null);
+    assert.equal(perGame(12, 0), null);
+    assert.equal(perGame(12, -3), null);
+  });
+
+  test("a missing total or a missing GP is absence", () => {
+    assert.equal(perGame(null, 85), null);
+    assert.equal(perGame(undefined, 85), null);
+    assert.equal(perGame("", 85), null);
+    assert.equal(perGame(2212, null), null);
+    assert.equal(perGame(2212, undefined), null);
+  });
+
+  test("a real zero total divides to a real zero average", () => {
+    assert.equal(perGame(0, 12), 0);
+  });
+
+  test("numeric strings are accepted; non-numeric ones are absence", () => {
+    assert.equal(perGame("2212", "85").toFixed(1), "26.0");
+    assert.equal(perGame("DNP", 85), null);
   });
 });
 

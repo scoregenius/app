@@ -32,7 +32,7 @@ export const useSnapshot = (gameId, sport) => {
     },
     enabled: false,
     staleTime: 120 * 1000,
-    cacheTime: 5 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
     retry: 1,
   });
 

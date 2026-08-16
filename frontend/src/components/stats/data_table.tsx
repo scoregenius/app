@@ -24,6 +24,21 @@ export interface Column {
   key: string;
   label: string;
   /**
+   * A qualifier the label cannot carry on its own, rendered as a second
+   * line under it and read after it by the screen's heading.
+   *
+   * This exists for one reason: Pts, Reb, Ast and Min are the headers
+   * every stats site uses for per-game averages, and the NBA players
+   * feed sends season totals (defect 61). Those columns now divide by
+   * games played, and say `PER GAME` under the label — a table whose
+   * figures are derived should state it where the reader is looking.
+   *
+   * The caption states it too, but the caption is not enough on its own:
+   * it scrolls away and this header is sticky, so the reader sorting
+   * several hundred rows keeps the label and loses the qualifier.
+   */
+  note?: string;
+  /**
    * `num` is mono, tabular and right-aligned; `text` is the elastic
    * name column; `sub` is secondary text, left-aligned but not elastic.
    * See docs/design_system.md §6.5.
@@ -88,7 +103,12 @@ const SortableHeader: React.FC<{
         data-tour={column.tourId}
         className="st-sort"
       >
-        {column.label}
+        <span className="st-sort-label">
+          {column.label}
+          {/* The leading space keeps the two lines apart in the
+              accessible name — "Pts per game", not "Ptsper game". */}
+          {column.note && <span className="st-sort-note"> {column.note}</span>}
+        </span>
         <Caret className="st-caret" size={10} strokeWidth={2.6} aria-hidden="true" />
       </button>
     </th>

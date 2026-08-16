@@ -40,18 +40,14 @@
     <!-- Google Play App Link -->
     <meta name="google-play-app" content="app-id=io.scoregenius.app" />
 
-    <!-- Preconnect & preload Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-    />
+    <!-- No webfont is loaded. Four requests to Google Fonts used to sit here,
+         fetching Inter, which no CSS rule in the project ever referenced: the
+         Tailwind sans stack is Source Sans 3 and the mono stack leads with
+         Consolas. So the third-party request §5.2 forbids was being made on
+         every app load, for a face nothing used, while the specified face was
+         absent — document.fonts measured empty and body text resolved to the
+         system UI sans. Defect 72; decision 4 stands at (b), mono only.
+         Adding a webfont again means self-hosting it, not restoring these. -->
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

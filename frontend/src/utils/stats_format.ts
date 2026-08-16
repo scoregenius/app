@@ -53,6 +53,10 @@ const percentageKeys = new Set(["win_pct", "pythag_win_pct"]);
 
 /** Displayed to one decimal place. */
 const oneDecimalKeys = new Set([
+  "points_per_game",
+  "rebounds_per_game",
+  "assists_per_game",
+  "minutes_per_game",
   "points_for_avg_all",
   "points_against_avg_all",
   "runs_for_avg_all",
@@ -146,6 +150,30 @@ export function statValue(value: unknown, key: string): number | null {
     return Number.isFinite(value) ? value : null;
   }
   return null;
+}
+
+/**
+ * A season total divided by games played.
+ *
+ * The NBA players feed sends totals — `points: 2212` against
+ * `games_played: 85` — under headers every stats site uses for per-game
+ * averages (defect 61). The division is exact arithmetic on two supplied
+ * numbers rather than an estimate, and the quotient is the figure the
+ * header has always claimed.
+ *
+ * **Absence stays absence.** No games played, a missing or non-numeric
+ * total, a non-finite quotient: all return `null`, which formats as an
+ * empty cell and sorts last. Returning 0 would rank a player with no
+ * games above one with a real low average, and print a figure the feed
+ * never supported.
+ */
+export function perGame(total: unknown, games: unknown): number | null {
+  const t = typeof total === "number" ? total : Number(total);
+  const g = typeof games === "number" ? games : Number(games);
+  if (total == null || total === "" || !Number.isFinite(t)) return null;
+  if (!Number.isFinite(g) || g <= 0) return null;
+  const value = t / g;
+  return Number.isFinite(value) ? value : null;
 }
 
 export interface ColumnRange {

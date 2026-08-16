@@ -168,8 +168,19 @@ body,
   height: 100%;
 }
 
+/* The app's ground.
+ *
+ * This was --color-bg, the previous generation's surface value: #ffffff in
+ * light and #0d1117 in dark. Against it a --panel surface is #ffffff on
+ * #ffffff, so every card, table wrapper and list group in light mode was
+ * delineated by its 1px border alone, at 1.26:1 — §5.1's ground/panel pair and
+ * §5.5's whole approach to elevation were inert. Defect 71.
+ *
+ * --color-bg itself is deliberately left alone: .pred-badge and the calendar's
+ * selected day both use it as a *foreground* on a green fill, where it means
+ * "the lightest surface" rather than "the page". Only the page changes here. */
 body {
-  @apply antialiased font-sans bg-[var(--color-bg)] text-[var(--color-text-primary)];
+  @apply antialiased font-sans bg-[var(--ground)] text-[var(--color-text-primary)];
 }
 
 /* Hide scrollbars in WebKit while preserving scrollability */
@@ -393,10 +404,24 @@ body {
   contain: layout;
 }
 
-/* Focus ring for interactive elements */
+/* Focus ring for interactive elements.
+ *
+ * The ring colour is --green-text, not --brand-green. Brand green (#00b140)
+ * measures 2.85:1 against the light panel and misses §9's 3:1 requirement for
+ * non-text indicators — and a focus ring is the one indicator a keyboard user
+ * cannot do without. --green-text is the theme-aware pair already used for
+ * exactly this reason by .sgm-x and the tour's controls, which had each worked
+ * around this utility locally. Defect 41; those local overrides now agree with
+ * the shared utility rather than compensating for it.
+ *
+ * Set through --tw-ring-color so the ring mechanism, width and offset stay as
+ * Tailwind generates them; only the colour resolves from the token. */
 @layer components {
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green;
+    @apply focus-visible:outline-none focus-visible:ring-2;
+  }
+  .focus-ring:focus-visible {
+    --tw-ring-color: var(--green-text);
   }
 }
 
@@ -2074,6 +2099,30 @@ details[open] > .sgm-inj-summary svg {
 .st-th--txt .st-sort {
   justify-content: flex-start;
 }
+
+/* A header label and, where the value needs it, the qualifier under it —
+ * "PTS" over "TOTAL" on the players table (defect 61). Stacked rather
+ * than run on because the numeric columns take their natural width, and
+ * "PTS TOTAL" on one line widens the column by the width of the word.
+ *
+ * The note keeps `ink-2`. It is smaller and quieter by size and tracking
+ * alone: dropping it to ink-3 would put the half of the label that
+ * carries the meaning at 3.03:1, which is the correction this header
+ * already made once. */
+.st-sort-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
+}
+.st-th--txt .st-sort-label {
+  align-items: flex-start;
+}
+.st-sort-note {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
 .st-sort:hover {
   color: var(--ink);
 }
@@ -2223,6 +2272,26 @@ details[open] > .sgm-inj-summary svg {
 .st-skel {
   height: 9px;
   border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--panel-2),
+    var(--line),
+    var(--panel-2)
+  );
+  background-size: 200% 100%;
+  animation: st-shimmer 1400ms ease-in-out infinite;
+}
+
+/* ---------- shared skeleton surface ----------
+ * The token pair `SkeletonBox` renders. It was `bg-slate-700/50` with no
+ * light variant, so every loading state in the app drew mid-grey bars on a
+ * white page — defect 59, across six consumers. Same construction as
+ * `.st-skel` above, which §6.8 already specifies: panel-2 as the ground,
+ * line as the travelling highlight, both of which flip with the theme.
+ *
+ * Height and radius are left to the call site, which is the difference from
+ * `.st-skel` — consumers size these from the content they stand in for. */
+.skel {
   background: linear-gradient(
     90deg,
     var(--panel-2),

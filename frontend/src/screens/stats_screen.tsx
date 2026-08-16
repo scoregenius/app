@@ -27,6 +27,7 @@ import type { Column, StatRow } from "@/components/stats/data_table";
 import TableSkeleton from "@/components/stats/table_skeleton";
 import {
   seasonLabel,
+  perGame,
   sortRows,
   sortRowsByText,
   nextSort,
@@ -81,16 +82,47 @@ const NFL_TEAM_COLUMNS: ReadonlyArray<Column> = [
   { key: "streak", label: "Streak", type: "sub" },
 ];
 
+/**
+ * The four counting columns render **per-game averages**, derived here
+ * rather than read from the feed (defect 61).
+ *
+ * The feed sends season totals — `points: 2212`, `minutes: 3003` against
+ * `games_played: 85` — under Pts, Reb, Ast and Min, which are the
+ * headers every stats site uses for averages. Two ways out of that:
+ * relabel the totals, or divide by the games played the same row
+ * already carries. Dividing is exact arithmetic on two supplied numbers,
+ * and it gives the reader the figure the header has always claimed and
+ * the one a player is actually compared on.
+ *
+ * The header still says which it is, because a table that changed
+ * meaning should say so rather than leave the reader to notice that
+ * 26.0 is not 2212.
+ *
+ * `3P%` and `FT%` are already rates. `GP` is the divisor, and stays: it
+ * is what makes an average readable — 26.0 over 8 games is not 26.0
+ * over 85 — and without it the division could not be checked.
+ */
 const PLAYER_COLUMNS: ReadonlyArray<Column> = [
   { key: "player_name", label: "Player", type: "text" },
   { key: "team_name", label: "Team", type: "sub" },
-  { key: "points", label: "Pts" },
-  { key: "rebounds", label: "Reb" },
-  { key: "assists", label: "Ast" },
+  { key: "points_per_game", label: "Pts", note: "Per game" },
+  { key: "rebounds_per_game", label: "Reb", note: "Per game" },
+  { key: "assists_per_game", label: "Ast", note: "Per game" },
   { key: "three_pct", label: "3P%" },
   { key: "ft_pct", label: "FT%" },
-  { key: "minutes", label: "Min" },
+  { key: "minutes_per_game", label: "Min", note: "Per game" },
   { key: "games_played", label: "GP" },
+];
+
+/**
+ * The season totals each per-game column is derived from. One place, so
+ * the derivation, the columns and any future total cannot drift apart.
+ */
+const PER_GAME_FROM: ReadonlyArray<readonly [string, string]> = [
+  ["points_per_game", "points"],
+  ["rebounds_per_game", "rebounds"],
+  ["assists_per_game", "assists"],
+  ["minutes_per_game", "minutes"],
 ];
 
 const NBA_ADV_COLUMNS: ReadonlyArray<Column> = [
@@ -147,13 +179,14 @@ function viewFor(sport: Sport, tab: Tab): View {
   if (tab === "players") {
     return {
       columns: PLAYER_COLUMNS,
-      defaultSort: { key: "points", dir: "desc" },
-      caption: "NBA player statistics",
+      defaultSort: { key: "points_per_game", dir: "desc" },
+      caption: "NBA player statistics, per game",
       noun: "players",
-      // The feed sends season totals, not per-game averages: Pts 2212,
-      // Min 3003. Under headers every stats site uses for averages that
-      // is genuinely ambiguous, so the caption says which it is.
-      captionNote: "totals",
+      // The feed sends season totals; the table divides them by games
+      // played (defect 61). The caption says so, and each derived column
+      // repeats it in its own header, which is the part that stays on
+      // screen once the reader scrolls.
+      captionNote: "per-game averages",
     };
   }
 
@@ -492,11 +525,19 @@ const StatsScreen: React.FC = () => {
    * visible. */
   const cleaned = useMemo<ReadonlyArray<StatRow>>(() => {
     if (tab === "players") {
-      return source.rows.map((row) =>
-        isLeagueTeam(row.team_name as string)
-          ? row
-          : { ...row, team_name: null }
-      );
+      /* The per-game columns are derived here rather than in the cell,
+       * because sorting and the magnitude bar both read the row: a value
+       * computed at render time would leave the table sorted by the
+       * totals it no longer shows. A player with no games played gets
+       * `null`, which renders blank and sorts last (§7.3). */
+      return source.rows.map((row) => {
+        const derived: StatRow = { ...row };
+        for (const [key, total] of PER_GAME_FROM) {
+          derived[key] = perGame(row[total], row.games_played);
+        }
+        if (!isLeagueTeam(row.team_name as string)) derived.team_name = null;
+        return derived;
+      });
     }
     return source.rows.filter((row) =>
       isLeagueTeam((row.team_name ?? row.teamName) as string)
@@ -552,8 +593,18 @@ const StatsScreen: React.FC = () => {
   /* ───── heading ──────────────────────────────────────────────────────
    * Names the column the table is sorted by, so the page states what the
    * reader is looking at. Sorting by the name column has nothing to
-   * name, so the clause drops rather than reading "NBA teams by Team". */
-  const sortLabel = sortsAsText ? null : sortedColumn?.label ?? null;
+   * name, so the clause drops rather than reading "NBA teams by Team".
+   *
+   * A column's qualifier follows its label here — "by Pts per game" —
+   * so the heading states which figure the table is ranked on rather
+   * than leaving that to the header the reader has scrolled past. */
+  const sortLabel = sortsAsText
+    ? null
+    : sortedColumn
+      ? [sortedColumn.label, sortedColumn.note?.toLowerCase()]
+          .filter(Boolean)
+          .join(" ")
+      : null;
 
   const caption = [
     `${seasonLabel(season, sport)} season${

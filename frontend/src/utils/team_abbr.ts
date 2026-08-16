@@ -123,8 +123,10 @@ export const TEAM_ABBR: Record<string, string> = {
 const normalize = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 const INDEX: Record<string, string> = Object.create(null);
+const CANONICAL: Record<string, string> = Object.create(null);
 for (const [name, code] of Object.entries(TEAM_ABBR)) {
   INDEX[normalize(name)] = code;
+  CANONICAL[normalize(name)] = name;
 }
 
 /**
@@ -153,6 +155,26 @@ export const abbr = (name?: string | null): string => {
   const raw = String(name ?? "").trim();
   if (!raw) return "—";
   return INDEX[normalize(raw)] ?? derive(raw);
+};
+
+/**
+ * The club's name as this file spells it, for anything that will be *displayed*.
+ *
+ * The schedule feed sends `St.Louis Cardinals` with no space after the period.
+ * `abbr` and `isLeagueTeam` both normalise punctuation away, so the chip and the
+ * league table were always right — but the rendered name is the feed's string,
+ * printed as received, which is what the reader actually sees. See defect 33.
+ *
+ * Unknown names are returned unchanged rather than guessed at: an exhibition
+ * side or a national team has no canonical form here, and mangling it would be
+ * worse than passing it through. The map's spellings match
+ * `backend/data/stadium_data.json`, so canonicalising on the way in also aligns
+ * the venue and weather lookups with the file they query.
+ */
+export const canonicalName = (name?: string | null): string => {
+  const raw = String(name ?? "").trim();
+  if (!raw) return raw;
+  return CANONICAL[normalize(raw)] ?? raw;
 };
 
 /**

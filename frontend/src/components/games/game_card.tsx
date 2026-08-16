@@ -14,7 +14,7 @@ import { UnifiedGame, Sport } from "@/types";
 import { useTour, TourStepId } from "@/contexts/tour_context";
 import { computeBestEdge } from "@/utils/edge";
 import { marketSegments } from "@/utils/market";
-import { abbr } from "@/utils/team_abbr";
+import { abbr, canonicalName } from "@/utils/team_abbr";
 import { isKnownIndoor } from "@/utils/venues";
 
 import { useWeather } from "@/hooks/use_weather";
@@ -496,6 +496,14 @@ const GameCardComponent: React.FC<GameCardProps> = ({
   const awayAbbr = abbr(awayTeamName);
   const homeAbbr = abbr(homeTeamName);
 
+  /* Displayed names only. The feed spells one club `St.Louis Cardinals` with no
+   * space; `abbr` normalises punctuation away so the chip was always right,
+   * while the name printed beside it was the feed's raw string — defect 33.
+   * The lookups above keep the raw value deliberately: `mlObj` is keyed by the
+   * feed's exact spelling, and changing what those receive would break them. */
+  const awayTeamDisplay = canonicalName(awayTeamName);
+  const homeTeamDisplay = canonicalName(homeTeamName);
+
   /** Final score, predicted score, or nothing to show. */
   const displayValue = (side: "HOME" | "AWAY"): string => {
     if (isFinal) {
@@ -531,14 +539,14 @@ const GameCardComponent: React.FC<GameCardProps> = ({
   /* The two scores are split across rows, which loses the relationship
    * visually. State it for screen readers. */
   const ariaLabel = isFinal
-    ? `${awayTeamName} ${displayValue("AWAY")}, ${homeTeamName} ${displayValue(
+    ? `${awayTeamDisplay} ${displayValue("AWAY")}, ${homeTeamDisplay} ${displayValue(
         "HOME"
       )}, final`
     : hasPrediction
-    ? `${awayTeamName} versus ${homeTeamName}. Predicted score ${displayValue(
+    ? `${awayTeamDisplay} versus ${homeTeamDisplay}. Predicted score ${displayValue(
         "AWAY"
       )} to ${displayValue("HOME")}`
-    : `${awayTeamName} versus ${homeTeamName}`;
+    : `${awayTeamDisplay} versus ${homeTeamDisplay}`;
 
   return (
     <article
@@ -583,14 +591,14 @@ const GameCardComponent: React.FC<GameCardProps> = ({
       {/* ---------- matchup ---------- */}
       <TeamRow
         abbr={awayAbbr}
-        teamName={awayTeamName}
+        teamName={awayTeamDisplay}
         value={displayValue("AWAY")}
         faded={(hasStarted && !isFinal) || pick === "HOME"}
         isPick={pick === "AWAY"}
       />
       <TeamRow
         abbr={homeAbbr}
-        teamName={homeTeamName}
+        teamName={homeTeamDisplay}
         value={displayValue("HOME")}
         faded={(hasStarted && !isFinal) || pick === "AWAY"}
         isPick={pick === "HOME"}
@@ -693,8 +701,8 @@ const GameCardComponent: React.FC<GameCardProps> = ({
             gameId={gameId}
             sport={sport as Sport}
             onClose={() => setSnapshotOpen(false)}
-            awayTeamName={awayTeamName}
-            homeTeamName={homeTeamName}
+            awayTeamName={awayTeamDisplay}
+            homeTeamName={homeTeamDisplay}
           />
         )}
 

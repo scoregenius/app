@@ -17,9 +17,11 @@ export interface TableSkeletonProps {
  * show generic 32px bars in a padded box, which changed height and
  * column rhythm the moment rows arrived.
  *
- * Not built on `SkeletonBox`: that component is `bg-slate-700/50` with
- * no light variant, so it renders mid-grey bars on a white page
- * (defect 59). It has six other consumers and is left alone here.
+ * Still not built on `SkeletonBox`, but no longer for the reason recorded
+ * here before: that component was `bg-slate-700/50` with no light variant
+ * (defect 59, since fixed — it now draws the same panel-2/line shimmer as
+ * `.st-skel`). This stays separate because it mirrors the table's row
+ * anatomy, which a general-purpose box cannot do.
  *
  * The shimmer stops under `prefers-reduced-motion` via the app-wide rule
  * near the top of index.css.

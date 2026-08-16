@@ -202,7 +202,7 @@ const NBAScheduleDisplay: React.FC<ScheduleDisplayProps> = () => {
                 {teamsWithInjuries.map((team) => (
                   <SkeletonBox
                     key={team}
-                    className="w-full rounded-md px-4 py-3 bg-slate-700/50 animate-pulse"
+                    className="w-full rounded-md px-4 py-3"
                   />
                 ))}
               </div>
