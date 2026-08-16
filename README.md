@@ -13,6 +13,17 @@ interface exists to answer one question quickly: **which of today's games are wo
 A user opens the app, sees twelve to fifteen games, and can flick through and stop at the two or
 three that matter — without reading every number on every card.
 
+<p align="center">
+  <img src="docs/screenshots/mobile-1.png" alt="The games list. Predicted scores per team, a green triangle on the side the model favours, and an orange rail on games in progress." width="240">
+  <img src="docs/screenshots/mobile-8.png" alt="Venue conditions for an outdoor game, opened from a chip on the card." width="240">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/desktop-2.png" alt="The stats screen: league tables re-sorted by any column, with the sorted column emphasised." width="720">
+</p>
+
+<p align="center"><em>More in <a href="docs/screenshots/">docs/screenshots</a> — both themes, all three leagues, mobile and desktop.</em></p>
+
 ## What it does
 
 - Ingests schedules, box scores, team and player stats, injuries, venue weather and betting odds
