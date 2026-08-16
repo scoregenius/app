@@ -3,7 +3,7 @@
 **Sports analytics PWA for NFL, NBA and MLB. Model score predictions, compared against the betting
 market.**
 
-[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app)
+[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app) · [Microsoft Store](https://apps.microsoft.com/detail/9P843BS4GCGP)
 
 ---
 
@@ -110,9 +110,20 @@ npm run check     # lint, unit tests, production build
 
 ## Distribution
 
-The Android app is a Trusted Web Activity wrapping the same PWA, so a web deploy updates every
-channel at once — no store review, no version bump. That property is why a single frontend commit
-reaches every platform.
+Three platforms, one codebase:
+
+| Channel | |
+|---|---|
+| **Google Play** | [`io.scoregenius.app`](https://play.google.com/store/apps/details?id=io.scoregenius.app) — Trusted Web Activity, Play App Signing |
+| **Microsoft Store** | [`9P843BS4GCGP`](https://apps.microsoft.com/detail/9P843BS4GCGP) — MSIX, Store-delivered updates |
+| **Web** | Installable PWA at [scoregenius.io](https://scoregenius.io) |
+
+The Android and Windows apps both wrap the same PWA rather than reimplementing it, so **a web deploy
+updates every channel at once** — no store review, no version bump, no per-platform release. One
+frontend commit reaches every platform, which is the practical reason this repository is the whole
+client story.
+
+Digital Asset Links at `/.well-known/assetlinks.json` bind the Android package to the domain.
 
 ## License
 
