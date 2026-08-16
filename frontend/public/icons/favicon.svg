@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ScoreGenius">
+  <!--
+    Favicon. Simplified from the app icon for very small sizes: gaussian glows
+    and the drop shadow are removed (invisible below ~48px and costly to
+    rasterise), the arc gradients are flattened to solid brand colours, and the
+    tile is kept so the mark stays legible on both light and dark tab bars.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#1d2733"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <g transform="translate(256 256) rotate(-32) scale(0.345)">
+    <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="46" stroke-linecap="round"/>
+    <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="46" stroke-linecap="round"/>
+    <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#FFFFFF"/>
+    <g stroke="#10161D" stroke-linecap="round" fill="none">
+      <path d="M -135 0 L 135 0" stroke-width="30"/>
+      <path d="M -90 -40 L -90 40" stroke-width="26"/>
+      <path d="M -30 -40 L -30 40" stroke-width="26"/>
+      <path d="M 30 -40 L 30 40" stroke-width="26"/>
+      <path d="M 90 -40 L 90 40" stroke-width="26"/>
+    </g>
+    <circle cx="319.5" cy="85.5" r="30" fill="#2ECC5E"/>
+  </g>
+</svg>

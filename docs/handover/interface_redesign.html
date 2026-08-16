@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ScoreGenius — Interface Redesign &amp; Design System</title>
+<style>
+/* ============================================================
+   PAGE SETUP
+   ============================================================ */
+@page { size: Letter; margin: 0.55in 0.6in 0.5in; }
+
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+:root {
+  --doc-ink:    #10161C;
+  --doc-ink-2:  #4A5A66;
+  --doc-ink-3:  #8496A2;
+  --doc-line:   #DCE4E8;
+  --doc-line-2: #EDF1F3;
+  --doc-bg:     #FFFFFF;
+  --doc-tint:   #F5F8F7;
+  --green:      #00B140;
+  --green-deep: #00762C;
+  --orange:     #FF7F00;
+  --orange-deep:#B85A00;
+  --mono: "JetBrains Mono", Consolas, "Cascadia Mono", ui-monospace, "SF Mono", monospace;
+  --sans: "Archivo", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+html, body { margin: 0; padding: 0; background: var(--doc-bg); }
+body {
+  font-family: var(--sans);
+  color: var(--doc-ink);
+  font-size: 10pt;
+  line-height: 1.5;
+}
+
+.page {
+  page-break-after: always;
+  position: relative;
+  min-height: 9.7in;
+  padding-bottom: 0.3in;
+}
+.page:last-child { page-break-after: auto; }
+
+/* ---------- running header / footer ---------- */
+.rh {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1px solid var(--doc-line);
+  padding-bottom: 5pt; margin-bottom: 16pt;
+  font-family: var(--mono); font-size: 6.5pt;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--doc-ink-3);
+}
+.rh b { color: var(--green-deep); font-weight: 700; }
+
+/* ---------- type ---------- */
+h1 { font-size: 21pt; line-height: 1.12; letter-spacing: -0.025em; margin: 0 0 8pt; font-weight: 700; }
+h2 {
+  font-size: 13.5pt; line-height: 1.2; letter-spacing: -0.02em;
+  margin: 0 0 7pt; font-weight: 700;
+}
+h3 {
+  font-size: 9.5pt; margin: 15pt 0 5pt; font-weight: 700; letter-spacing: -0.01em;
+}
+h3.first { margin-top: 0; }
+p { margin: 0 0 8pt; }
+.lede { font-size: 11pt; line-height: 1.45; color: var(--doc-ink-2); margin-bottom: 12pt; }
+.lede strong { color: var(--doc-ink); font-weight: 600; }
+.muted { color: var(--doc-ink-2); }
+small { font-size: 8pt; color: var(--doc-ink-2); line-height: 1.45; display: block; }
+code, .mono { font-family: var(--mono); font-size: .88em; }
+code { background: var(--doc-tint); border: 1px solid var(--doc-line); border-radius: 2pt; padding: 0 2pt; }
+
+.kicker {
+  font-family: var(--mono); font-size: 6.5pt; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--green-deep); margin: 0 0 6pt; font-weight: 700;
+}
+
+/* ---------- layout helpers ---------- */
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16pt; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11pt; }
+.cols2u { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18pt; }
+.tight { margin-bottom: 4pt; }
+.spacer { height: 10pt; }
+
+.lbl {
+  font-family: var(--mono); font-size: 6pt; letter-spacing: .17em;
+  text-transform: uppercase; color: var(--doc-ink-3); margin: 0 0 5pt; font-weight: 700;
+}
+.lbl.after { color: var(--green-deep); }
+.lbl.before { color: var(--orange-deep); }
+
+.cap { font-size: 7.6pt; line-height: 1.45; color: var(--doc-ink-2); margin: 6pt 0 0; }
+.cap b { color: var(--doc-ink); font-weight: 650; }
+
+/* ---------- callouts ---------- */
+.callout {
+  border-left: 2.5pt solid var(--green); background: var(--doc-tint);
+  padding: 9pt 11pt; margin: 10pt 0; border-radius: 0 3pt 3pt 0;
+}
+.callout.warn { border-left-color: var(--orange); background: #FFF8F0; }
+.callout p { margin: 0; font-size: 8.6pt; line-height: 1.5; }
+.callout p + p { margin-top: 5pt; }
+.callout .ch {
+  font-family: var(--mono); font-size: 6.2pt; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--green-deep); font-weight: 700; display: block; margin-bottom: 4pt;
+}
+.callout.warn .ch { color: var(--orange-deep); }
+
+/* ---------- tables ---------- */
+table { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+th, td { text-align: left; padding: 4.5pt 6pt; border-bottom: 0.75pt solid var(--doc-line); vertical-align: top; }
+th {
+  font-family: var(--mono); font-size: 6pt; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--doc-ink-3); border-bottom: 1pt solid var(--doc-ink-3);
+}
+td.num, th.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.tot td { border-bottom: none; font-weight: 700; }
+.ok { color: var(--green-deep); font-weight: 700; }
+.bad { color: var(--orange-deep); font-weight: 700; }
+table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
+
+/* ---------- metric strip ---------- */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9pt; margin: 12pt 0; }
+.metric { border: 1px solid var(--doc-line); border-radius: 4pt; padding: 8pt 9pt; }
+.metric .v {
+  font-family: var(--mono); font-size: 17pt; font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1; color: var(--green-deep); display: block;
+}
+.metric .k {
+  font-size: 7.2pt; color: var(--doc-ink-2); margin-top: 4pt; display: block; line-height: 1.3;
+}
+
+/* ============================================================
+   APP SPECIMENS — the product's own tokens
+   ============================================================ */
+.app {
+  --g: #00B140; --g-lift: #3ADE72; --g-deep: #00762C;
+  --o: #FF7F00; --o-lift: #FF9E3D;
+  border-radius: 7pt; padding: 9pt;
+  font-family: var(--sans);
+}
+.app--dark {
+  --ground: #0B1016; --panel: #151C24; --panel-2: #1B232C;
+  --line: #232E38; --line-2: #2E3B47;
+  --ink: #EAF0F4; --ink-2: #8FA0AE; --ink-3: #5E6E7C;
+  --accent: var(--g-lift);
+  background: #0B1016; border: 1px solid #1C242C;
+}
+.app--light {
+  --ground: #F4F7F6; --panel: #FFFFFF; --panel-2: #F7FAF9;
+  --line: #DFE7E3; --line-2: #C6D2CC;
+  --ink: #0D1117; --ink-2: #56655D; --ink-3: #84948B;
+  --accent: var(--g-deep);
+  background: #F4F7F6; border: 1px solid #DFE7E3;
+}
+.stack > * + * { margin-top: 5pt; }
+
+/* --- the redesigned card --- */
+.c {
+  position: relative; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6pt; padding: 6pt 7pt 5.5pt; overflow: hidden;
+}
+.c-rail {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6pt; min-height: 9pt; margin-bottom: 5pt;
+}
+.c-time, .c-edge, .c-mkt, .c-abbr, .c-live, .c-state, .c-num {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+}
+.c-time { font-size: 6pt; letter-spacing: .07em; color: var(--ink-3); text-transform: uppercase; white-space: nowrap; }
+.c-edge {
+  display: inline-flex; align-items: center; gap: 3pt;
+  font-size: 5.6pt; font-weight: 700; letter-spacing: .11em; text-transform: uppercase;
+  padding: 1.5pt 5pt 1.5pt 4pt; border-radius: 2.5pt; white-space: nowrap;
+}
+.c-edge .d { width: 2.6pt; height: 2.6pt; border-radius: 50%; background: currentColor; }
+.app--dark .c-edge--high {
+  color: #7BF2A4; background: rgba(0,177,64,.17); border: .75pt solid rgba(58,222,114,.5);
+}
+.app--dark .c-edge--med { color: #4FCB7E; background: rgba(0,177,64,.09); border: .75pt solid rgba(58,222,114,.22); }
+.app--dark .c-edge--low { color: var(--ink-3); border: .75pt solid var(--line-2); }
+.app--light .c-edge--high {
+  color: #04642A; background: rgba(0,177,64,.13); border: .75pt solid rgba(0,118,44,.5);
+}
+.app--light .c-edge--med { color: #0A7538; background: rgba(0,177,64,.08); border: .75pt solid rgba(0,118,44,.24); }
+
+.c--high { border-color: rgba(58,222,114,.3); }
+.c--high::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1.6pt; background: var(--g);
+}
+.app--dark .c--high { background: linear-gradient(105deg, rgba(0,177,64,.09), rgba(0,177,64,0) 46%), var(--panel); }
+.app--light .c--high {
+  border-color: rgba(0,118,44,.32);
+  background: linear-gradient(105deg, rgba(0,177,64,.08), rgba(0,177,64,0) 46%), var(--panel);
+}
+
+.c-team { display: grid; grid-template-columns: 19pt 1fr auto; align-items: center; gap: 5pt; padding: 1pt 0; }
+.c-abbr {
+  font-family: var(--mono); font-size: 5.6pt; font-weight: 700; letter-spacing: .04em;
+  text-align: center; padding: 1.5pt 0; border-radius: 2.5pt; color: var(--ink-2);
+}
+.app--dark .c-abbr { background: rgba(255,255,255,.06); }
+.app--light .c-abbr { background: rgba(13,17,23,.06); }
+.c-name {
+  font-size: 8pt; font-weight: 600; letter-spacing: -0.012em; color: var(--ink); line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.c-num {
+  font-size: 11.5pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--ink);
+  display: flex; align-items: center; justify-content: flex-end; gap: 4pt; min-width: 40pt;
+}
+.c-team--fade .c-name { color: var(--ink-2); font-weight: 550; }
+.c-team--fade .c-num { color: var(--ink-3); font-weight: 600; }
+.c-pick {
+  width: 0; height: 0; border-left: 2.8pt solid var(--accent);
+  border-top: 2.2pt solid transparent; border-bottom: 2.2pt solid transparent;
+}
+.c-pick--h { visibility: hidden; }
+
+.c-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 6pt;
+  margin-top: 5pt; padding-top: 4.5pt; border-top: .75pt solid var(--line);
+}
+.c-mkt { font-size: 6.3pt; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.c-mkt k { color: var(--ink-3); }
+.c-mkt .dot { color: var(--ink-3); margin: 0 3pt; opacity: .6; }
+.c-mkt--none { color: var(--ink-3); opacity: .85; }
+.c-chev { color: var(--ink-3); font-size: 6pt; line-height: 1; padding: 1.5pt 3pt; border-radius: 3pt; }
+.app--dark .c-chev { background: rgba(255,255,255,.05); }
+.app--light .c-chev { background: rgba(13,17,23,.05); }
+
+.c-live { display: inline-flex; align-items: center; gap: 3pt; font-size: 5.6pt; font-weight: 700; letter-spacing: .15em; color: var(--o-lift); }
+.app--light .c-live { color: #B85A00; }
+.c-live .p { width: 3pt; height: 3pt; border-radius: 50%; background: currentColor; }
+.c--live { border-color: rgba(255,127,0,.32); }
+.c--live::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1.6pt; background: var(--o); }
+.c-state { font-size: 5.6pt; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-3); }
+.c--done { opacity: .66; }
+.c--done .c-name { color: var(--ink-2); }
+.c--done .c-num { color: var(--ink); }
+.c-caveat { font-size: 6.2pt; color: var(--ink-3); margin-top: 4.5pt; padding-top: 4.5pt; border-top: .75pt solid var(--line); }
+
+.c-exp { margin-top: 5pt; padding-top: 5pt; border-top: .75pt solid var(--line); }
+.c-lean-track { position: relative; height: 2.2pt; border-radius: 1.1pt; }
+.app--dark .c-lean-track { background: rgba(255,255,255,.07); }
+.app--light .c-lean-track { background: rgba(13,17,23,.08); }
+.c-lean-fill { position: absolute; top: 0; bottom: 0; border-radius: 1.1pt; background: var(--accent); }
+.c-lean-mid { position: absolute; top: -1pt; bottom: -1pt; left: 50%; width: .75pt; }
+.app--dark .c-lean-mid { background: rgba(255,255,255,.25); }
+.app--light .c-lean-mid { background: rgba(13,17,23,.22); }
+.c-lean-cap {
+  display: flex; justify-content: space-between; margin-top: 3pt;
+  font-family: var(--mono); font-size: 5.4pt; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3);
+}
+.c-lean-cap b { color: var(--ink-2); }
+.c-pitch { display: flex; flex-wrap: wrap; gap: 3pt 10pt; font-size: 6.6pt; color: var(--ink-2); }
+.c-pitch em { font-family: var(--mono); font-style: normal; font-size: 5.2pt; font-weight: 700; letter-spacing: .1em; color: var(--ink-3); margin-right: 3pt; }
+.c-chips { display: flex; flex-wrap: wrap; gap: 4pt; }
+.chip {
+  display: inline-flex; align-items: center; gap: 3pt; padding: 2.5pt 6pt; border-radius: 3.5pt;
+  font-size: 6.4pt; font-weight: 600; color: var(--ink-2); border: .75pt solid var(--line-2);
+}
+.app--dark .chip { background: rgba(255,255,255,.035); }
+.chip--muted { opacity: .78; }
+
+/* --- the legacy card, recreated from production --- */
+.old {
+  background: #161b22; border: 1px solid rgba(51,65,85,.6); border-radius: 6pt;
+  padding: 6pt 7pt; color: #f1f5f9;
+}
+.old-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 5pt; }
+.old-team { font-size: 8pt; font-weight: 600; margin: 0; line-height: 1.2; }
+.old-vs { opacity: .55; font-weight: 400; }
+.old-time { font-size: 6pt; color: #9ca3af; white-space: nowrap; }
+.old-body { display: flex; justify-content: space-between; align-items: flex-end; gap: 6pt; margin-top: 5pt; }
+.old-odds { font-size: 6.6pt; color: #9ca3af; line-height: 1.42; }
+.old-edge { color: #00b140; opacity: .7; }
+.old-pred {
+  display: inline-flex; flex-direction: column; align-items: center; text-align: center;
+  border-radius: 5pt; padding: 3pt 6pt; background: #16a34a; color: #0d1117; line-height: 1.1;
+}
+.old-pred .s { font-size: 7pt; font-weight: 600; }
+.old-pred .l { font-size: 5pt; opacity: .75; }
+.old-final { font-size: 9pt; font-weight: 600; text-align: center; }
+.old-final .t { font-size: 5.4pt; color: #9ca3af; display: block; }
+.old-prog { font-size: 6.2pt; color: #9ca3af; }
+.old-chip {
+  display: inline-flex; align-items: center; gap: 3pt; border-radius: 5pt; padding: 3pt 7pt;
+  font-size: 6.4pt; font-weight: 600; background: #161b22;
+  border: .75pt solid rgba(148,163,184,.35); color: #f1f5f9;
+}
+.old-chipcol { display: flex; flex-direction: column; align-items: flex-end; gap: 4pt; margin-top: 5pt; }
+.old--light {
+  background: #f8fafc; border: 1px solid #cbd5e1; color: #0d1117;
+}
+.old--light .old-time, .old--light .old-odds { color: #475569; }
+.old--light .old-pred { background: #028034; color: #fff; }
+
+/* --- palette swatches --- */
+.sw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5pt 14pt; }
+.sw { display: flex; align-items: center; gap: 6pt; padding: 2.5pt 0; border-bottom: .75pt solid var(--doc-line-2); }
+.sw i { width: 15pt; height: 15pt; border-radius: 3pt; flex: none; border: .75pt solid rgba(0,0,0,.14); }
+.sw .n { font-size: 7.6pt; font-weight: 600; }
+.sw .h { font-family: var(--mono); font-size: 6.6pt; color: var(--doc-ink-3); margin-left: auto; }
+
+/* --- type specimen --- */
+.ty { border: 1px solid var(--doc-line); border-radius: 4pt; padding: 10pt 12pt; }
+.ty + .ty { margin-top: 8pt; }
+.ty .big { font-size: 19pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin: 0 0 4pt; }
+.ty .bigm { font-family: var(--mono); font-size: 15pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin: 0 0 4pt; font-variant-numeric: tabular-nums; }
+.ty small { margin-top: 2pt; }
+
+/* --- cover --- */
+.cover { display: flex; flex-direction: column; min-height: 9.6in; }
+.cover-top { flex: 1; }
+.cover-mark { display: flex; align-items: center; gap: 8pt; margin-bottom: 0.9in; }
+.cover-word { font-size: 12pt; font-weight: 800; letter-spacing: -0.02em; }
+.cover h1 { font-size: 33pt; line-height: 1.06; letter-spacing: -0.035em; margin-bottom: 12pt; }
+.cover .sub { font-size: 12.5pt; color: var(--doc-ink-2); max-width: 5in; line-height: 1.42; }
+.cover-rule { height: 2.5pt; background: var(--green); width: 1in; margin: 20pt 0; }
+.cover-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12pt; border-top: 1px solid var(--doc-line); padding-top: 12pt; }
+.cover-meta .k { font-family: var(--mono); font-size: 6pt; letter-spacing: .16em; text-transform: uppercase; color: var(--doc-ink-3); display: block; margin-bottom: 3pt; }
+.cover-meta .v { font-size: 8.6pt; font-weight: 600; }
+
+/* --- contents --- */
+.toc { border-top: 1px solid var(--doc-line); }
+.toc-row { display: grid; grid-template-columns: 22pt 1fr 30pt; gap: 8pt; padding: 6.5pt 0; border-bottom: .75pt solid var(--doc-line-2); align-items: baseline; }
+.toc-n { font-family: var(--mono); font-size: 7pt; color: var(--green-deep); font-weight: 700; }
+.toc-t { font-size: 9pt; font-weight: 600; }
+.toc-t span { display: block; font-size: 7.4pt; font-weight: 400; color: var(--doc-ink-2); margin-top: 1pt; }
+.toc-p { font-family: var(--mono); font-size: 7.4pt; color: var(--doc-ink-3); text-align: right; }
+
+.pnum {
+  position: absolute; bottom: 0; right: 0;
+  font-family: var(--mono); font-size: 6.5pt; color: var(--doc-ink-3);
+}
+.pnum::before { content: "ScoreGenius · Interface Redesign · "; }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<section class="page">
+  <div class="cover">
+    <div class="cover-top">
+      <div class="cover-mark">
+        <svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true">
+          <rect width="512" height="512" rx="96" fill="#12181F"/>
+          <g transform="translate(256 256) rotate(-32) scale(0.345)">
+            <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="46" stroke-linecap="round"/>
+            <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="46" stroke-linecap="round"/>
+            <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#FFFFFF"/>
+            <g stroke="#10161D" stroke-linecap="round" fill="none">
+              <path d="M -135 0 L 135 0" stroke-width="30"/>
+              <path d="M -90 -40 L -90 40" stroke-width="26"/>
+              <path d="M -30 -40 L -30 40" stroke-width="26"/>
+              <path d="M 30 -40 L 30 40" stroke-width="26"/>
+              <path d="M 90 -40 L 90 40" stroke-width="26"/>
+            </g>
+            <circle cx="319.5" cy="85.5" r="30" fill="#2ECC5E"/>
+          </g>
+        </svg>
+        <span class="cover-word">SCOREGENIUS</span>
+      </div>
+
+      <p class="kicker">Product documentation</p>
+      <h1>Interface Redesign<br>&amp; Design System</h1>
+      <div class="cover-rule"></div>
+      <p class="sub">A systematic redesign of the application interior — establishing a documented
+      design system, rebuilding the core screen around how the product is actually used, and
+      auditing the existing interface for defects.</p>
+    </div>
+
+    <div class="cover-meta">
+      <div><span class="k">Prepared</span><span class="v">14 August 2026</span></div>
+      <div><span class="k">Status</span><span class="v">Built · shipped</span></div>
+      <div><span class="k">Document</span><span class="v">Handover · 1 of 1</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= EXECUTIVE SUMMARY ======================= -->
+<section class="page">
+  <div class="rh"><span><b>01</b> &nbsp;Executive summary</span><span>ScoreGenius</span></div>
+
+  <h1>What was done, and why it matters</h1>
+  <p class="lede">ScoreGenius had a refreshed brand but an interior that predated it. This programme
+  closed that gap — not by restyling, but by <strong>establishing a design system, rebuilding the
+  core screen around the product's actual job, and auditing what was already shipping.</strong></p>
+
+  <div class="metrics">
+    <div class="metric"><span class="v">3</span><span class="k">Screens specified across three sports</span></div>
+    <div class="metric"><span class="v">18</span><span class="k">Defects found, 14 already fixed</span></div>
+    <div class="metric"><span class="v">7</span><span class="k">Commits, shipped in sequence</span></div>
+    <div class="metric"><span class="v">0</span><span class="k">New dependencies or API changes</span></div>
+  </div>
+
+  <h3 class="first">The problem</h3>
+  <p>The Games screen presents twelve to fifteen prediction cards on a typical day. Every card
+  carried the same visual weight, which meant a user had to <em>read</em> all fifteen to find the
+  two worth acting on. The product's own output — the predicted score and the market edge — were
+  among the quietest elements on screen: the edge rendered as muted grey text, the prediction at
+  13 pixels.</p>
+
+  <h3>The response</h3>
+  <p>The card was restructured from a <em>list of facts</em> into a <em>matchup</em>: one row per
+  team, each carrying that team's predicted score in a fixed, right-aligned column, with the model's
+  pick held at full contrast and the other side receded. A reader now scans a full slate by running
+  their eye down a single column. The market edge — the rarest and most valuable signal — became the
+  loudest element, encoded in colour, border and a card-edge rail rather than in words alone.</p>
+
+  <h3>What else it surfaced</h3>
+  <p>Documenting the system required auditing what existed. That audit found eighteen defects, several
+  shipping to users: cards turning transparent on hover in light mode, an invisible white-on-white
+  heading, placeholder zeros presented as real betting lines, and domed baseball stadiums reporting
+  outdoor weather. <strong>Fourteen are now fixed</strong>; the four remaining sit on screens the
+  redesign has not reached yet and are scheduled with them.</p>
+
+  <h3>What shipped</h3>
+  <p>The Games screen — the one users spend their time in — is <strong>built and live across all
+  three sports in both themes</strong>, delivered as seven commits over two days. The design system
+  beneath it is implemented rather than proposed: the tokens, the card, its states and its fallbacks
+  all describe running code. Four screens remain on the previous styling and are specified to
+  follow.</p>
+
+  <div class="callout">
+    <span class="ch">Commercial context</span>
+    <p>The application is a Trusted Web Activity: the Android shell loads the web app at runtime, so
+    interface changes deploy through the web pipeline and reach the Play Store app, the PWA and the
+    browser within minutes — <strong>with no app-store review and no version bump.</strong> Every
+    change described here is reversible in minutes, which is why the work was sequenced as seven
+    independent commits rather than one release.</p>
+  </div>
+
+  <div class="pnum">2</div>
+</section>
+
+<!-- ======================= CONTENTS ======================= -->
+<section class="page">
+  <div class="rh"><span><b>02</b> &nbsp;Contents</span><span>ScoreGenius</span></div>
+  <h2>Contents</h2>
+  <div class="toc">
+    <div class="toc-row"><span class="toc-n">01</span><span class="toc-t">Executive summary<span>What was done and why it matters</span></span><span class="toc-p">2</span></div>
+    <div class="toc-row"><span class="toc-n">03</span><span class="toc-t">The starting point<span>The scanning problem, in the product's own screens</span></span><span class="toc-p">4</span></div>
+    <div class="toc-row"><span class="toc-n">04</span><span class="toc-t">Foundations<span>Colour and typography as a documented system</span></span><span class="toc-p">5</span></div>
+    <div class="toc-row"><span class="toc-n">05</span><span class="toc-t">The card, rebuilt<span>Before and after, with the reasoning</span></span><span class="toc-p">7</span></div>
+    <div class="toc-row"><span class="toc-n">06</span><span class="toc-t">The scanning test<span>A full slate, before and after</span></span><span class="toc-p">8</span></div>
+    <div class="toc-row"><span class="toc-n">07</span><span class="toc-t">Light and dark<span>Both themes as first-class</span></span><span class="toc-p">9</span></div>
+    <div class="toc-row"><span class="toc-n">08</span><span class="toc-t">Every state<span>Live, final, no edge, no prediction</span></span><span class="toc-p">10</span></div>
+    <div class="toc-row"><span class="toc-n">09</span><span class="toc-t">Degraded data<span>What happens when feeds arrive incomplete</span></span><span class="toc-p">11</span></div>
+    <div class="toc-row"><span class="toc-n">10</span><span class="toc-t">Three sports, one system<span>NFL and NBA from the same components</span></span><span class="toc-p">12</span></div>
+    <div class="toc-row"><span class="toc-n">11</span><span class="toc-t">The audit<span>Eighteen defects, catalogued</span></span><span class="toc-p">13</span></div>
+    <div class="toc-row"><span class="toc-n">12</span><span class="toc-t">Build plan<span>Seven commits, sequenced by risk</span></span><span class="toc-p">14</span></div>
+    <div class="toc-row"><span class="toc-n">13</span><span class="toc-t">Status and assets<span>What exists today</span></span><span class="toc-p">15</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="callout">
+    <span class="ch">A note on the visuals</span>
+    <p>Every interface image in this document is <strong>rendered live from the design system's own
+    values</strong>, not screenshotted. "Before" specimens are reconstructed from the shipping
+    application using its exact colour and type values; "after" specimens are the approved
+    specification. Both therefore print at full fidelity at any zoom.</p>
+  </div>
+
+  <div class="pnum">3</div>
+</section>
+
+<!-- ======================= THE STARTING POINT ======================= -->
+<section class="page">
+  <div class="rh"><span><b>03</b> &nbsp;The starting point</span><span>ScoreGenius</span></div>
+  <h2>Everything weighted the same</h2>
+  <p class="lede">The interface was functional and information-dense. Its weakness was hierarchy:
+  nothing on the card told you where to look.</p>
+
+  <div class="cols2u">
+    <div>
+      <p class="lbl before">Shipping — a typical card</p>
+      <div class="app app--dark">
+        <div class="old">
+          <div class="old-hd"><p class="old-team">Cleveland Guardians</p><span class="old-time">1:10 PM</span></div>
+          <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Detroit Tigers</p>
+          <div class="old-body">
+            <div class="old-odds">
+              <div>ML: +114 / -119</div><div>Spread: -1.5</div><div>O/U: 8</div>
+              <div>Edge: <span class="old-edge">High (Home)</span></div>
+            </div>
+            <span class="old-pred"><span class="s">3.7 – 4.5</span><span class="l">predicted score</span></span>
+          </div>
+        </div>
+      </div>
+      <p class="cap">The four data lines are typographically identical. <b>"Edge: High (Home)" — the
+      product's most valuable output — is styled the same as "O/U: 8"</b>, in muted grey with the
+      one green word held at 70% opacity.</p>
+    </div>
+
+    <div>
+      <h3 class="first">Four specific failures</h3>
+      <table class="compact">
+        <tbody>
+          <tr><td style="width:34%"><strong>No hierarchy</strong></td><td>Odds, edge and teams share one visual weight. Scanning requires reading.</td></tr>
+          <tr><td><strong>Fused prediction</strong></td><td><code>3.7 – 4.5</code> is one string. The reader performs the subtraction to learn who is favoured.</td></tr>
+          <tr><td><strong>Quiet where it matters</strong></td><td>The predicted score sits at 13px with a 9px label — below the legibility floor on a phone.</td></tr>
+          <tr><td><strong>States look alike</strong></td><td>A finished game is structurally identical to an upcoming one.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <span class="ch">Also shipping</span>
+        <p>Placeholder zeros from the odds feed rendered as genuine betting lines — every American
+        football preseason card displayed <code>Spread: 0</code> and <code>O/U: 0</code> as though
+        those were real markets.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h3>The same card in light mode</h3>
+  <div class="cols2">
+    <div>
+      <div class="app app--light">
+        <div class="old old--light">
+          <div class="old-hd"><p class="old-team">Seattle Mariners</p><span class="old-time">1:35 PM</span></div>
+          <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> New York Yankees</p>
+          <div class="old-body">
+            <div class="old-odds">
+              <div>ML: +118 / -124</div><div>Spread: -1.5</div><div>O/U: 8.5</div>
+              <div>Edge: <span class="old-edge">Medium (Home)</span></div>
+            </div>
+            <span class="old-pred"><span class="s">4.0 – 4.6</span><span class="l">predicted score</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:8.6pt">Light mode compounds the problem. The green edge text at 70% opacity
+      on a pale panel is barely distinguishable between High and Medium — the tier system exists in
+      the data but not in the interface.</p>
+      <p style="font-size:8.6pt;margin:0">The audit also found that <b>hovering any card in light
+      mode made its background transparent</b>, because the hover colour was defined only in the dark
+      theme. See page 13.</p>
+    </div>
+  </div>
+
+  <div class="pnum">4</div>
+</section>
+
+<!-- ======================= FOUNDATIONS: COLOUR ======================= -->
+<section class="page">
+  <div class="rh"><span><b>04</b> &nbsp;Foundations · Colour</span><span>ScoreGenius</span></div>
+  <h2>Colour as signal, never decoration</h2>
+  <p class="lede">The brand hexes are unchanged. What the system adds is <strong>contrast-corrected
+  variants</strong> — brand green at body sizes fails accessibility standards on both grounds, so a
+  lifted green carries text on dark and a deepened green on light.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl">Brand and signal</p>
+      <div class="sw-grid" style="grid-template-columns:1fr">
+        <div class="sw"><i style="background:#00B140"></i><span class="n">Brand green</span><span class="h">#00B140</span></div>
+        <div class="sw"><i style="background:#3ADE72"></i><span class="n">Green — lifted, text on dark</span><span class="h">#3ADE72</span></div>
+        <div class="sw"><i style="background:#00762C"></i><span class="n">Green — deep, text on light</span><span class="h">#00762C</span></div>
+        <div class="sw"><i style="background:#FF7F00"></i><span class="n">Brand orange — live only</span><span class="h">#FF7F00</span></div>
+      </div>
+      <p class="cap"><b>Orange is reserved.</b> It marks a live game and nothing else — never a
+      second accent, never a warning, never decoration.</p>
+    </div>
+    <div>
+      <p class="lbl">Surfaces and ink — dark</p>
+      <div class="sw-grid" style="grid-template-columns:1fr">
+        <div class="sw"><i style="background:#0B1016"></i><span class="n">Ground</span><span class="h">#0B1016</span></div>
+        <div class="sw"><i style="background:#151C24"></i><span class="n">Card</span><span class="h">#151C24</span></div>
+        <div class="sw"><i style="background:#232E38"></i><span class="n">Hairline</span><span class="h">#232E38</span></div>
+        <div class="sw"><i style="background:#EAF0F4"></i><span class="n">Ink</span><span class="h">#EAF0F4</span></div>
+        <div class="sw"><i style="background:#8FA0AE"></i><span class="n">Ink secondary</span><span class="h">#8FA0AE</span></div>
+      </div>
+      <p class="cap">Neutrals carry a slight blue-green bias so they sit with the brand mark rather
+      than beside it — a deliberate choice over default grey ramps.</p>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h3>Where colour is permitted</h3>
+  <table>
+    <thead><tr><th style="width:22%">Colour</th><th style="width:34%">Permitted use</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Green</strong></td><td>The model's output, and the app's own active chrome</td><td>The product's value is its prediction; green marks it and nothing competes</td></tr>
+      <tr><td><strong>Orange</strong></td><td>Live game state, exclusively</td><td>Rare and time-sensitive. Reserving it keeps the signal strong</td></tr>
+      <tr><td><strong>Neutrals</strong></td><td>Everything else, in three ink weights</td><td>Hierarchy comes from weight and contrast, not hue</td></tr>
+      <tr><td colspan="3" style="padding-top:7pt"><span class="bad">No red/amber status ramp.</span> Nothing in this product is an error a user can act on. Failures are handled by absence, not by colour.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">System rule</span>
+    <p>No colour may be defined in only one theme, and no hex may be hardcoded in a component. Four
+    violations of the first rule were found in production and are catalogued on page 13 — including
+    one that renders a heading invisible.</p>
+  </div>
+
+  <div class="pnum">5</div>
+</section>
+
+<!-- ======================= FOUNDATIONS: TYPE ======================= -->
+<section class="page">
+  <div class="rh"><span><b>04</b> &nbsp;Foundations · Typography</span><span>ScoreGenius</span></div>
+  <h2>Numbers are monospace. Words are not.</h2>
+  <p class="lede">This single rule does more than any other to make the product read as
+  instrumentation rather than a hobby app. <strong>Every figure aligns down a fifteen-card list;
+  every label stays proportional and readable.</strong></p>
+
+  <div class="ty">
+    <p class="big">Cleveland Guardians</p>
+    <small><strong>Archivo</strong> — team and player names, interface labels, headings, body copy.
+    A grotesque with tight tracking, strong at heavy weights. Falls back to Inter Tight and the
+    system UI stack.</small>
+  </div>
+  <div class="ty">
+    <p class="bigm">+114 / −119 · 4.5 · 118.9</p>
+    <small><strong>JetBrains Mono</strong> — scores, odds, times, percentages and all uppercase
+    micro-labels. Tabular figures by default, so <code>4.5</code> occupies the same width as
+    <code>118.9</code> and columns never shift. Falls back to the system monospace stack, which is
+    available everywhere at no download cost.</small>
+  </div>
+
+  <div class="spacer"></div>
+  <h3>Why it matters commercially</h3>
+  <div class="cols2">
+    <div>
+      <p class="lbl before">Proportional figures</p>
+      <div class="app app--dark" style="padding:7pt">
+        <div style="font-family:var(--sans);color:#EAF0F4;font-size:11pt;font-weight:700;line-height:1.5">
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE">Cleveland</span><span>3.7</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE">Detroit</span><span>11.5</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE">Houston</span><span>118.9</span></div>
+        </div>
+      </div>
+      <p class="cap">Digit widths differ, so the decimal points drift and the eye has to re-find the
+      column on every row.</p>
+    </div>
+    <div>
+      <p class="lbl after">Tabular monospace</p>
+      <div class="app app--dark" style="padding:7pt">
+        <div style="font-family:var(--mono);color:#EAF0F4;font-size:11pt;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.5">
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Cleveland</span><span>3.7</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Detroit</span><span>11.5</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Houston</span><span>118.9</span></div>
+        </div>
+      </div>
+      <p class="cap">Fixed digit widths plus a fixed column width. The right edge never moves — across
+      rows, across sports, or when a basketball score crosses 100.</p>
+    </div>
+  </div>
+
+  <div class="pnum">6</div>
+</section>
+
+<!-- ======================= THE CARD REBUILT ======================= -->
+<section class="page">
+  <div class="rh"><span><b>05</b> &nbsp;The card, rebuilt</span><span>ScoreGenius</span></div>
+  <h2>From a list of facts to a matchup</h2>
+  <p class="lede">The structural change: <strong>two rows, one per team, each carrying that team's
+  own predicted score</strong> in a fixed right-aligned column — with the model's pick at full
+  contrast and the other side receded.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl before">Before</p>
+      <div class="app app--dark">
+        <div class="old">
+          <div class="old-hd"><p class="old-team">Cleveland Guardians</p><span class="old-time">1:10 PM</span></div>
+          <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Detroit Tigers</p>
+          <div class="old-body">
+            <div class="old-odds">
+              <div>ML: +114 / -119</div><div>Spread: -1.5</div><div>O/U: 8</div>
+              <div>Edge: <span class="old-edge">High (Home)</span></div>
+            </div>
+            <span class="old-pred"><span class="s">3.7 – 4.5</span><span class="l">predicted score</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="lbl after">After</p>
+      <div class="app app--dark">
+        <article class="c c--high">
+          <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+          <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+          <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>SPR</k> −1.5<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h3>What changed, and why</h3>
+  <table>
+    <thead><tr><th style="width:26%">Change</th><th>Reasoning</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Split the prediction</strong></td><td>One score per team, on that team's row. The reader learns who is favoured without arithmetic, and the numbers form a scannable column down the list.</td></tr>
+      <tr><td><strong>Edge became the headline</strong></td><td>Moved to a status rail with tier encoded in colour, border, glow and a card-edge rail. It appears on roughly two cards in fifteen — rarity earns emphasis.</td></tr>
+      <tr><td><strong>Edge names the team</strong></td><td><code>High edge · DET</code> rather than <code>High (Home)</code>. A fan thinks in teams, not in home and away.</td></tr>
+      <tr><td><strong>Market data demoted</strong></td><td>Odds moved to a single monospaced footer strip. They are reference, not headline, and deliberately quieter than the model's output.</td></tr>
+      <tr><td><strong>Prediction enlarged</strong></td><td>From 13px to 21px, and now the largest figure on the card.</td></tr>
+      <tr><td><strong>Anchor added</strong></td><td>A team abbreviation chip starts each row, giving the eye a fixed point to lock onto rather than parsing a long name.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">Constraint respected</span>
+    <p>No new data was introduced. Every element on the redesigned card is a value the application
+    already had — the change is entirely in how it is arranged and weighted.</p>
+  </div>
+
+  <div class="pnum">7</div>
+</section>
+
+<!-- ======================= THE SCAN TEST ======================= -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;The scanning test</span><span>ScoreGenius</span></div>
+  <h2>The real test is fifteen cards, not one</h2>
+  <p class="lede">A single card can look good and still fail. <strong>Squint at the two columns
+  below:</strong> on the right, the games worth opening announce themselves.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl before">Before — a typical slate</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Cleveland Guardians</p><span class="old-time">1:10 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Detroit Tigers</p>
+            <div class="old-body"><div class="old-odds"><div>ML: +114 / -119</div><div>O/U: 8</div><div>Edge: <span class="old-edge">High (Home)</span></div></div><span class="old-pred"><span class="s">3.7 – 4.5</span><span class="l">predicted score</span></span></div>
+          </div>
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Pittsburgh Pirates</p><span class="old-time">1:10 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Miami Marlins</p>
+            <div class="old-body"><div class="old-odds"><div>ML: +100 / -106</div><div>O/U: 8.5</div></div><span class="old-pred"><span class="s">4.2 – 4.2</span><span class="l">predicted score</span></span></div>
+          </div>
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Seattle Mariners</p><span class="old-time">1:35 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> New York Yankees</p>
+            <div class="old-body"><div class="old-odds"><div>ML: +118 / -124</div><div>O/U: 8.5</div><div>Edge: <span class="old-edge">Medium (Home)</span></div></div><span class="old-pred"><span class="s">4.0 – 4.6</span><span class="l">predicted score</span></span></div>
+          </div>
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Cincinnati Reds</p><span class="old-time">2:10 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Chicago White Sox</p>
+            <div class="old-body"><div class="old-odds"><div>ML: +131 / -138</div><div>O/U: 9</div><div>Edge: <span class="old-edge">Medium (Away)</span></div></div><span class="old-pred"><span class="s">4.3 – 4.1</span><span class="l">predicted score</span></span></div>
+          </div>
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Houston Astros</p><span class="old-time">4:10 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Texas Rangers</p>
+            <div class="old-body"><div class="old-odds"><div>ML: -132 / +112</div><div>O/U: 8.5</div><div>Edge: <span class="old-edge">High (Away)</span></div></div><span class="old-pred"><span class="s">5.1 – 3.9</span><span class="l">predicted score</span></span></div>
+          </div>
+          <div class="old">
+            <div class="old-hd"><p class="old-team">Boston Red Sox</p><span class="old-time">7:05 PM</span></div>
+            <p class="old-team" style="margin-top:1pt"><span class="old-vs">vs.</span> Tampa Bay Rays</p>
+            <div class="old-body"><div class="old-odds"><div>ML: +104 / -112</div><div>O/U: 9</div></div><span class="old-pred"><span class="s">4.4 – 4.7</span><span class="l">predicted score</span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Six identical blocks. The two high-edge games are indistinguishable at a glance
+      from the four without one.</p>
+    </div>
+
+    <div>
+      <p class="lbl after">After — the same six games</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span></span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">PIT</span><span class="c-name">Pittsburgh Pirates</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div>
+            <div class="c-team"><span class="c-abbr">MIA</span><span class="c-name">Miami Marlins</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +100 / −106<span class="dot">·</span><k>O/U</k> 8.5</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · NYY</span><span class="c-time">1:35 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">SEA</span><span class="c-name">Seattle Mariners</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.0</span></div>
+            <div class="c-team"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick"></i>4.6</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +118 / −124<span class="dot">·</span><k>O/U</k> 8.5</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · CIN</span><span class="c-time">2:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">CIN</span><span class="c-name">Cincinnati Reds</span><span class="c-num"><i class="c-pick"></i>4.3</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CWS</span><span class="c-name">Chicago White Sox</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · HOU</span><span class="c-time">4:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">HOU</span><span class="c-name">Houston Astros</span><span class="c-num"><i class="c-pick"></i>5.1</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">TEX</span><span class="c-name">Texas Rangers</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.9</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> −132 / +112<span class="dot">·</span><k>O/U</k> 8.5</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span></span><span class="c-time">7:05 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">BOS</span><span class="c-name">Boston Red Sox</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.4</span></div>
+            <div class="c-team"><span class="c-abbr">TB</span><span class="c-name">Tampa Bay Rays</span><span class="c-num"><i class="c-pick"></i>4.7</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +104 / −112<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+      <p class="cap">Two cards carry a green rail. The score column reads vertically. A card with no
+      edge is quiet rather than broken — <b>absence is a design state, not a gap.</b></p>
+    </div>
+  </div>
+
+  <div class="pnum">8</div>
+</section>
+
+<!-- ======================= LIGHT AND DARK ======================= -->
+<section class="page">
+  <div class="rh"><span><b>07</b> &nbsp;Light and dark</span><span>ScoreGenius</span></div>
+  <h2>Both themes, designed together</h2>
+  <p class="lede">Dark is the product's native theme — the brand mark sits on the same ground. Light
+  is a <strong>first-class derivative, not an inversion</strong>: the greens deepen to hold contrast
+  on a pale panel, and every token is defined in both.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl">Dark</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>SPR</k> −1.5<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · CIN</span><span class="c-time">2:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">CIN</span><span class="c-name">Cincinnati Reds</span><span class="c-num"><i class="c-pick"></i>4.3</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CWS</span><span class="c-name">Chicago White Sox</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c c--live">
+            <div class="c-rail"><span class="c-live"><span class="p"></span>LIVE</span><span class="c-time">Started 7:05 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">STL</span><span class="c-name">St. Louis Cardinals</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.9</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="lbl">Light</p>
+      <div class="app app--light">
+        <div class="stack">
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>SPR</k> −1.5<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · CIN</span><span class="c-time">2:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">CIN</span><span class="c-name">Cincinnati Reds</span><span class="c-num"><i class="c-pick"></i>4.3</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CWS</span><span class="c-name">Chicago White Sox</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c c--live">
+            <div class="c-rail"><span class="c-live"><span class="p"></span>LIVE</span><span class="c-time">Started 7:05 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">STL</span><span class="c-name">St. Louis Cardinals</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.9</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="ch">What the audit found here</span>
+    <p>Light mode was not being checked. Three variables — the card hover colour and two shadow
+    definitions — were declared only inside the dark theme but consumed unconditionally, so
+    <strong>hovering a card in light mode removed its background entirely.</strong> A fourth defect
+    put white heading text on a near-white panel, rendering it invisible. Both are fixed in the first
+    build commit.</p>
+  </div>
+
+  <div class="pnum">9</div>
+</section>
+
+<!-- ======================= EVERY STATE ======================= -->
+<section class="page">
+  <div class="rh"><span><b>08</b> &nbsp;Every state</span><span>ScoreGenius</span></div>
+  <h2>State encoded in form, not just words</h2>
+  <p class="lede">A game is scheduled, in progress, or final — and the interface must also handle
+  cards with no edge and no prediction. <strong>Each state is distinguishable at a squint</strong>,
+  which means it survives a glance on a phone.</p>
+
+  <div class="cols2">
+    <div class="app app--dark">
+      <div class="stack">
+        <article class="c c--high">
+          <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+          <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+          <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+        </article>
+        <article class="c">
+          <div class="c-rail"><span class="c-edge c-edge--low">Low edge · MIA</span><span class="c-time">1:10 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">PIT</span><span class="c-name">Pittsburgh Pirates</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div>
+          <div class="c-team"><span class="c-abbr">MIA</span><span class="c-name">Miami Marlins</span><span class="c-num"><i class="c-pick"></i>4.4</span></div>
+          <div class="c-foot"><span class="c-mkt"><k>ML</k> +100 / −106<span class="dot">·</span><k>O/U</k> 8.5</span><span class="c-chev">▾</span></div>
+        </article>
+        <article class="c c--live">
+          <div class="c-rail"><span class="c-live"><span class="p"></span>LIVE</span><span class="c-time">Started 7:05 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">STL</span><span class="c-name">St. Louis Cardinals</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.9</span></div>
+          <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+        </article>
+        <article class="c c--done">
+          <div class="c-rail"><span class="c-state">Final</span><span class="c-time">6:35 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">LAA</span><span class="c-name">Los Angeles Angels</span><span class="c-num"><i class="c-pick c-pick--h"></i>1</span></div>
+          <div class="c-team"><span class="c-abbr">BAL</span><span class="c-name">Baltimore Orioles</span><span class="c-num"><i class="c-pick c-pick--h"></i>3</span></div>
+        </article>
+        <article class="c">
+          <div class="c-rail"><span></span><span class="c-time">8:00 PM</span></div>
+          <div class="c-team"><span class="c-abbr">EUR</span><span class="c-name">EuroLeague Select</span><span class="c-num" style="font-size:8pt;color:#5E6E7C">—</span></div>
+          <div class="c-team"><span class="c-abbr">USA</span><span class="c-name">USA Select</span><span class="c-num" style="font-size:8pt;color:#5E6E7C">—</span></div>
+          <div class="c-caveat">No model prediction — exhibition game outside the league.</div>
+        </article>
+      </div>
+    </div>
+    <div>
+      <table class="compact">
+        <thead><tr><th style="width:30%">State</th><th>Encoding</th></tr></thead>
+        <tbody>
+          <tr><td><strong>High edge</strong></td><td>Green rail, tinted border, corner wash, glowing chip</td></tr>
+          <tr><td><strong>Medium / Low</strong></td><td>Progressively quieter chip; no rail</td></tr>
+          <tr><td><strong>No edge</strong></td><td>Rail carries only the time. Card is deliberately silent</td></tr>
+          <tr><td><strong>Live</strong></td><td>Orange rail, pulsing dot, predictions dimmed and pick marker removed</td></tr>
+          <tr><td><strong>Final</strong></td><td>Card to 66% opacity, score held at full contrast, market strip hidden entirely</td></tr>
+          <tr><td><strong>No prediction</strong></td><td>Em-dash placeholders and a single explanatory line</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="ch">Honesty constraint</span>
+        <p>The application has <strong>no live score, inning or clock data</strong> — "in progress" is
+        inferred from the start time. The live treatment therefore shows a status and nothing more.
+        The design deliberately avoids implying a feed the product does not have.</p>
+      </div>
+
+      <div class="callout">
+        <span class="ch">Sorting agrees with weight</span>
+        <p>Finished games already sorted to the bottom of the list; now they also <em>look</em>
+        finished. Visual hierarchy and sort order tell the same story.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pnum">10</div>
+</section>
+
+<!-- ======================= DEGRADED DATA ======================= -->
+<section class="page">
+  <div class="rh"><span><b>09</b> &nbsp;Degraded data</span><span>ScoreGenius</span></div>
+  <h2>Absence is a design state</h2>
+  <p class="lede">Live sports feeds arrive incomplete. Odds post at different times; probable
+  pitchers are announced on a rolling basis. <strong>The rule: missing data shortens the layout, it
+  never prints a placeholder.</strong></p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl">Odds arriving in pieces</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>SPR</k> −1.5<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span></span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span></span><span class="c-time">7:00 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">GB</span><span class="c-name">Green Bay Packers</span><span class="c-num"><i class="c-pick c-pick--h"></i>21.9</span></div>
+            <div class="c-team"><span class="c-abbr">PIT</span><span class="c-name">Pittsburgh Steelers</span><span class="c-num"><i class="c-pick"></i>22.0</span></div>
+            <div class="c-foot"><span class="c-mkt c-mkt--none">Odds not yet posted</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+      <p class="cap">Full line · no spread · no moneyline · nothing posted. <b>Losing the moneyline
+      also removes the edge chip</b> — the calculation requires both prices, so the interface stops
+      claiming an edge it cannot compute.</p>
+    </div>
+
+    <div>
+      <p class="lbl">Probable pitchers</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c" style="padding-bottom:6pt">
+            <div class="c-pitch"><span><em>AWAY</em>Tanner Bibee (R)</span><span><em>HOME</em>Tarik Skubal (L)</span></div>
+          </article>
+          <article class="c" style="padding-bottom:6pt">
+            <div class="c-pitch"><span><em>AWAY</em>Tanner Bibee</span><span><em>HOME</em>Tarik Skubal</span></div>
+          </article>
+          <article class="c" style="padding-bottom:6pt">
+            <div class="c-pitch"><span><em>AWAY</em>Tanner Bibee (R)</span><span style="opacity:.55"><em>HOME</em>TBD</span></div>
+          </article>
+          <article class="c" style="padding-bottom:6pt">
+            <div class="c-chips"><span class="chip">H2H Stats</span><span class="chip chip--muted">Roof closed</span><span class="chip">Injuries</span></div>
+          </article>
+        </div>
+      </div>
+      <p class="cap">Both known · handedness missing · one known · neither known. When only one
+      starter is announced <b>both slots remain</b> — a lone unlabelled name is ambiguous about which
+      side it belongs to.</p>
+
+      <div class="callout warn" style="margin-top:9pt">
+        <span class="ch">Defect found</span>
+        <p>Eight domed baseball stadiums were reporting <strong>outdoor weather</strong>. The venue
+        data file carries an indoor flag for all 32 American football stadiums and none of the 31
+        baseball ones — wrong information rather than missing information.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pnum">11</div>
+</section>
+
+<!-- ======================= THREE SPORTS ======================= -->
+<section class="page">
+  <div class="rh"><span><b>10</b> &nbsp;Three sports, one system</span><span>ScoreGenius</span></div>
+  <h2>The system generalises</h2>
+  <p class="lede">The product covers baseball, American football and basketball. The card is
+  <strong>one component with three small deltas</strong> — the test of whether a design system is
+  real.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl">American football</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · BUF</span><span class="c-time">1:00 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">NYJ</span><span class="c-name">New York Jets</span><span class="c-num"><i class="c-pick c-pick--h"></i>17.2</span></div>
+            <div class="c-team"><span class="c-abbr">BUF</span><span class="c-name">Buffalo Bills</span><span class="c-num"><i class="c-pick"></i>27.6</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +265 / −325<span class="dot">·</span><k>SPR</k> −7.5<span class="dot">·</span><k>O/U</k> 44.5</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · DET</span><span class="c-time">4:25 PM</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Lions</span><span class="c-num"><i class="c-pick"></i>26.1</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CIN</span><span class="c-name">Cincinnati Bengals</span><span class="c-num"><i class="c-pick c-pick--h"></i>23.8</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> −142 / +120<span class="dot">·</span><k>O/U</k> 49.5</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+      <p class="cap">No pitchers. Weather chip is dome-aware — eleven stadiums are indoor, and those
+      now skip the weather request entirely rather than fetching and discarding it.</p>
+    </div>
+    <div>
+      <p class="lbl">Basketball</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high">
+            <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · BOS</span><span class="c-time">7:30 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">MIA</span><span class="c-name">Miami Heat</span><span class="c-num"><i class="c-pick c-pick--h"></i>108.6</span></div>
+            <div class="c-team"><span class="c-abbr">BOS</span><span class="c-name">Boston Celtics</span><span class="c-num"><i class="c-pick"></i>117.2</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +240 / −295<span class="dot">·</span><k>SPR</k> −7.5<span class="dot">·</span><k>O/U</k> 224.5</span><span class="c-chev">▾</span></div>
+          </article>
+          <article class="c">
+            <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · DEN</span><span class="c-time">9:00 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">LAL</span><span class="c-name">Los Angeles Lakers</span><span class="c-num"><i class="c-pick c-pick--h"></i>112.4</span></div>
+            <div class="c-team"><span class="c-abbr">DEN</span><span class="c-name">Denver Nuggets</span><span class="c-num"><i class="c-pick"></i>118.9</span></div>
+            <div class="c-foot"><span class="c-mkt"><k>ML</k> +155 / −180<span class="dot">·</span><k>O/U</k> 231.5</span><span class="c-chev">▾</span></div>
+          </article>
+        </div>
+      </div>
+      <p class="cap">No weather at all — every basketball game is indoors, so a chip that always said
+      the same thing was removed. Three-digit scores set the fixed column width.</p>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <table>
+    <thead><tr><th style="width:34%">Element</th><th>Baseball</th><th>Am. football</th><th>Basketball</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Card, tokens, type, states</strong></td><td colspan="3" class="ok">Identical across all three</td></tr>
+      <tr><td>Probable pitchers</td><td>Yes</td><td>—</td><td>—</td></tr>
+      <tr><td>Weather chip</td><td>Yes</td><td>Yes, dome-aware</td><td class="bad">Removed</td></tr>
+      <tr><td>Injuries chip</td><td>—</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td class="num">Score column</td><td class="num">4.5</td><td class="num">27.6</td><td class="num">118.9 — sets width</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pnum">12</div>
+</section>
+
+<!-- ======================= THE AUDIT ======================= -->
+<section class="page">
+  <div class="rh"><span><b>11</b> &nbsp;The audit</span><span>ScoreGenius</span></div>
+  <h2>Eighteen defects, catalogued</h2>
+  <p class="lede">Documenting a system requires auditing what exists. Each finding below carries a
+  file and line reference in the repository, and each is assigned to a build commit.
+  <strong>Nothing here is speculative.</strong></p>
+
+  <h3 class="first">Visible to users</h3>
+  <table class="compact">
+    <thead><tr><th style="width:5%" class="num">#</th><th style="width:38%">Defect</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Hover colour defined only in the dark theme</td><td>Cards turn <span class="bad">transparent on hover</span> in light mode</td></tr>
+      <tr><td class="num">2</td><td>Shadow tokens likewise dark-only</td><td>No card elevation in light mode</td></tr>
+      <tr><td class="num">3</td><td>White heading on a near-white panel</td><td><span class="bad">Invisible text</span>; body copy at ~2.1:1 contrast. Duplicated on two screens</td></tr>
+      <tr><td class="num">4</td><td>Placeholder zeros rendered as betting lines</td><td>Every preseason card shows a false spread and total</td></tr>
+      <tr><td class="num">5</td><td>Raw feed status codes leak into the interface</td><td>Times display as <code>6:35 PM (IN9)</code></td></tr>
+      <tr><td class="num">6</td><td>Indoor flag absent for all baseball venues</td><td>Eight domed stadiums report <span class="bad">outdoor weather</span></td></tr>
+      <tr><td class="num">7</td><td>Weather failure renders a disabled "N/A"</td><td>Says nothing useful; wrong for domes</td></tr>
+      <tr><td class="num">8</td><td>Basketball shows an "Indoor" chip on every card</td><td>Zero information on 100% of cards</td></tr>
+      <tr><td class="num">9</td><td>Internal model figures exposed in a tooltip</td><td>Implies calibrated probabilities the model does not produce</td></tr>
+      <tr><td class="num">10</td><td>Hardcoded dark chip on a themed card</td><td>Dark element pasted onto a light surface</td></tr>
+      <tr><td class="num">11</td><td>Header pure black above a lighter app ground</td><td>Visible seam under the navigation bar</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Correctness and maintainability</h3>
+  <table class="compact">
+    <thead><tr><th style="width:5%" class="num">#</th><th style="width:38%">Defect</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td class="num">12</td><td>Focus outline suppressed with no replacement</td><td>No keyboard focus indication on the sport selector</td></tr>
+      <tr><td class="num">13</td><td>Three separate implementations of one control</td><td>The same toggle styled three ways across two screens</td></tr>
+      <tr><td class="num">14</td><td>Dead component with inverted argument order</td><td>Imported but never rendered; a trap for future adoption</td></tr>
+      <tr><td class="num">15</td><td>Duplicate style block, second silently wins</td><td>Two off-palette colours in effect</td></tr>
+      <tr><td class="num">16</td><td>Malformed build configuration</td><td>Duplicate keys; one shadow definition never registered</td></tr>
+      <tr><td class="num">17</td><td>Debug logging left in production</td><td>Fires on card interaction</td></tr>
+      <tr><td class="num">18</td><td>Reduced-motion honoured by one rule only</td><td>Accessibility preference largely ignored</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">How to read this</span>
+    <p>A defect list of this length is normal for an application of this maturity that has never had
+    a design system. The material point is that <strong>all eighteen are now identified, located and
+    scheduled</strong> — eleven are closed by the seven commits on the next page, and the remainder
+    fall to later stages.</p>
+  </div>
+
+  <div class="pnum">13</div>
+</section>
+
+<!-- ======================= BUILD PLAN ======================= -->
+<section class="page">
+  <div class="rh"><span><b>12</b> &nbsp;Build plan</span><span>ScoreGenius</span></div>
+  <h2>Seven commits, sequenced by risk</h2>
+  <p class="lede">The work was sequenced so the <strong>first four commits were invisible in the
+  application.</strong> Tokens, styles, helpers and components all landed without anything consuming
+  them — leaving one high-risk commit rather than seven medium-risk ones. All seven are shipped.</p>
+
+  <table>
+    <thead><tr><th style="width:5%" class="num">#</th><th style="width:28%">Commit</th><th style="width:13%">Visible</th><th style="width:22%">Closed</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><strong>Design tokens and build config</strong></td><td class="muted">No</td><td>Defects 1, 2, 15, 16, 18</td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">2</td><td><strong>Card stylesheet</strong></td><td class="muted">No</td><td>—</td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">3</td><td><strong>Pure helper functions</strong></td><td class="muted">No</td><td>— <span class="muted">(25 tests)</span></td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">4</td><td><strong>Presentational components</strong></td><td class="muted">No</td><td>—</td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">5</td><td><strong>Card rewrite</strong></td><td class="bad">Yes</td><td>Defects 4, 5, 9, 10</td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">6</td><td><strong>Weather chip and dome handling</strong></td><td class="bad">Yes</td><td>Defects 6, 7, 8</td><td class="ok">Shipped</td></tr>
+      <tr><td class="num">7</td><td><strong>Cleanup</strong></td><td class="muted">No</td><td>Defects 14, 17</td><td class="ok">Shipped</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">What the sequence turned up</span>
+    <p>Two commits landed <em>before</em> the sequence that the plan had not anticipated, and both
+    proved to be prerequisites. Four pre-existing type errors were cleared, so that "no new errors"
+    became a meaningful check — one was a screen's core filtering silently untyped. And a linter was
+    installed: the project carried a lint script but no configuration and no linter, so it had never
+    run. <strong>Its first pass found five genuine defects</strong>, including a button that threw
+    when pressed offline and chart titles that had been silently discarded, showing the wrong sport's
+    labels.</p>
+  </div>
+
+  <div class="cols2" style="margin-top:12pt">
+    <div>
+      <h3 class="first">Risk management</h3>
+      <p style="font-size:8.6pt">Commit 5 is the only change a user would notice. Because commits 1
+      to 4 are additive and leave no visible trace, <strong>commit 5 can still be reverted on its
+      own</strong> — restoring the previous card while keeping the token and accessibility fixes in
+      place. That property survives the release.</p>
+      <p style="font-size:8.6pt;margin:0">Each commit carried its own verification step. The card was
+      checked against <strong>live production data</strong> across every state, all three sports and
+      both themes — including a naturally occurring tied prediction, and confirmation that a covered
+      venue fires no weather request at all.</p>
+    </div>
+    <div>
+      <h3 class="first">Deployment</h3>
+      <p style="font-size:8.6pt">The Android application is a Trusted Web Activity — a thin shell
+      loading the web app at runtime. Interface changes therefore ship through the standard web
+      deployment and reach <strong>the Play Store app, the Microsoft Store app, the PWA and the
+      browser simultaneously</strong>, typically within minutes.</p>
+      <p style="font-size:8.6pt;margin:0">No Android build, no version increment, no store review,
+      and no user action required.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="ch">Scope discipline</span>
+    <p>The redesign introduced <strong>no API changes, no data-model changes and no routing
+    changes.</strong> One backend edit was made and signed off separately: the missing indoor flag on
+    eight covered ballparks, which had them reporting the weather outside. The only dependencies
+    added were a linter and its plugins, which the lint script had always assumed were present.</p>
+  </div>
+
+  <div class="pnum">14</div>
+</section>
+
+<!-- ======================= STATUS ======================= -->
+<section class="page">
+  <div class="rh"><span><b>13</b> &nbsp;Status and assets</span><span>ScoreGenius</span></div>
+  <h2>What exists today</h2>
+
+  <table>
+    <thead><tr><th style="width:34%">Asset</th><th style="width:18%">Status</th><th>Location</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Design system specification</strong></td><td class="ok">Complete</td><td><code>docs/design_system.md</code></td></tr>
+      <tr><td><strong>Build guide, Games screen</strong></td><td class="ok">Complete</td><td><code>docs/game_card_implementation.md</code></td></tr>
+      <tr><td><strong>Interactive specimens</strong></td><td class="ok">Complete</td><td>Three rendered documents, all states</td></tr>
+      <tr><td><strong>Defect register</strong></td><td class="ok">14 of 18 closed</td><td>Design system, §11</td></tr>
+      <tr><td><strong>Brand refresh</strong></td><td class="ok">Shipped</td><td>Icon, splash, wordmark, favicon — live</td></tr>
+      <tr><td><strong>Games screen build</strong></td><td class="ok">Shipped</td><td>Seven commits, live across all platforms</td></tr>
+      <tr><td><strong>Automated checks</strong></td><td class="ok">Passing</td><td>Lint, 25 unit tests and build, via <code>npm run check</code></td></tr>
+      <tr><td><strong>Remaining four screens</strong></td><td class="muted">Direction set</td><td>Design system, §8.2–8.3</td></tr>
+    </tbody>
+  </table>
+
+  <div class="spacer"></div>
+  <h3>Coverage of the specification</h3>
+  <table class="compact">
+    <thead><tr><th>Area</th><th style="width:16%">State</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Colour, typography, spacing, geometry, elevation, motion, iconography</td><td class="ok">Built</td><td>Both themes, with contrast rationale</td></tr>
+      <tr><td>Component library</td><td class="ok">Specified</td><td>Nine components; the card and its parts are built, the rest await their screens</td></tr>
+      <tr><td>Games screen</td><td class="ok">Built</td><td>All states, all three sports, all fallbacks — live</td></tr>
+      <tr><td>Accessibility</td><td class="ok">Specified</td><td>WCAG 2.1 AA target with per-requirement rules</td></tr>
+      <tr><td>Content and voice</td><td class="ok">Specified</td><td>Rules plus worked examples</td></tr>
+      <tr><td>Stats screen</td><td class="muted">Direction</td><td>Components identified; one open design question</td></tr>
+      <tr><td>Game detail, How to Use, More</td><td class="muted">Direction</td><td>Inherit the card and prose patterns</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">For an incoming team</span>
+    <p>The specification is written to be handed over. It states not only what the interface should
+    look like but <strong>what the application actually knows</strong> — including two facts the code
+    implies but does not deliver, which had already misled a reader once. That section alone prevents
+    a class of future mistakes.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <div style="border-top:2.5pt solid var(--green);padding-top:10pt;margin-top:6pt">
+    <p style="font-size:8.4pt;color:var(--doc-ink-2);margin:0">
+      <strong style="color:var(--doc-ink)">ScoreGenius — Interface Redesign &amp; Design System.</strong>
+      Prepared 14 August 2026. All interface imagery rendered from the design system's own token
+      values. Defect references verified against the repository at the time of writing.
+    </p>
+  </div>
+
+  <div class="pnum">15</div>
+</section>
+
+</body>
+</html>

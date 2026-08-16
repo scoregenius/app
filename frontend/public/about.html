@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>About – ScoreGenius</title>
+    <meta
+      name="description"
+      content="Meet the developer behind ScoreGenius — a data-driven sports analytics PWA built with modern web architecture, real-time pipelines, and performance-first design."
+    />
+    <link rel="canonical" href="https://scoregenius.io/about" />
+
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="icon"
+      href="/icons/favicon-16x16.png"
+      sizes="16x16"
+      type="image/png"
+    />
+    <link
+      rel="icon"
+      href="/icons/favicon-32x32.png"
+      sizes="32x32"
+      type="image/png"
+    />
+    <link
+      rel="icon"
+      href="/icons/favicon-192x192.png"
+      sizes="192x192"
+      type="image/png"
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#F97316" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://scoregenius.io/about" />
+    <meta property="og:site_name" content="ScoreGenius" />
+    <meta property="og:title" content="About – ScoreGenius" />
+    <meta
+      property="og:description"
+      content="Meet the developer behind ScoreGenius – a sports analytics PWA built with clarity, performance, and fans in mind."
+    />
+    <meta
+      property="og:image"
+      content="https://scoregenius.io/icons/football-icon-maskable-512.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="The developer looking out over a mountain panorama"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@scoregeniusapp" />
+    <meta name="twitter:creator" content="@scoregeniusapp" />
+    <meta name="twitter:title" content="About – ScoreGenius" />
+    <meta
+      name="twitter:description"
+      content="Meet the developer behind ScoreGenius – a sports analytics PWA built with clarity, performance, and fans in mind."
+    />
+    <meta
+      name="twitter:image"
+      content="https://scoregenius.io/icons/football-icon-maskable-512.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="The developer looking out over a mountain panorama"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@1.31.0/dist/umd/lucide.js"></script>
+
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Q10Q9ST6DC"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-Q10Q9ST6DC");
+    </script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-gray-900 to-black">
+  <!-- 1) Header: transparent by default -->
+    <nav id="site-nav"
+        class="fixed inset-x-0 top-0 z-50
+                bg-transparent
+                transition-[background-color,backdrop-filter,box-shadow] duration-300">
+      <div class="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 xl:px-0 py-3 sm:py-4">
+        <!-- Logo -->            
+        <a href="/" class="flex items-center">
+              <svg viewBox="0 0 1128.46 154.39" role="img" aria-labelledby="sgTitle" xmlns="http://www.w3.org/2000/svg" class="h-6 w-auto md:h-8 lg:h-10">
+                <title id="sgTitle">ScoreGenius logo word-mark</title>
+                <desc id="sgDesc">Text “SCOREGENIUS” with an American-football icon between the words; emerald and orange arcs wrap the ball.</desc>
+                <!-- S -->
+                <path class="fill-[#152d4f] dark:fill-white" d="M35.34,140.64c-19.79,0-35.07-10.37-35.34-28.38h20.47c.55,7.64,5.59,12.69,14.46,12.69s14.33-4.78,14.33-11.6C49.26,92.75.14,105.16.27,70.64c0-17.19,13.92-27.56,33.57-27.56s32.89,9.96,34.11,27.16h-21.01c-.41-6.28-5.46-11.19-13.65-11.33-7.5-.27-13.1,3.41-13.1,11.19,0,19.1,48.85,8.46,48.85,42.03,0,15.01-12.01,28.52-33.7,28.52Z"></path>
+                <!-- C -->
+                <path class="fill-[#152d4f] dark:fill-white" d="M129.22,43.21c21.15,0,38.34,11.33,44.76,30.84h-21.97c-4.5-9.14-12.69-13.65-22.92-13.65-16.65,0-28.52,12.14-28.52,31.52s11.87,31.52,28.52,31.52c10.23,0,18.42-4.5,22.92-13.78h21.97c-6.41,19.65-23.61,30.84-44.76,30.84-27.43,0-48.31-20.06-48.31-48.58s20.88-48.71,48.31-48.71Z"></path>
+                <!-- O -->
+                <path class="fill-[#152d4f] dark:fill-white" d="M234.56,140.64c-26.88,0-48.85-20.2-48.85-48.85s21.97-48.72,48.85-48.72,48.71,20.2,48.71,48.72-21.7,48.85-48.71,48.85ZM234.56,123.59c17.19,0,29.06-12.42,29.06-31.79s-11.87-31.52-29.06-31.52-29.2,12.14-29.2,31.52,11.87,31.79,29.2,31.79Z"></path>
+                <!-- R -->
+                <path class="fill-[#152d4f] dark:fill-white" d="M333.22,44.44c22.92,0,34.39,13.24,34.39,29.2,0,11.6-6.41,23.33-21.7,27.43l22.79,38.62h-22.11l-21.01-37.12h-9.01v37.12h-19.1V44.44h35.75ZM332.54,60.27h-15.97v27.97h15.97c10.64,0,15.42-5.59,15.42-14.19s-4.78-13.78-15.42-13.78Z"></path>
+                <!-- E -->
+                <path class="fill-[#152d4f] dark:fill-white" d="M440.2,59.86h-36.16v23.88h32.07v15.15h-32.07v25.24h36.16v15.56h-55.26V44.3h55.26v15.56Z"></path>
+                <!-- G U I -->
+                <!-- (…repeat each letter path as above…) -->
+                <!-- green swoosh -->
+                <g transform="translate(547.90 91.86) scale(0.15992) translate(-10.18 6.36)"><g transform="rotate(-32)">
+      <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="40" stroke-linecap="round"></path>
+      <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="40" stroke-linecap="round"></path>
+      <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#FFFFFF"></path>
+      <g stroke="#10161D" stroke-linecap="round" fill="none">
+        <path d="M -135 0 L 135 0" stroke-width="24"></path>
+        <path d="M -90 -40 L -90 40" stroke-width="21"></path>
+        <path d="M -30 -40 L -30 40" stroke-width="21"></path>
+        <path d="M 30 -40 L 30 40" stroke-width="21"></path>
+        <path d="M 90 -40 L 90 40" stroke-width="21"></path>
+      </g>
+      <circle cx="319.5" cy="85.5" r="24" fill="#2ECC5E"></circle>
+      <circle cx="319.5" cy="85.5" r="10" fill="#E4FFEF"></circle>
+    </g></g>
+                <!-- orange swoosh -->
+                
+                <!-- ⬇︎ 5 white laces inside the football -->
+                
+                
+                
+                
+                
+
+                <!-- ⬇︎ GENIUS (all white) -->
+                <path class="fill-white" d="M739.43,73.09h-21.97c-4.37-8.05-12.28-12.28-22.38-12.28
+                  -17.06,0-28.93,12.14-28.93,31.11s12.01,31.38,29.75,31.38
+                  c14.74,0,24.15-8.46,27.02-21.97h-32.75v-14.60h51.58v16.65
+                  c-3.82,19.38-21.15,37.12-46.53,37.12
+                  -27.70,0-48.71-20.06-48.71-48.58
+                  s21.01-48.71,48.58-48.71c21.29,0,38.21,10.78,44.35,29.88Z"></path>
+                <path class="fill-white" d="M811.21,59.85h-36.16v23.88h32.07v15.15h-32.07v25.24h36.16v15.56
+                  h-55.26V44.30h55.26v15.56Z"></path>
+                <path class="fill-white" d="M910,44.30v95.38h-19.10l-43.26-65.36v65.36h-19.10V44.30h19.10
+                  l43.26,65.50V44.30h19.10Z"></path>
+                <path class="fill-white" d="M928.83,44.43h19.10v95.25h-19.10V44.43Z"></path>
+                <path class="fill-white" d="M966.49,44.43h19.10v58.95c0,13.10,7.10,19.92,19.24,19.92
+                  s19.38-6.82,19.38-19.92v-58.95h19.24v58.81
+                  c0,25.11-18.01,37.39-38.89,37.39s-38.07-12.28-38.07-37.39v-58.81Z"></path>
+                <path class="fill-white" d="M1094.76,140.63c-19.79,0-35.07-10.37-35.34-28.38h20.47
+                  c.55,7.64,5.59,12.69,14.46,12.69s14.33-4.78,14.33-11.60
+                  c0-20.60-49.12-8.19-48.99-42.71
+                  0-17.19,13.92-27.56,33.57-27.56s32.89,9.96,34.11,27.16h-21.01
+                  c-.41-6.28-5.46-11.19-13.65-11.33
+                  -7.51-.27-13.10,3.41-13.10,11.19
+                  0,19.10,48.85,8.46,48.85,42.03
+                  0,15.01-12.01,28.52-33.70,28.52Z"></path>
+              </svg>
+            </a>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-x-2 sm:gap-x-4">
+            <!-- Launch -->
+            <a
+              href="/app"
+              class="inline-flex items-center justify-center
+                    px-3 sm:px-4        /* narrower on mobile */
+                    py-1.5 sm:py-2      /* ↓ height on mobile  */
+                    whitespace-nowrap
+                    rounded-md sm:rounded-lg
+                    border border-orange-600
+                    bg-orange-600 text-white
+                    text-xs sm:text-sm  /* smaller label on mobile */
+                    font-medium
+                    hover:bg-transparent hover:text-orange-600
+                    transition-colors">
+              Launch
+            </a>
+
+            <!-- Contact -->
+            <a
+              href="mailto:hello@scoregenius.io"
+              class="inline-flex items-center justify-center
+                    px-3 sm:px-4
+                    py-1.5 sm:py-2
+                    whitespace-nowrap
+                    rounded-md sm:rounded-lg
+                    border border-orange-600
+                    text-orange-600
+                    text-xs sm:text-sm
+                    font-medium
+                    hover:bg-orange-600 hover:text-white
+                    transition-colors">
+              Contact
+            </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+<main class="snap-y snap-mandatory overflow-y-auto">
+  <!-- Hidden but semantic page title -->
+  <h1 class="sr-only">About ScoreGenius</h1>
+
+  <!-- DEVELOPER INTRO -->
+  <section
+    id="developer-intro"
+    class="snap-start scroll-mt-24 animate-fade-in pt-20 sm:pt-24 pb-16 px-4 text-center"
+  >
+    <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
+      <!-- Subhead with icon -->
+      <p
+        class="flex items-center justify-center gap-2 text-sm uppercase tracking-wide font-semibold text-orange-500"
+      >
+        About the Developer
+      </p>
+
+      <!-- Visually-hidden H2 -->
+      <h2 class="sr-only">Who Built It?</h2>
+
+      <!-- Icon (replacing visible heading) -->
+      <i data-lucide="monitor" class="mx-auto w-8 h-8 text-gray-400"></i>
+
+      <!-- Divider -->
+      <hr class="border-gray-700 my-4" />
+
+      <!-- Body copy -->
+      <p class="text-gray-300 text-base sm:text-lg leading-relaxed">
+                I’m the developer behind ScoreGenius and a lifelong sports fan. I live and work in Virginia, where a background in sports journalism evolved into more than a decade of building full-stack, data-driven software.</p>
+    </div>
+  </section>
+
+  <!-- MORE ABOUT ME-->
+  <section
+    id="who-i-am"
+    class="snap-start scroll-mt-24 animate-fade-in py-12 sm:py-16 px-4 sm:px-6 md:px-8 lg:px-12"
+  >
+    <div class="max-w-4xl mx-auto space-y-8">
+      <h2 class="text-3xl font-semibold text-orange-500 text-center">
+        Who I Am
+      </h2>
+      <div class="space-y-6 text-gray-300 leading-relaxed">
+        <p>
+        I’ve lived in every region of Virginia and have been a sports fan my entire life. Both shape how I think about products—tools should respect the moment, enhance the experience, and stay out of the way while the action unfolds.        </p>
+        <p>
+         Outside of code, I recharge through simple rituals: good coffee, training, time outdoors, and the occasional beach day. That balance keeps me focused, curious, and ready to tackle complex problems with a clear head.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY SCOREGENIUS -->
+  <section
+    id="why-scoregenius"
+    class="snap-start scroll-mt-24 animate-fade-in py-12 sm:py-16 px-4 sm:px-6 md:px-8 lg:px-12 bg-gray-900"
+  >
+    <div class="max-w-4xl mx-auto space-y-8">
+      <h2 class="text-3xl font-semibold text-orange-500 text-center">
+        Why ScoreGenius?
+      </h2>
+      <div class="space-y-6 text-gray-300 leading-relaxed">
+        <p>
+          I built ScoreGenius to give fans transparent, data-driven insights without the noise that dominates traditional sports media. Every prediction, chart, and snapshot is powered by an end-to-end data pipeline I designed and maintain myself—from ingestion and modeling to delivery in the app.
+        </p>
+        <p>
+          <strong>The product is built for fans first.</strong> That principle guides everything: a lightweight interface, fast-loading injury and weather data, and AI-driven score predictions that surface meaningful context without overwhelming the user. Whether you’re casually checking a matchup or digging into head-to-head trends, ScoreGenius is designed to be intuitive, responsive, and useful at any level.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONNECT -->
+  <section
+    id="connect"
+    class="snap-start scroll-mt-24 animate-fade-in py-12 sm:py-16 px-4 sm:px-6 md:px-8 lg:px-12"
+  >
+    <div class="max-w-3xl mx-auto text-center space-y-6">
+      <p class="text-gray-300 italic leading-relaxed">
+        Come say hi! Feedback, project ideas, or chicken parm recipes—I'm here
+        for all of it.
+      </p>
+      <div
+        class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-x-6"
+      >
+        <a
+          href="mailto:hello@scoregenius.io"
+          class="text-orange-400 hover:text-orange-200 text-lg underline"
+        >
+          Email
+        </a>
+        <a
+          href="https://scoregenius.io"
+          class="text-orange-400 hover:text-orange-200 text-lg underline"
+          >Portfolio</a
+        >
+      </div>
+    </div>
+  </section>
+</main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#0a0c10] border-t border-white/10 px-4 md:px-6 pt-16 pb-14">
+    <div
+      class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-y-12 gap-x-8"
+    >
+      <!-- Follow Us -->
+      <div class="text-center lg:text-left">
+        <h4
+          class="mb-4 text-sm font-semibold tracking-widest uppercase text-gray-400"
+        >
+          Follow Us
+        </h4>
+        <div class="flex justify-center lg:justify-start gap-x-6">
+          <a
+            aria-label="Facebook"
+            class="text-white hover:text-orange-500 transition-colors"
+            href="https://facebook.com/scoregeniusapp"
+            ><svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+          <a
+            aria-label="X / Twitter"
+            class="text-white hover:text-orange-500 transition-colors"
+            href="https://x.com/scoregeniusapp"
+            ><svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+          <a
+            aria-label="YouTube"
+            class="text-white hover:text-orange-500 transition-colors"
+            href="https://youtube.com/@scoregenius"
+            ><svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z"/></svg></a>
+        </div>
+        <div class="mt-8 flex justify-center lg:justify-start">
+          <a
+            href="https://play.google.com/store/apps/details?id=io.scoregenius.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/google_play_badge_scoregenius.png"
+              alt="Get it on Google Play"
+              style="height: 50px; width: auto"
+            />
+          </a>
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div class="text-center">
+        <h4
+          class="mb-4 text-sm font-semibold tracking-widest uppercase text-gray-400"
+        >
+          Resources
+        </h4>
+        <ul class="space-y-2">
+          <li>
+            <a class="block text-white hover:text-orange-500" href="/about">
+              About
+            </a>
+          </li>
+          <li>
+            <a
+              class="block text-white hover:text-orange-500"
+              href="/documentation"
+              >Documentation</a
+            >
+          </li>
+          <li>
+            <a
+              class="block text-white hover:text-orange-500"
+              href="/disclaimer"
+              >Disclaimer</a
+            >
+          </li>
+          <li>
+            <a class="block text-white hover:text-orange-500" href="/privacy">
+              Privacy Policy
+            </a>
+          </li>
+                    <li>
+            <a class="block text-white hover:text-orange-500" href="/support">
+              Support
+            </a>
+          </li>
+          <li>
+            <a class="block text-white hover:text-orange-500" href="/terms">
+              Terms Of Service
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    <!-- Copyright + Galaxy Store -->
+    <div class="text-center lg:text-right flex flex-col items-center lg:items-end">
+      <h4 class="mb-2 text-sm font-semibold tracking-widest uppercase text-gray-400">
+        For sports fans…by sports fans.
+      </h4>
+      <p class="text-white text-sm mb-6">
+  ©     <span id="year"></span> ScoreGenius. All rights reserved.
+      </p>
+
+      <!-- Samsung Galaxy Store badge -->
+      <a
+        href="https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app&source=GBadge_01_8385140_tag&directOpen=true&ads=ddb0e6f9&nonOrgType=fce692ba"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="/images/samsung_galaxy_store_badge_scoregenius.png"
+          alt="Download on the Galaxy Store"
+          style="height: 50px; width: auto"
+        />
+      </a>
+    </div>
+    </div>
+  </footer>
+
+    <script>
+      lucide.createIcons();
+    </script>
+    <script>
+    (() => {
+      const nav = document.getElementById('site-nav');
+
+      // sentinel element
+      const sentinel = document.createElement('div');
+      sentinel.id = 'header-sentinel';
+      Object.assign(sentinel.style, {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        right: '0',
+        height: '1px',
+        pointerEvents: 'none'
+      });
+      document.body.prepend(sentinel);
+
+      // classes to apply when scrolled
+      const SCROLLED_CLASSES = [
+        'bg-[#0a0c10]/95',   // <- your exact shade (very dark navy/black)
+        'backdrop-blur-sm',
+        'shadow-[0_1px_0_rgba(255,255,255,.06)_inset]'
+      ];
+
+      const activate = () => nav.classList.add(...SCROLLED_CLASSES);
+      const deactivate = () => nav.classList.remove(...SCROLLED_CLASSES);
+
+      // initial state check
+      (window.scrollY > 8) ? activate() : deactivate();
+
+      // observe sentinel
+      const io = new IntersectionObserver(([entry]) => {
+        entry.isIntersecting ? deactivate() : activate();
+      });
+      io.observe(sentinel);
+
+      addEventListener('hashchange', () => (window.scrollY > 8) ? activate() : deactivate(), { passive: true });
+    })();
+    </script>
+    <script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ScoreGenius — Design System</title>
+<style>
+@page { size: Letter; margin: 0.55in 0.6in 0.5in; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+:root {
+  --doc-ink: #10161C; --doc-ink-2: #4A5A66; --doc-ink-3: #8496A2;
+  --doc-line: #DCE4E8; --doc-line-2: #EDF1F3; --doc-bg: #FFFFFF; --doc-tint: #F5F8F7;
+  --green: #00B140; --green-deep: #00762C; --orange: #FF7F00; --orange-deep: #B25600;
+  --mono: "JetBrains Mono", Consolas, "Cascadia Mono", ui-monospace, monospace;
+  --sans: "Archivo", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+html, body { margin: 0; padding: 0; background: var(--doc-bg); }
+body { font-family: var(--sans); color: var(--doc-ink); font-size: 10pt; line-height: 1.5; }
+
+.page { page-break-after: always; position: relative; min-height: 9.7in; padding-bottom: 0.28in; }
+.page:last-child { page-break-after: auto; }
+
+.rh {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1px solid var(--doc-line); padding-bottom: 5pt; margin-bottom: 15pt;
+  font-family: var(--mono); font-size: 6.5pt; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--doc-ink-3);
+}
+.rh b { color: var(--green-deep); font-weight: 700; }
+
+h1 { font-size: 20pt; line-height: 1.12; letter-spacing: -0.025em; margin: 0 0 7pt; font-weight: 700; }
+h2 { font-size: 13pt; line-height: 1.2; letter-spacing: -0.02em; margin: 0 0 6pt; font-weight: 700; }
+h3 { font-size: 9.5pt; margin: 14pt 0 5pt; font-weight: 700; letter-spacing: -0.01em; }
+h3.first { margin-top: 0; }
+h4 { font-size: 8.4pt; margin: 10pt 0 4pt; font-weight: 700; }
+p { margin: 0 0 7pt; }
+.lede { font-size: 10.6pt; line-height: 1.45; color: var(--doc-ink-2); margin-bottom: 11pt; }
+.lede strong { color: var(--doc-ink); font-weight: 600; }
+small { font-size: 7.8pt; color: var(--doc-ink-2); line-height: 1.45; display: block; }
+code { font-family: var(--mono); font-size: .87em; background: var(--doc-tint); border: 1px solid var(--doc-line); border-radius: 2pt; padding: 0 2pt; }
+.kicker { font-family: var(--mono); font-size: 6.5pt; letter-spacing: .2em; text-transform: uppercase; color: var(--green-deep); margin: 0 0 6pt; font-weight: 700; }
+
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15pt; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11pt; }
+.colsA { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16pt; }
+.colsB { display: grid; grid-template-columns: 1fr 1.25fr; gap: 16pt; }
+.spacer { height: 9pt; }
+
+.lbl { font-family: var(--mono); font-size: 6pt; letter-spacing: .17em; text-transform: uppercase; color: var(--doc-ink-3); margin: 0 0 5pt; font-weight: 700; }
+.cap { font-size: 7.5pt; line-height: 1.45; color: var(--doc-ink-2); margin: 5pt 0 0; }
+.cap b { color: var(--doc-ink); font-weight: 650; }
+
+.callout { border-left: 2.5pt solid var(--green); background: var(--doc-tint); padding: 8pt 10pt; margin: 9pt 0; border-radius: 0 3pt 3pt 0; }
+.callout.warn { border-left-color: var(--orange); background: #FFF8F0; }
+.callout p { margin: 0; font-size: 8.4pt; line-height: 1.5; }
+.callout p + p { margin-top: 4pt; }
+.callout .ch { font-family: var(--mono); font-size: 6.2pt; letter-spacing: .16em; text-transform: uppercase; color: var(--green-deep); font-weight: 700; display: block; margin-bottom: 3pt; }
+.callout.warn .ch { color: var(--orange-deep); }
+.callout strong { font-weight: 650; }
+
+table { width: 100%; border-collapse: collapse; font-size: 8.1pt; }
+th, td { text-align: left; padding: 4pt 6pt; border-bottom: 0.75pt solid var(--doc-line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--doc-ink-3); border-bottom: 1pt solid var(--doc-ink-3); }
+td.num, th.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
+.ok { color: var(--green-deep); font-weight: 700; }
+.bad { color: var(--orange-deep); font-weight: 700; }
+.muted { color: var(--doc-ink-2); }
+
+/* specimen frame */
+.frame { border: 1px solid var(--doc-line); border-radius: 5pt; padding: 10pt; background: #FBFCFC; }
+.frame + .frame { margin-top: 8pt; }
+.frame-t { font-family: var(--mono); font-size: 6pt; letter-spacing: .15em; text-transform: uppercase; color: var(--doc-ink-3); margin: 0 0 7pt; font-weight: 700; }
+
+/* swatches */
+.sw { display: flex; align-items: center; gap: 6pt; padding: 2.5pt 0; border-bottom: .75pt solid var(--doc-line-2); }
+.sw i { width: 14pt; height: 14pt; border-radius: 3pt; flex: none; border: .75pt solid rgba(0,0,0,.14); }
+.sw .n { font-size: 7.5pt; font-weight: 600; }
+.sw .h { font-family: var(--mono); font-size: 6.5pt; color: var(--doc-ink-3); margin-left: auto; }
+.sw .r { font-size: 6.8pt; color: var(--doc-ink-2); }
+
+/* scale ruler */
+.ruler { display: flex; align-items: flex-end; gap: 4pt; }
+.ruler div { background: var(--green); opacity: .8; border-radius: 1pt 1pt 0 0; }
+.ruler span { font-family: var(--mono); font-size: 5.6pt; color: var(--doc-ink-3); display: block; text-align: center; margin-top: 2pt; }
+.rulerwrap { display: flex; align-items: flex-end; gap: 5pt; }
+.rulercol { text-align: center; }
+
+/* ============ APP SPECIMENS ============ */
+.app { --g:#00B140; --g-lift:#3ADE72; --g-deep:#00762C; --o:#FF7F00; --o-lift:#FF9E3D;
+  border-radius: 6pt; padding: 8pt; font-family: var(--sans); }
+.app--dark { --ground:#0B1016; --panel:#151C24; --panel-2:#1B232C; --line:#232E38; --line-2:#2E3B47;
+  --ink:#EAF0F4; --ink-2:#8FA0AE; --ink-3:#5E6E7C; --accent:var(--g-lift);
+  background:#0B1016; border:1px solid #1C242C; }
+.app--light { --ground:#F4F7F6; --panel:#FFFFFF; --panel-2:#F7FAF9; --line:#DFE7E3; --line-2:#C6D2CC;
+  --ink:#0D1117; --ink-2:#56655D; --ink-3:#84948B; --accent:var(--g-deep);
+  background:#F4F7F6; border:1px solid #DFE7E3; }
+.stack > * + * { margin-top: 5pt; }
+
+.c { position:relative; background:var(--panel); border:1px solid var(--line); border-radius:6pt; padding:6pt 7pt 5.5pt; overflow:hidden; }
+.c-rail { display:flex; align-items:center; justify-content:space-between; gap:6pt; min-height:9pt; margin-bottom:5pt; }
+.c-time,.c-edge,.c-mkt,.c-abbr,.c-live,.c-state,.c-num { font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.c-time { font-size:6pt; letter-spacing:.07em; color:var(--ink-3); text-transform:uppercase; white-space:nowrap; }
+.c-edge { display:inline-flex; align-items:center; gap:3pt; font-size:5.6pt; font-weight:700; letter-spacing:.11em; text-transform:uppercase; padding:1.5pt 5pt 1.5pt 4pt; border-radius:2.5pt; white-space:nowrap; }
+.c-edge .d { width:2.6pt; height:2.6pt; border-radius:50%; background:currentColor; }
+.app--dark .c-edge--high { color:#7BF2A4; background:rgba(0,177,64,.17); border:.75pt solid rgba(58,222,114,.5); }
+.app--dark .c-edge--med { color:#4FCB7E; background:rgba(0,177,64,.09); border:.75pt solid rgba(58,222,114,.22); }
+.app--dark .c-edge--low { color:var(--ink-3); border:.75pt solid var(--line-2); }
+.app--light .c-edge--high { color:#04642A; background:rgba(0,177,64,.13); border:.75pt solid rgba(0,118,44,.5); }
+.app--light .c-edge--med { color:#0A7538; background:rgba(0,177,64,.08); border:.75pt solid rgba(0,118,44,.24); }
+.app--light .c-edge--low { color:var(--ink-2); border:.75pt solid var(--line-2); }
+.c--high { border-color:rgba(58,222,114,.3); }
+.c--high::after { content:""; position:absolute; left:0; top:0; bottom:0; width:1.6pt; background:var(--g); }
+.app--dark .c--high { background:linear-gradient(105deg, rgba(0,177,64,.09), rgba(0,177,64,0) 46%), var(--panel); }
+.app--light .c--high { border-color:rgba(0,118,44,.32); background:linear-gradient(105deg, rgba(0,177,64,.08), rgba(0,177,64,0) 46%), var(--panel); }
+.c-team { display:grid; grid-template-columns:19pt 1fr auto; align-items:center; gap:5pt; padding:1pt 0; }
+.c-abbr { font-family:var(--mono); font-size:5.6pt; font-weight:700; letter-spacing:.04em; text-align:center; padding:1.5pt 0; border-radius:2.5pt; color:var(--ink-2); }
+.app--dark .c-abbr { background:rgba(255,255,255,.06); }
+.app--light .c-abbr { background:rgba(13,17,23,.06); }
+.c-name { font-size:8pt; font-weight:600; letter-spacing:-0.012em; color:var(--ink); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.c-num { font-size:11.5pt; font-weight:700; letter-spacing:-0.03em; line-height:1; color:var(--ink); display:flex; align-items:center; justify-content:flex-end; gap:4pt; min-width:40pt; }
+.c-team--fade .c-name { color:var(--ink-2); font-weight:550; }
+.c-team--fade .c-num { color:var(--ink-3); font-weight:600; }
+.c-pick { width:0; height:0; border-left:2.8pt solid var(--accent); border-top:2.2pt solid transparent; border-bottom:2.2pt solid transparent; }
+.c-pick--h { visibility:hidden; }
+.c-foot { display:flex; align-items:center; justify-content:space-between; gap:6pt; margin-top:5pt; padding-top:4.5pt; border-top:.75pt solid var(--line); }
+.c-mkt { font-size:6.3pt; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.c-mkt k { color:var(--ink-3); }
+.c-mkt .dot { color:var(--ink-3); margin:0 3pt; opacity:.6; }
+.c-mkt--none { color:var(--ink-3); opacity:.85; }
+.c-chev { color:var(--ink-3); font-size:6pt; line-height:1; padding:1.5pt 3pt; border-radius:3pt; }
+.app--dark .c-chev { background:rgba(255,255,255,.05); }
+.app--light .c-chev { background:rgba(13,17,23,.05); }
+.c-live { display:inline-flex; align-items:center; gap:3pt; font-size:5.6pt; font-weight:700; letter-spacing:.15em; color:var(--o-lift); }
+.app--light .c-live { color:#B25600; }
+.c-live .p { width:3pt; height:3pt; border-radius:50%; background:currentColor; }
+.c--live { border-color:rgba(255,127,0,.32); }
+.c--live::after { content:""; position:absolute; left:0; top:0; bottom:0; width:1.6pt; background:var(--o); }
+.c-state { font-size:5.6pt; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-3); }
+.c--done { opacity:.66; }
+.c--done .c-name { color:var(--ink-2); }
+.c--done .c-num { color:var(--ink); }
+.c-exp { margin-top:5pt; padding-top:5pt; border-top:.75pt solid var(--line); }
+.c-lean-track { position:relative; height:2.2pt; border-radius:1.1pt; }
+.app--dark .c-lean-track { background:rgba(255,255,255,.07); }
+.app--light .c-lean-track { background:rgba(13,17,23,.08); }
+.c-lean-fill { position:absolute; top:0; bottom:0; border-radius:1.1pt; background:var(--accent); }
+.c-lean-mid { position:absolute; top:-1pt; bottom:-1pt; left:50%; width:.75pt; background:rgba(255,255,255,.25); }
+.c-lean-cap { display:flex; justify-content:space-between; margin-top:3pt; font-family:var(--mono); font-size:5.4pt; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); }
+.c-lean-cap b { color:var(--ink-2); }
+.c-pitch { display:flex; flex-wrap:wrap; gap:3pt 10pt; font-size:6.6pt; color:var(--ink-2); }
+.c-pitch em { font-family:var(--mono); font-style:normal; font-size:5.2pt; font-weight:700; letter-spacing:.1em; color:var(--ink-3); margin-right:3pt; }
+
+/* chips */
+.c-chips { display:flex; flex-wrap:wrap; gap:4pt; }
+.chip { display:inline-flex; align-items:center; gap:3pt; padding:2.5pt 6pt; border-radius:3.5pt; font-size:6.4pt; font-weight:600; color:var(--ink-2); border:.75pt solid var(--line-2); }
+.app--dark .chip { background:rgba(255,255,255,.035); }
+.chip--muted { opacity:.78; }
+
+/* segmented control */
+.seg { display:inline-flex; gap:1.5pt; padding:1.5pt; border-radius:999pt; background:var(--panel); border:.75pt solid var(--line); }
+.seg b { font-family:var(--mono); font-size:5.8pt; font-weight:700; letter-spacing:.08em; padding:2pt 6pt; border-radius:999pt; color:var(--ink-3); }
+.app--dark .seg b.on { background:var(--g); color:#07130B; }
+.app--light .seg b.on { background:var(--g-deep); color:#fff; }
+
+/* buttons + inputs */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:4pt; padding:4pt 10pt; border-radius:3.5pt; font-size:7pt; font-weight:700; }
+.app--dark .btn--p { background:var(--g); color:#07130B; }
+.app--light .btn--p { background:var(--g-deep); color:#fff; }
+.btn--s { border:.75pt solid var(--line-2); color:var(--ink-2); }
+.btn--g { color:var(--ink-2); }
+.inp { display:block; padding:4pt 7pt; border-radius:3.5pt; border:.75pt solid var(--line-2); background:var(--panel); color:var(--ink-3); font-size:7pt; }
+.inp--focus { border-color:var(--g); box-shadow:0 0 0 1.2pt rgba(0,177,64,.32); color:var(--ink); }
+
+/* data table specimen */
+.dt { border:.75pt solid var(--line); border-radius:5pt; overflow:hidden; }
+.dt table { width:100%; border-collapse:collapse; font-size:6.4pt; }
+.dt th { background:var(--panel-2); font-family:var(--mono); font-size:5.2pt; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); font-weight:700; padding:3.5pt 5pt; border-bottom:.75pt solid var(--line); text-align:left; }
+.dt td { padding:3.5pt 5pt; border-bottom:.75pt solid var(--line); color:var(--ink); background:var(--panel); }
+.dt tr:last-child td { border-bottom:none; }
+.dt .n { font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; }
+.dt th.n { text-align:right; }
+.dt th.on { color:var(--accent); }
+.dt th .car { font-size:5pt; margin-left:2pt; }
+.dt .team { font-weight:600; }
+
+/* nav specimens */
+.hdr { display:flex; align-items:center; justify-content:space-between; gap:8pt; padding:5pt 7pt; border-radius:5pt; background:var(--ground); border:.75pt solid var(--line); }
+.hdr-w { font-size:8pt; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
+.btab { display:flex; border-radius:5pt; background:var(--ground); border:.75pt solid var(--line); overflow:hidden; }
+.btab div { flex:1; text-align:center; padding:5pt 2pt; font-size:5.8pt; color:var(--ink-3); }
+.btab div.on { color:var(--accent); }
+.btab .ic { display:block; font-size:8pt; line-height:1; margin-bottom:2pt; }
+
+/* modal */
+.modal { border-radius:5pt; background:var(--panel); border:.75pt solid var(--line); padding:8pt; box-shadow:0 3pt 10pt rgba(0,0,0,.35); }
+.modal-t { display:flex; justify-content:space-between; align-items:center; font-size:8pt; font-weight:650; color:var(--ink); margin-bottom:5pt; }
+.modal-x { color:var(--ink-3); font-size:8pt; }
+.modal-b { font-size:6.6pt; color:var(--ink-2); line-height:1.5; }
+
+/* skeleton */
+.sk { border-radius:2.5pt; background:linear-gradient(90deg,#1B232C,#242E38,#1B232C); }
+.app--light .sk { background:linear-gradient(90deg,#EEF2F0,#F7FAF9,#EEF2F0); }
+
+/* empty */
+.empty { display:flex; flex-direction:column; align-items:center; text-align:center; padding:12pt 8pt; }
+.empty .ic { width:22pt; height:22pt; border-radius:5pt; border:.75pt solid var(--line-2); display:flex; align-items:center; justify-content:center; color:var(--ink-3); margin-bottom:6pt; font-size:10pt; }
+.empty .t { font-size:8pt; font-weight:700; color:var(--ink); }
+.empty .s { font-size:6.6pt; color:var(--ink-2); margin:2pt 0 7pt; }
+
+/* cover */
+.cover { display:flex; flex-direction:column; min-height:9.6in; }
+.cover-top { flex:1; }
+.cover-mark { display:flex; align-items:center; gap:8pt; margin-bottom:0.85in; }
+.cover-word { font-size:12pt; font-weight:800; letter-spacing:-0.02em; }
+.cover h1 { font-size:34pt; line-height:1.05; letter-spacing:-0.035em; margin-bottom:11pt; }
+.cover .sub { font-size:12.5pt; color:var(--doc-ink-2); max-width:5in; line-height:1.42; }
+.cover-rule { height:2.5pt; background:var(--green); width:1in; margin:18pt 0; }
+.cover-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:12pt; border-top:1px solid var(--doc-line); padding-top:12pt; }
+.cover-meta .k { font-family:var(--mono); font-size:6pt; letter-spacing:.16em; text-transform:uppercase; color:var(--doc-ink-3); display:block; margin-bottom:3pt; }
+.cover-meta .v { font-size:8.6pt; font-weight:600; }
+
+.toc-row { display:grid; grid-template-columns:22pt 1fr 30pt; gap:8pt; padding:3.6pt 0; border-bottom:.75pt solid var(--doc-line-2); align-items:baseline; }
+.toc-n { font-family:var(--mono); font-size:7pt; color:var(--green-deep); font-weight:700; }
+.toc-t { font-size:8.8pt; font-weight:600; }
+.toc-t span { display:block; font-size:7.2pt; font-weight:400; color:var(--doc-ink-2); margin-top:1pt; }
+.toc-p { font-family:var(--mono); font-size:7.2pt; color:var(--doc-ink-3); text-align:right; }
+
+.pnum { position:absolute; bottom:0; right:0; font-family:var(--mono); font-size:6.5pt; color:var(--doc-ink-3); }
+.pnum::before { content:"ScoreGenius · Design System · "; }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<section class="page">
+  <div class="cover">
+    <div class="cover-top">
+      <div class="cover-mark">
+        <svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true">
+          <rect width="512" height="512" rx="96" fill="#12181F"/>
+          <g transform="translate(256 256) rotate(-32) scale(0.345)">
+            <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="46" stroke-linecap="round"/>
+            <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="46" stroke-linecap="round"/>
+            <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#FFFFFF"/>
+            <g stroke="#10161D" stroke-linecap="round" fill="none">
+              <path d="M -135 0 L 135 0" stroke-width="30"/><path d="M -90 -40 L -90 40" stroke-width="26"/>
+              <path d="M -30 -40 L -30 40" stroke-width="26"/><path d="M 30 -40 L 30 40" stroke-width="26"/>
+              <path d="M 90 -40 L 90 40" stroke-width="26"/>
+            </g>
+            <circle cx="319.5" cy="85.5" r="30" fill="#2ECC5E"/>
+          </g>
+        </svg>
+        <span class="cover-word">SCOREGENIUS</span>
+      </div>
+      <p class="kicker">Product documentation</p>
+      <h1>Design System</h1>
+      <div class="cover-rule"></div>
+      <p class="sub">The rules, tokens and components the application is built from — what each one
+      is for, how it behaves, and how it appears across every screen.</p>
+    </div>
+    <div class="cover-meta">
+      <div><span class="k">Version</span><span class="v">1.1</span></div>
+      <div><span class="k">Prepared</span><span class="v">14 August 2026</span></div>
+      <div><span class="k">Governs</span><span class="v">Application interior</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT THIS IS ===== -->
+<section class="page">
+  <div class="rh"><span><b>01</b> &nbsp;What this is</span><span>ScoreGenius</span></div>
+  <h1>One vocabulary, five screens</h1>
+  <p class="lede">A design system is not a style guide. It is the <strong>set of decisions already
+  made</strong>, so that building a screen is assembly rather than invention — and so two people
+  building two screens produce one product.</p>
+
+  <div class="colsA">
+    <div>
+      <h3 class="first">What it governs</h3>
+      <p style="font-size:8.6pt">Everything inside the application: the five screens users spend
+      time in, and the components they are built from. The marketing site and the brand layer — icon,
+      splash, wordmark — are governed separately and are not changed by it.</p>
+
+      <h3>How to use it</h3>
+      <p style="font-size:8.5pt;margin:0"><strong>Building a screen:</strong> assemble from the
+      component library; if something is missing, add it there rather than styling locally.
+      <strong>Changing one:</strong> check the defect register first. <strong>Settling an
+      argument:</strong> the principles decide most, and the tiebreaker is whichever option better
+      serves someone scanning fifteen items at arm's length.</p>
+    </div>
+    <div>
+      <div class="callout" style="margin-top:0">
+        <span class="ch">The one rule that is not negotiable</span>
+        <p>Every change ships in <strong>both themes</strong>. A token defined in only one theme is a
+        defect, not an omission — four such defects were found in the pre-existing interface, one of
+        which rendered a heading invisible.</p>
+      </div>
+      <div class="callout">
+        <span class="ch">Where it lives</span>
+        <p>The full specification is maintained in the repository alongside the code, so it travels
+        with the product rather than living in a design tool. This document is its summary.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Contents</h3>
+  <div>
+    <div class="toc-row"><span class="toc-n">02</span><span class="toc-t">Principles<span>Six rules that settle most questions</span></span><span class="toc-p">3</span></div>
+    <div class="toc-row"><span class="toc-n">03</span><span class="toc-t">Colour<span>Palette, roles and the rules of use</span></span><span class="toc-p">4</span></div>
+    <div class="toc-row"><span class="toc-n">04</span><span class="toc-t">Typography<span>Two faces, one scale, the monospace rule</span></span><span class="toc-p">6</span></div>
+    <div class="toc-row"><span class="toc-n">05</span><span class="toc-t">Space, geometry, elevation, motion<span>The physical properties</span></span><span class="toc-p">8</span></div>
+    <div class="toc-row"><span class="toc-n">06</span><span class="toc-t">Components<span>The library — nine components, rendered</span></span><span class="toc-p">10</span></div>
+    <div class="toc-row"><span class="toc-n">07</span><span class="toc-t">Patterns<span>How components combine</span></span><span class="toc-p">15</span></div>
+    <div class="toc-row"><span class="toc-n">08</span><span class="toc-t">Across the app<span>The system applied to each screen</span></span><span class="toc-p">16</span></div>
+    <div class="toc-row"><span class="toc-n">09</span><span class="toc-t">Accessibility<span>WCAG 2.1 AA, per requirement</span></span><span class="toc-p">17</span></div>
+    <div class="toc-row"><span class="toc-n">10</span><span class="toc-t">Voice and governance<span>How the product speaks, and how the system changes</span></span><span class="toc-p">18</span></div>
+  </div>
+
+  <div class="pnum">2</div>
+</section>
+
+<!-- ===== PRINCIPLES ===== -->
+<section class="page">
+  <div class="rh"><span><b>02</b> &nbsp;Principles</span><span>ScoreGenius</span></div>
+  <h1>Six rules</h1>
+  <p class="lede">These are ordered. When two conflict, the earlier one wins.</p>
+
+  <table>
+    <thead><tr><th style="width:4%" class="num">#</th><th style="width:32%">Principle</th><th>What it decides in practice</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><strong>The model's output is the loudest thing on screen</strong></td><td>Predicted scores outrank team names, which outrank market data. If a change makes the prediction quieter, it is wrong.</td></tr>
+      <tr><td class="num">2</td><td><strong>Rarity earns emphasis</strong></td><td>A high edge appears on two cards in fifteen, so it gets colour, a rail and a glow. Team names appear on all fifteen, so they get none. <em>Corollary:</em> an indicator that appears on every item and always says the same thing should not exist at all.</td></tr>
+      <tr><td class="num">3</td><td><strong>Absence is silent</strong></td><td>Missing data shortens the layout; it never prints a placeholder. Fifteen rows of "N/A" reads as broken software.</td></tr>
+      <tr><td class="num">4</td><td><strong>Numbers are monospace, words are not</strong></td><td>Every figure is tabular so columns align down a long list. This single rule does most of the work of making the product read as instrumentation.</td></tr>
+      <tr><td class="num">5</td><td><strong>Never imply precision the data lacks</strong></td><td>If the app cannot measure it, the app does not display it. No confidence figures, no live detail the feed does not carry.</td></tr>
+      <tr><td class="num">6</td><td><strong>Both themes ship together</strong></td><td>A colour defined in one theme only is a defect.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="spacer"></div>
+  <h3>Principle 2, demonstrated</h3>
+  <div class="cols2">
+    <div>
+      <p class="lbl">Every card emphasised</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high"><div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div></article>
+          <article class="c c--high"><div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · MIA</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">PIT</span><span class="c-name">Pittsburgh Pirates</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div>
+            <div class="c-team"><span class="c-abbr">MIA</span><span class="c-name">Miami Marlins</span><span class="c-num"><i class="c-pick"></i>4.4</span></div></article>
+          <article class="c c--high"><div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · NYY</span><span class="c-time">1:35 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">SEA</span><span class="c-name">Seattle Mariners</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.0</span></div>
+            <div class="c-team"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick"></i>4.6</span></div></article>
+        </div>
+      </div>
+      <p class="cap">When everything is emphasised, nothing is. The signal is gone.</p>
+    </div>
+    <div>
+      <p class="lbl">Emphasis reserved</p>
+      <div class="app app--dark">
+        <div class="stack">
+          <article class="c c--high"><div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+            <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div></article>
+          <article class="c"><div class="c-rail"><span></span><span class="c-time">1:10 PM</span></div>
+            <div class="c-team"><span class="c-abbr">PIT</span><span class="c-name">Pittsburgh Pirates</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div>
+            <div class="c-team"><span class="c-abbr">MIA</span><span class="c-name">Miami Marlins</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.2</span></div></article>
+          <article class="c"><div class="c-rail"><span class="c-edge c-edge--med">Medium edge · NYY</span><span class="c-time">1:35 PM</span></div>
+            <div class="c-team c-team--fade"><span class="c-abbr">SEA</span><span class="c-name">Seattle Mariners</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.0</span></div>
+            <div class="c-team"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick"></i>4.6</span></div></article>
+        </div>
+      </div>
+      <p class="cap">One card carries the rail. It is found without being read.</p>
+    </div>
+  </div>
+
+  <div class="pnum">3</div>
+</section>
+
+<!-- ===== COLOUR 1 ===== -->
+<section class="page">
+  <div class="rh"><span><b>03</b> &nbsp;Colour · Palette</span><span>ScoreGenius</span></div>
+  <h1>Thirteen tokens, two themes</h1>
+  <p class="lede">Brand green and orange are fixed. The system adds <strong>contrast-corrected
+  variants</strong>, because brand green at body sizes fails accessibility standards on both grounds.</p>
+
+  <div class="cols2">
+    <div>
+      <h4>Brand and signal</h4>
+      <div class="sw"><i style="background:#00B140"></i><span class="n">Brand green</span><span class="h">#00B140</span></div>
+      <div class="sw"><i style="background:#3ADE72"></i><span class="n">Green — lifted</span><span class="h">#3ADE72</span></div>
+      <div class="sw"><i style="background:#00762C"></i><span class="n">Green — deep</span><span class="h">#00762C</span></div>
+      <div class="sw"><i style="background:#FF7F00"></i><span class="n">Brand orange</span><span class="h">#FF7F00</span></div>
+      <div class="sw"><i style="background:#FF9E3D"></i><span class="n">Orange text — dark</span><span class="h">#FF9E3D</span></div>
+      <div class="sw"><i style="background:#B25600"></i><span class="n">Orange text — light</span><span class="h">#B25600</span></div>
+
+      <h4>Surfaces — dark</h4>
+      <div class="sw"><i style="background:#0B1016"></i><span class="n">Ground</span><span class="h">#0B1016</span></div>
+      <div class="sw"><i style="background:#151C24"></i><span class="n">Panel</span><span class="h">#151C24</span></div>
+      <div class="sw"><i style="background:#1B232C"></i><span class="n">Panel 2</span><span class="h">#1B232C</span></div>
+      <div class="sw"><i style="background:#232E38"></i><span class="n">Line</span><span class="h">#232E38</span></div>
+      <div class="sw"><i style="background:#2E3B47"></i><span class="n">Line 2</span><span class="h">#2E3B47</span></div>
+    </div>
+    <div>
+      <h4>Ink — dark</h4>
+      <div class="sw"><i style="background:#EAF0F4"></i><span class="n">Ink</span><span class="h">#EAF0F4</span></div>
+      <div class="sw"><i style="background:#8FA0AE"></i><span class="n">Ink 2</span><span class="h">#8FA0AE</span></div>
+      <div class="sw"><i style="background:#5E6E7C"></i><span class="n">Ink 3</span><span class="h">#5E6E7C</span></div>
+
+      <h4>Surfaces — light</h4>
+      <div class="sw"><i style="background:#F4F7F6"></i><span class="n">Ground</span><span class="h">#F4F7F6</span></div>
+      <div class="sw"><i style="background:#FFFFFF"></i><span class="n">Panel</span><span class="h">#FFFFFF</span></div>
+      <div class="sw"><i style="background:#F7FAF9"></i><span class="n">Panel 2</span><span class="h">#F7FAF9</span></div>
+      <div class="sw"><i style="background:#DFE7E3"></i><span class="n">Line</span><span class="h">#DFE7E3</span></div>
+      <div class="sw"><i style="background:#C6D2CC"></i><span class="n">Line 2</span><span class="h">#C6D2CC</span></div>
+
+      <h4>Ink — light</h4>
+      <div class="sw"><i style="background:#0D1117"></i><span class="n">Ink</span><span class="h">#0D1117</span></div>
+      <div class="sw"><i style="background:#56655D"></i><span class="n">Ink 2</span><span class="h">#56655D</span></div>
+      <div class="sw"><i style="background:#84948B"></i><span class="n">Ink 3</span><span class="h">#84948B</span></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="ch">Why the neutrals look like that</span>
+    <p>They carry a slight blue-green bias rather than being pure grey, so they sit <em>with</em> the
+    brand mark rather than beside it. A pure mid-grey reads as unconsidered. <strong>Stock grey ramps
+    from the CSS framework must not be substituted</strong> — mixing them with these tokens was the
+    single largest source of inconsistency in the pre-existing interface.</p>
+  </div>
+
+  <div class="pnum">4</div>
+</section>
+
+<!-- ===== COLOUR 2 ===== -->
+<section class="page">
+  <div class="rh"><span><b>03</b> &nbsp;Colour · Application</span><span>ScoreGenius</span></div>
+  <h1>Colour is signal, never decoration</h1>
+
+  <table>
+    <thead><tr><th style="width:18%">Colour</th><th style="width:34%">Permitted use</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Green</strong></td><td>The model's output, and the app's own active chrome</td><td>The product's value is its prediction. Green marks it; nothing else competes.</td></tr>
+      <tr><td><strong>Orange</strong></td><td>Live game state, exclusively</td><td>Rare and time-sensitive. Reserving it keeps the signal strong.</td></tr>
+      <tr><td><strong>Neutrals</strong></td><td>Everything else, in three ink weights</td><td>Hierarchy comes from weight and contrast, not hue.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="ch">There is no red / amber / green status ramp</span>
+    <p>Nothing in this product is an error a user can act on. A failed request is treated as absent
+    data, or falls back to the offline state. <strong>Introducing a semantic colour ramp would dilute
+    green, which currently means one thing only.</strong></p>
+  </div>
+
+  <h3>The three green intensities, in use</h3>
+  <div class="cols3">
+    <div>
+      <div class="app app--dark" style="padding:7pt">
+        <article class="c c--high"><div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge</span><span class="c-time">1:10</span></div>
+          <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit</span><span class="c-num"><i class="c-pick"></i>4.5</span></div></article>
+      </div>
+      <p class="cap"><b>High.</b> Fill, border, glow and a card rail.</p>
+    </div>
+    <div>
+      <div class="app app--dark" style="padding:7pt">
+        <article class="c"><div class="c-rail"><span class="c-edge c-edge--med">Medium edge</span><span class="c-time">1:35</span></div>
+          <div class="c-team"><span class="c-abbr">NYY</span><span class="c-name">New York</span><span class="c-num"><i class="c-pick"></i>4.6</span></div></article>
+      </div>
+      <p class="cap"><b>Medium.</b> Tint and a soft border. No rail.</p>
+    </div>
+    <div>
+      <div class="app app--dark" style="padding:7pt">
+        <article class="c"><div class="c-rail"><span class="c-edge c-edge--low">Low edge</span><span class="c-time">2:10</span></div>
+          <div class="c-team"><span class="c-abbr">CIN</span><span class="c-name">Cincinnati</span><span class="c-num"><i class="c-pick"></i>4.3</span></div></article>
+      </div>
+      <p class="cap"><b>Low.</b> Outline only, muted text.</p>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h3>Contrast</h3>
+  <table class="compact">
+    <thead><tr><th style="width:26%">Pairing</th><th style="width:14%" class="num">Dark</th><th style="width:14%" class="num">Light</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Ink</td><td class="num ok">14.93 : 1</td><td class="num ok">18.92 : 1</td><td>Body and scores</td></tr>
+      <tr><td>Ink 2</td><td class="num ok">6.38 : 1</td><td class="num ok">6.15 : 1</td><td>Secondary text, market data</td></tr>
+      <tr><td>Ink 3</td><td class="num">3.27 : 1</td><td class="num">3.19 : 1</td><td>Micro-labels only, 700 weight uppercase</td></tr>
+      <tr><td>Green — lifted / deep</td><td class="num ok">9.70 : 1</td><td class="num ok">5.79 : 1</td><td>Green text and icons</td></tr>
+      <tr><td>Orange text</td><td class="num ok">8.35 : 1</td><td class="num ok">4.97 : 1</td><td>Live state</td></tr>
+      <tr><td class="bad">Brand green as text</td><td class="num">6.02 : 1</td><td class="num bad">2.85 : 1</td><td class="bad">Fails on light. Fills only, never type</td></tr>
+    </tbody>
+  </table>
+  <small style="margin-top:4pt">Measured against <code>panel</code> in each theme, not estimated, and
+  re-measured whenever a token changes. Two findings worth stating: <strong>brand green passes on the
+  dark panel and fails on the light one</strong>, so the single rule "never type" is safer than a
+  per-theme exception — and the lifted green is therefore a legibility choice at small sizes rather
+  than an accessibility necessity. Light orange text is <code>#B25600</code> rather than anything
+  lighter because it must also clear 4.5:1 against the ground, where it measures 4.61:1.</small>
+
+  <div class="pnum">5</div>
+</section>
+
+<!-- ===== TYPE 1 ===== -->
+<section class="page">
+  <div class="rh"><span><b>04</b> &nbsp;Typography · Faces</span><span>ScoreGenius</span></div>
+  <h1>Two faces, two jobs</h1>
+  <p class="lede">The separation is functional, not stylistic. <strong>Anything that is a number, or
+  labels a number, is monospaced.</strong> Everything else is proportional.</p>
+
+  <div class="frame">
+    <p class="frame-t">Display &amp; interface</p>
+    <p style="font-size:22pt;font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 5pt">Cleveland Guardians</p>
+    <p style="font-size:11pt;font-weight:600;margin:0 0 5pt">Detroit Tigers · Buffalo Bills · Boston Celtics</p>
+    <small><strong>Archivo</strong> — a grotesque, slightly condensed, strong at heavy weights.
+    Team and player names, interface labels, headings, body copy. Fallback: Inter Tight, then the
+    system UI stack. Self-hosted; no third-party request.</small>
+  </div>
+
+  <div class="frame">
+    <p class="frame-t">Data</p>
+    <p style="font-family:var(--mono);font-size:18pt;font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 5pt;font-variant-numeric:tabular-nums">118.9 · 4.5 · 27.6</p>
+    <p style="font-family:var(--mono);font-size:9pt;margin:0 0 5pt;font-variant-numeric:tabular-nums">+114 / −119 &nbsp; −1.5 &nbsp; O/U 8.5 &nbsp; 1:10 PM</p>
+    <p style="font-family:var(--mono);font-size:7pt;font-weight:700;letter-spacing:.16em;margin:0 0 5pt">HIGH EDGE · LIVE · FINAL · AWAY · HOME</p>
+    <small><strong>JetBrains Mono</strong> — scores, odds, times, percentages and every uppercase
+    micro-label. Tabular figures by default. Fallback: IBM Plex Mono, then the system monospace
+    stack, which is available everywhere at no download cost.</small>
+  </div>
+
+  <div class="callout">
+    <span class="ch">A serif is available and deliberately unused</span>
+    <p>PT Serif remains loaded for the marketing pages. It has no job in a scoreboard, and does not
+    appear anywhere in the application interior.</p>
+  </div>
+
+  <h3>Why it matters</h3>
+  <div class="cols2">
+    <div>
+      <div class="app app--dark" style="padding:7pt">
+        <div style="color:#EAF0F4;font-size:11pt;font-weight:700;line-height:1.55">
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE;font-weight:400">Cleveland</span><span>3.7</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE;font-weight:400">Detroit</span><span>11.5</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:8pt;color:#8FA0AE;font-weight:400">Houston</span><span>118.9</span></div>
+        </div>
+      </div>
+      <p class="cap"><b>Proportional.</b> Digit widths differ, so the decimal drifts and the eye
+      re-finds the column on every row.</p>
+    </div>
+    <div>
+      <div class="app app--dark" style="padding:7pt">
+        <div style="font-family:var(--mono);color:#EAF0F4;font-size:11pt;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.55">
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Cleveland</span><span>3.7</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Detroit</span><span>11.5</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-family:var(--sans);font-size:8pt;color:#8FA0AE;font-weight:400">Houston</span><span>118.9</span></div>
+        </div>
+      </div>
+      <p class="cap"><b>Tabular.</b> Fixed digit widths in a fixed column. The right edge never moves.</p>
+    </div>
+  </div>
+
+  <div class="pnum">6</div>
+</section>
+
+<!-- ===== TYPE 2 ===== -->
+<section class="page">
+  <div class="rh"><span><b>04</b> &nbsp;Typography · Scale</span><span>ScoreGenius</span></div>
+  <h1>The scale</h1>
+  <p class="lede">Sixteen defined roles. Anything not on this list does not exist — if a new size
+  seems necessary, one of these is probably the right answer.</p>
+
+  <table>
+    <thead><tr><th style="width:30%">Role</th><th style="width:11%" class="num">Size</th><th style="width:11%" class="num">Weight</th><th style="width:20%">Tracking</th><th>Face</th></tr></thead>
+    <tbody>
+      <tr><td>Screen heading</td><td class="num">20px</td><td class="num">700</td><td class="num">−0.02em</td><td>Archivo</td></tr>
+      <tr><td>Section heading</td><td class="num">15px</td><td class="num">650</td><td class="num">−0.015em</td><td>Archivo</td></tr>
+      <tr><td>Team / player name</td><td class="num">15px</td><td class="num">600</td><td class="num">−0.012em</td><td>Archivo</td></tr>
+      <tr><td>Body copy</td><td class="num">14px</td><td class="num">400</td><td class="num">0</td><td>Archivo</td></tr>
+      <tr><td><strong>Predicted / final score</strong></td><td class="num">21px</td><td class="num">700</td><td class="num">−0.03em</td><td>Mono</td></tr>
+      <tr><td>Table cell — numeric</td><td class="num">13px</td><td class="num">500</td><td class="num">0</td><td>Mono</td></tr>
+      <tr><td>Table cell — text</td><td class="num">13px</td><td class="num">400</td><td class="num">0</td><td>Archivo</td></tr>
+      <tr><td>Market strip</td><td class="num">11.5px</td><td class="num">400</td><td class="num">+0.01em</td><td>Mono</td></tr>
+      <tr><td>Chip label</td><td class="num">12px</td><td class="num">600</td><td class="num">0</td><td>Archivo</td></tr>
+      <tr><td>Edge chip</td><td class="num">10px</td><td class="num">700</td><td class="num">+0.12em ᴜᴄ</td><td>Mono</td></tr>
+      <tr><td>Time</td><td class="num">11px</td><td class="num">400</td><td class="num">+0.07em ᴜᴄ</td><td>Mono</td></tr>
+      <tr><td>State label</td><td class="num">10px</td><td class="num">700</td><td class="num">+0.16em ᴜᴄ</td><td>Mono</td></tr>
+      <tr><td>Abbreviation chip</td><td class="num">10.5px</td><td class="num">700</td><td class="num">+0.04em</td><td>Mono</td></tr>
+      <tr><td>Column / micro-label</td><td class="num">9.5px</td><td class="num">700</td><td class="num">+0.10em ᴜᴄ</td><td>Mono</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols2" style="margin-top:11pt">
+    <div class="callout">
+      <span class="ch">Measure</span>
+      <p>Body prose sits at 14px with a maximum measure of about <strong>65 characters</strong>.
+      Headings take balanced wrapping so a two-line heading does not leave one word alone.</p>
+    </div>
+    <div class="callout">
+      <span class="ch">The heaviest number wins</span>
+      <p>The predicted score at 21px is <strong>the largest figure on any card</strong> — a direct
+      expression of principle 1. In the previous interface it was 13px, smaller than the team names
+      beside it.</p>
+    </div>
+  </div>
+
+  <div class="pnum">7</div>
+</section>
+
+<!-- ===== SPACE / GEOMETRY ===== -->
+<section class="page">
+  <div class="rh"><span><b>05</b> &nbsp;Space and geometry</span><span>ScoreGenius</span></div>
+  <h1>A 4-point scale</h1>
+  <p class="lede">Eleven permitted steps. Values off this scale are how layouts drift out of rhythm.</p>
+
+  <div class="frame">
+    <p class="frame-t">Spacing steps</p>
+    <div class="rulerwrap">
+      <div class="rulercol"><div style="width:2pt;height:8pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">2</span></div>
+      <div class="rulercol"><div style="width:4pt;height:12pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">4</span></div>
+      <div class="rulercol"><div style="width:6pt;height:16pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">6</span></div>
+      <div class="rulercol"><div style="width:8pt;height:20pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">8</span></div>
+      <div class="rulercol"><div style="width:10pt;height:24pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">10</span></div>
+      <div class="rulercol"><div style="width:12pt;height:28pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">12</span></div>
+      <div class="rulercol"><div style="width:16pt;height:32pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">16</span></div>
+      <div class="rulercol"><div style="width:20pt;height:36pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">20</span></div>
+      <div class="rulercol"><div style="width:24pt;height:40pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">24</span></div>
+      <div class="rulercol"><div style="width:32pt;height:44pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">32</span></div>
+      <div class="rulercol"><div style="width:40pt;height:48pt;background:var(--green);opacity:.85"></div><span style="font-family:var(--mono);font-size:5.6pt;color:var(--doc-ink-3);display:block;text-align:center;margin-top:2pt">40</span></div>
+    </div>
+  </div>
+
+  <div class="cols2" style="margin-top:11pt">
+    <div>
+      <h4>Applied</h4>
+      <table class="compact">
+        <tbody>
+          <tr><td>Screen padding — mobile</td><td class="num">12</td></tr>
+          <tr><td>Screen padding — desktop</td><td class="num">24</td></tr>
+          <tr><td>Gap between cards</td><td class="num">10</td></tr>
+          <tr><td>Card padding</td><td class="num">11 · 13 · 10</td></tr>
+          <tr><td>Gap between chips</td><td class="num">7</td></tr>
+          <tr><td>Label to value</td><td class="num">2</td></tr>
+          <tr><td>Section within a card</td><td class="num">10 + hairline</td></tr>
+          <tr><td>Section on a screen</td><td class="num">24</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h4>Radius</h4>
+      <table class="compact">
+        <tbody>
+          <tr><td>Card, modal, table wrapper</td><td class="num">14px</td></tr>
+          <tr><td>Chip, button, input</td><td class="num">8px</td></tr>
+          <tr><td>Pill, segmented control</td><td class="num">999px</td></tr>
+          <tr><td>Abbreviation chip, edge chip</td><td class="num">5px</td></tr>
+        </tbody>
+      </table>
+      <div class="callout" style="margin-top:9pt">
+        <span class="ch">Density is deliberate</span>
+        <p>The Games list is tight because its job is scanning. Prose screens breathe more. <strong>On
+        a list, tighten; on a document, loosen.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pnum">8</div>
+</section>
+
+<!-- ===== ELEVATION / MOTION ===== -->
+<section class="page">
+  <div class="rh"><span><b>05</b> &nbsp;Elevation and motion</span><span>ScoreGenius</span></div>
+  <h1>Depth by surface, not shadow</h1>
+  <p class="lede">On a near-black ground a drop shadow is nearly invisible. <strong>A one-pixel top
+  highlight reads better</strong> — the card looks machined rather than floated.</p>
+
+  <div class="cols2">
+    <div>
+      <div class="app app--dark">
+        <article class="c" style="position:relative">
+          <div style="position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.09) 22%,rgba(255,255,255,.09) 78%,transparent)"></div>
+          <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · DET</span><span class="c-time">1:10 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+          <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+        </article>
+      </div>
+      <p class="cap">Panel fill, hairline border, and a highlight fading out at both ends.</p>
+    </div>
+    <div>
+      <table class="compact">
+        <thead><tr><th style="width:34%">Surface</th><th>Treatment</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Card</strong></td><td>Panel fill, 1px line, top highlight on dark</td></tr>
+          <tr><td><strong>Card — high edge</strong></td><td>Tinted border, 3px rail, corner wash</td></tr>
+          <tr><td><strong>Modal, popover</strong></td><td>Real drop shadow — these float and should say so</td></tr>
+          <tr><td><strong>Sticky bars</strong></td><td>Ground fill, 8px backdrop blur, 1px edge. No shadow</td></tr>
+        </tbody>
+      </table>
+      <small style="margin-top:5pt">In light mode cards additionally take a soft
+      <code>0 1px 2px rgba(0,0,0,.05)</code>, where a shadow does read.</small>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h1 style="font-size:15pt">Motion confirms a change; it never announces one</h1>
+  <table>
+    <thead><tr><th style="width:40%">Interaction</th><th style="width:18%" class="num">Duration</th><th>Easing</th></tr></thead>
+    <tbody>
+      <tr><td>Hover — surface and colour</td><td class="num">160ms</td><td>ease</td></tr>
+      <tr><td>Chevron rotation on expand</td><td class="num">200ms</td><td>ease</td></tr>
+      <tr><td>Card expand / collapse</td><td class="num">200ms</td><td>ease-out</td></tr>
+      <tr><td>Tab and toggle transition</td><td class="num">160ms</td><td>ease</td></tr>
+      <tr><td>Skeleton shimmer</td><td class="num">1400ms</td><td>ease-in-out, loop</td></tr>
+      <tr><td>Live pulse</td><td class="num">1700ms</td><td>ease-in-out, loop</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols2" style="margin-top:9pt">
+    <div class="callout">
+      <span class="ch">Reduced motion</span>
+      <p>Every animation respects the operating-system preference. The live pulse and skeleton
+      shimmer both stop; <strong>the live dot stays visible at full opacity</strong>, because it
+      carries meaning that must not depend on movement.</p>
+    </div>
+    <div class="callout">
+      <span class="ch">No entrance animations</span>
+      <p>List items never stagger in. It is a novelty the second time and an obstacle the twentieth.</p>
+    </div>
+  </div>
+
+  <div class="pnum">9</div>
+</section>
+
+<!-- ===== COMPONENTS: CARD ===== -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;Components · Card</span><span>ScoreGenius</span></div>
+  <h1>The card</h1>
+  <p class="lede">The primary container, and the component the whole system was designed around.
+  <strong>A matchup, not a list of facts.</strong></p>
+
+  <div class="colsB">
+    <div>
+      <div class="app app--dark">
+        <article class="c c--high">
+          <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+          <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+          <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+          <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>SPR</k> −1.5<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+          <div class="c-exp">
+            <div class="c-lean-track"><span class="c-lean-mid"></span><span class="c-lean-fill" style="left:50%;width:19%"></span></div>
+            <div class="c-lean-cap"><span>CLE</span><span><b>DET by 0.8</b></span><span>DET</span></div>
+          </div>
+          <div class="c-exp"><div class="c-pitch"><span><em>AWAY</em>Tanner Bibee (R)</span><span><em>HOME</em>Tarik Skubal (L)</span></div></div>
+          <div class="c-exp"><div class="c-chips"><span class="chip">H2H Stats</span><span class="chip">73°F · 6mph</span><span class="chip">Injuries</span></div></div>
+        </article>
+      </div>
+      <p class="cap">Expanded state shown. Sections divide by hairline, never by nested boxes — the
+      card stays one object.</p>
+    </div>
+    <div>
+      <table class="compact">
+        <thead><tr><th style="width:32%">Region</th><th>Rules</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Status rail</strong></td><td>Edge chip left, time or state right. Always present; the left slot is empty when there is no edge.</td></tr>
+          <tr><td><strong>Team rows</strong></td><td>Away first, then home. Order never changes. Abbreviation, name, value.</td></tr>
+          <tr><td><strong>Value column</strong></td><td>Fixed 74px minimum, right-aligned, tabular. The edge never moves between sports.</td></tr>
+          <tr><td><strong>Pick marker</strong></td><td>Higher predicted score. Full contrast plus a triangle; the other row recedes. On a tie, neither is marked.</td></tr>
+          <tr><td><strong>Market strip</strong></td><td>Present values only. Hidden entirely on finished games.</td></tr>
+          <tr><td><strong>Expanded</strong></td><td>Lean bar, pitchers where applicable, action chips.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Variants</h4>
+      <table class="compact">
+        <tbody>
+          <tr><td style="width:34%"><strong>Default</strong></td><td>Panel, hairline, highlight</td></tr>
+          <tr><td><strong>High edge</strong></td><td>Green rail, tinted border, wash</td></tr>
+          <tr><td><strong>Live</strong></td><td>Orange rail, pulsing dot</td></tr>
+          <tr><td><strong>Finished</strong></td><td>66% opacity, score held at contrast</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="ch">Behaviour</span>
+    <p>On mobile the whole card toggles its expanded state, except for elements explicitly marked as
+    actions. On desktop, where there is room, cards are expanded by default.</p>
+  </div>
+
+  <div class="pnum">10</div>
+</section>
+
+<!-- ===== COMPONENTS: CHIPS + SEGMENTED ===== -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;Components · Chips, controls</span><span>ScoreGenius</span></div>
+  <h1>Chips and controls</h1>
+
+  <h3 class="first">Chips — one component, three uses</h3>
+  <div class="cols3">
+    <div>
+      <div class="app app--dark" style="padding:9pt"><div class="c-chips"><span class="chip">H2H Stats</span><span class="chip">Injuries</span></div></div>
+      <p class="cap"><b>Action.</b> 32px min height, bordered, opens a modal. Icon optional.</p>
+    </div>
+    <div>
+      <div class="app app--dark" style="padding:9pt"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span></div>
+      <p class="cap"><b>Edge.</b> Tier drives colour, weight and glow. Not interactive.</p>
+    </div>
+    <div>
+      <div class="app app--dark" style="padding:9pt"><span class="c-live"><span class="p"></span>LIVE</span> &nbsp; <span class="c-state">Final</span></div>
+      <p class="cap"><b>State.</b> No border, monospaced, tracked. Not interactive.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="ch">Rule</span>
+    <p>A non-interactive chip must not use hover or pressed styling. <strong>If it looks like a
+    button, it must behave like one.</strong> The dome weather chip is stated, not tappable, and is
+    styled accordingly.</p>
+  </div>
+
+  <h3>Segmented control</h3>
+  <div class="cols2">
+    <div>
+      <div class="app app--dark" style="padding:9pt">
+        <span class="seg"><b class="on">MLB</b><b>NBA</b><b>NFL</b></span>
+        <div style="height:6pt"></div>
+        <span class="seg"><b class="on">Teams</b><b>Players</b><b>Advanced</b></span>
+      </div>
+    </div>
+    <div>
+      <div class="app app--light" style="padding:9pt">
+        <span class="seg"><b class="on">MLB</b><b>NBA</b><b>NFL</b></span>
+        <div style="height:6pt"></div>
+        <span class="seg"><b class="on">Teams</b><b>Players</b><b>Advanced</b></span>
+      </div>
+    </div>
+  </div>
+  <p class="cap"><b>One component, two applications</b> — the sport switcher and the Stats sub-tabs.
+  The pre-existing interface had three separate implementations of this control, styled three
+  different ways.</p>
+
+  <h3>Buttons and inputs</h3>
+  <div class="cols2">
+    <div class="app app--dark" style="padding:9pt">
+      <div style="display:flex;gap:5pt;align-items:center;flex-wrap:wrap">
+        <span class="btn btn--p">Switch to MLB</span>
+        <span class="btn btn--s">Secondary</span>
+        <span class="btn btn--g">Ghost</span>
+      </div>
+      <div style="height:7pt"></div>
+      <span class="inp">Search player…</span>
+      <div style="height:5pt"></div>
+      <span class="inp inp--focus">Jokić</span>
+    </div>
+    <div>
+      <table class="compact">
+        <tbody>
+          <tr><td style="width:34%"><strong>Primary</strong></td><td>Green fill, 38px min height. One per view at most.</td></tr>
+          <tr><td><strong>Secondary</strong></td><td>Outline, secondary ink.</td></tr>
+          <tr><td><strong>Ghost</strong></td><td>No border; background tint on hover.</td></tr>
+          <tr><td><strong>Input</strong></td><td>Panel fill, control border. Focus swaps the border to green and adds a ring.</td></tr>
+        </tbody>
+      </table>
+      <small style="margin-top:5pt">Every interactive element carries a visible focus state and a
+      44px minimum touch target, reached with padding where the visible element is smaller.</small>
+    </div>
+  </div>
+
+  <div class="pnum">11</div>
+</section>
+
+<!-- ===== COMPONENTS: TABLE ===== -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;Components · Data table</span><span>ScoreGenius</span></div>
+  <h1>Data table</h1>
+  <p class="lede">The Stats screen is five of these. <strong>Numeric columns are monospaced,
+  right-aligned and tabular</strong> — the same rule as the card, applied at scale.</p>
+
+  <div class="app app--dark">
+    <div class="dt">
+      <table>
+        <thead><tr>
+          <th style="width:32%">Team</th><th class="n">W</th><th class="n">L</th>
+          <th class="n on">Win % <span class="car">▼</span></th><th class="n">PPG</th><th class="n">OPP</th><th class="n">Diff</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="team">Boston Celtics</td><td class="n">64</td><td class="n">18</td><td class="n">.780</td><td class="n">120.6</td><td class="n">109.2</td><td class="n">+11.4</td></tr>
+          <tr><td class="team">Denver Nuggets</td><td class="n">57</td><td class="n">25</td><td class="n">.695</td><td class="n">114.9</td><td class="n">109.6</td><td class="n">+5.3</td></tr>
+          <tr><td class="team">Oklahoma City Thunder</td><td class="n">57</td><td class="n">25</td><td class="n">.695</td><td class="n">120.1</td><td class="n">112.7</td><td class="n">+7.4</td></tr>
+          <tr><td class="team">Minnesota Timberwolves</td><td class="n">56</td><td class="n">26</td><td class="n">.683</td><td class="n">113.0</td><td class="n">106.5</td><td class="n">+6.5</td></tr>
+          <tr><td class="team">Los Angeles Clippers</td><td class="n">51</td><td class="n">31</td><td class="n">.622</td><td class="n">115.6</td><td class="n">112.4</td><td class="n">+3.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="cap"><b>Sample data, for layout illustration only.</b> The sorted column's header takes
+  the accent colour and a direction caret; every other header stays muted.</p>
+
+  <div class="spacer"></div>
+  <div class="app app--light">
+    <div class="dt">
+      <table>
+        <thead><tr>
+          <th style="width:26%">Player</th><th style="width:20%">Team</th>
+          <th class="n on">Pts <span class="car">▼</span></th><th class="n">Reb</th><th class="n">Ast</th><th class="n">3P%</th><th class="n">Min</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="team">Luka Dončić</td><td>Dallas</td><td class="n">33.9</td><td class="n">9.2</td><td class="n">9.8</td><td class="n">.382</td><td class="n">37.5</td></tr>
+          <tr><td class="team">Giannis Antetokounmpo</td><td>Milwaukee</td><td class="n">30.4</td><td class="n">11.5</td><td class="n">6.5</td><td class="n">.274</td><td class="n">35.2</td></tr>
+          <tr><td class="team">Shai Gilgeous-Alexander</td><td>Oklahoma City</td><td class="n">30.1</td><td class="n">5.5</td><td class="n">6.2</td><td class="n">.353</td><td class="n">34.0</td></tr>
+          <tr><td class="team">Jalen Brunson</td><td>New York</td><td class="n">28.7</td><td class="n">3.6</td><td class="n">6.7</td><td class="n">.401</td><td class="n">35.4</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="cap">The same component in light mode. Decimal points align down every column regardless
+  of digit count.</p>
+
+  <div class="cols2" style="margin-top:9pt">
+    <div>
+      <table class="compact">
+        <thead><tr><th style="width:34%">Element</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Wrapper</td><td>14px radius, hairline border, horizontal scroll inside itself</td></tr>
+          <tr><td>Header</td><td>Panel-2 fill, sticky, monospaced uppercase micro-label</td></tr>
+          <tr><td>Row</td><td>Hairline separator, no zebra striping, tint on hover</td></tr>
+          <tr><td>Numeric cell</td><td>Monospaced, tabular, right-aligned</td></tr>
+          <tr><td>Text cell</td><td>Proportional, left-aligned</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <span class="ch">The table scrolls, the page does not</span>
+      <p>Wide tables scroll horizontally inside their own container. The page body must never scroll
+      sideways. Where scrolling is likely, <strong>the first column pins</strong> so the player or
+      team name stays visible.</p>
+    </div>
+  </div>
+
+  <div class="pnum">12</div>
+</section>
+
+<!-- ===== COMPONENTS: NAV ===== -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;Components · Navigation</span><span>ScoreGenius</span></div>
+  <h1>Navigation</h1>
+  <p class="lede">Three persistent surfaces: a header, a filters bar beneath it, and a bottom tab bar.
+  All three use the <strong>ground colour with a backdrop blur</strong> — never a shadow, and never a
+  different black.</p>
+
+  <div class="cols2">
+    <div>
+      <p class="lbl">Dark</p>
+      <div class="app app--dark">
+        <div class="hdr">
+          <div style="display:flex;align-items:center;gap:5pt">
+            <svg width="13" height="13" viewBox="0 0 512 512" aria-hidden="true">
+              <g transform="translate(256 256) rotate(-32) scale(0.345)">
+                <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="46" stroke-linecap="round"/>
+                <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="46" stroke-linecap="round"/>
+                <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#FFFFFF"/>
+                <g stroke="#10161D" stroke-linecap="round" fill="none"><path d="M -135 0 L 135 0" stroke-width="30"/><path d="M -90 -40 L -90 40" stroke-width="26"/><path d="M -30 -40 L -30 40" stroke-width="26"/><path d="M 30 -40 L 30 40" stroke-width="26"/><path d="M 90 -40 L 90 40" stroke-width="26"/></g>
+                <circle cx="319.5" cy="85.5" r="30" fill="#2ECC5E"/>
+              </g>
+            </svg>
+            <span class="hdr-w">SCOREGENIUS</span>
+          </div>
+          <span class="seg"><b class="on">MLB</b><b>NBA</b><b>NFL</b></span>
+        </div>
+        <div style="height:5pt"></div>
+        <div class="btab">
+          <div class="on"><span class="ic">▦</span>Games</div>
+          <div><span class="ic">▥</span>Stats</div>
+          <div><span class="ic">?</span>How To Use</div>
+          <div><span class="ic">⋯</span>More</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="lbl">Light</p>
+      <div class="app app--light">
+        <div class="hdr">
+          <div style="display:flex;align-items:center;gap:5pt">
+            <svg width="13" height="13" viewBox="0 0 512 512" aria-hidden="true">
+              <g transform="translate(256 256) rotate(-32) scale(0.345)">
+                <path d="M -319.5 85.5 A 340 250 0 0 0 319.5 85.5" fill="none" stroke="#00B140" stroke-width="46" stroke-linecap="round"/>
+                <path d="M 319.5 -85.5 A 340 250 0 0 0 -319.5 -85.5" fill="none" stroke="#FF7F00" stroke-width="46" stroke-linecap="round"/>
+                <path d="M -296 0 C -178 245 178 245 296 0 C 178 -245 -178 -245 -296 0 Z" fill="#0d1117"/>
+                <g stroke="#FFFFFF" stroke-linecap="round" fill="none"><path d="M -135 0 L 135 0" stroke-width="30"/><path d="M -90 -40 L -90 40" stroke-width="26"/><path d="M -30 -40 L -30 40" stroke-width="26"/><path d="M 30 -40 L 30 40" stroke-width="26"/><path d="M 90 -40 L 90 40" stroke-width="26"/></g>
+                <circle cx="319.5" cy="85.5" r="30" fill="#2ECC5E"/>
+              </g>
+            </svg>
+            <span class="hdr-w">SCOREGENIUS</span>
+          </div>
+          <span class="seg"><b class="on">MLB</b><b>NBA</b><b>NFL</b></span>
+        </div>
+        <div style="height:5pt"></div>
+        <div class="btab">
+          <div class="on"><span class="ic">▦</span>Games</div>
+          <div><span class="ic">▥</span>Stats</div>
+          <div><span class="ic">?</span>How To Use</div>
+          <div><span class="ic">⋯</span>More</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="ch">A defect this replaces</span>
+    <p>The pre-existing header used pure black beneath an app ground of <code>#0d1117</code>,
+    producing a <strong>visible seam</strong> across the top of every screen. Using the ground token
+    removes it.</p>
+  </div>
+
+  <h3>Icons</h3>
+  <p style="font-size:8.6pt">A single open-source icon set, 1.8px stroke, sized 13px in chips, 16px
+  in controls and 20px in the bottom bar. Icons support a label; they rarely replace one. The
+  exceptions are the chevron and the bottom bar, where the label sits directly beneath.</p>
+  <div class="callout">
+    <span class="ch">No emoji in the interface</span>
+    <p>Emoji render differently on every platform, ignore the theme, and cannot inherit colour. The
+    pre-existing interface used them for the indoor-venue and no-prediction markers; both become
+    proper glyphs that follow the current text colour.</p>
+  </div>
+
+  <div class="pnum">13</div>
+</section>
+
+<!-- ===== COMPONENTS: FEEDBACK ===== -->
+<section class="page">
+  <div class="rh"><span><b>06</b> &nbsp;Components · Feedback states</span><span>ScoreGenius</span></div>
+  <h1>Loading, empty, and modal</h1>
+  <p class="lede">The states most often left to chance. <strong>Skeletons mirror the anatomy of what
+  is loading</strong>, so nothing reflows when data arrives.</p>
+
+  <div class="cols3">
+    <div>
+      <p class="lbl">Skeleton</p>
+      <div class="app app--dark">
+        <article class="c">
+          <div class="c-rail"><span class="sk" style="display:block;width:52pt;height:6.5pt"></span><span class="sk" style="display:block;width:26pt;height:5.5pt"></span></div>
+          <div class="c-team"><span class="sk" style="display:block;height:9pt"></span><span class="sk" style="display:block;width:64%;height:6.5pt"></span><span class="sk" style="display:block;width:19pt;height:9pt"></span></div>
+          <div class="c-team"><span class="sk" style="display:block;height:9pt"></span><span class="sk" style="display:block;width:52%;height:6.5pt"></span><span class="sk" style="display:block;width:19pt;height:9pt"></span></div>
+          <div class="c-foot"><span class="sk" style="display:block;width:66%;height:5.5pt"></span><span class="sk" style="display:block;width:11pt;height:11pt;border-radius:3pt"></span></div>
+        </article>
+      </div>
+      <p class="cap">Rail, two rows, footer — the real card's shape.</p>
+    </div>
+    <div>
+      <p class="lbl">Empty</p>
+      <div class="app app--dark">
+        <div class="empty">
+          <span class="ic">▦</span>
+          <span class="t">No NBA games on August 4</span>
+          <span class="s">The season starts in October. MLB has 14 games today.</span>
+          <span class="btn btn--p">Switch to MLB</span>
+        </div>
+      </div>
+      <p class="cap">States a fact, then offers the next step.</p>
+    </div>
+    <div>
+      <p class="lbl">Modal</p>
+      <div class="app app--dark">
+        <div class="modal">
+          <div class="modal-t"><span>Weather</span><span class="modal-x">✕</span></div>
+          <div class="modal-b">
+            <div style="display:flex;justify-content:space-between;padding:2pt 0"><span>Temperature</span><span style="font-family:var(--mono);color:#EAF0F4">73°F</span></div>
+            <div style="display:flex;justify-content:space-between;padding:2pt 0"><span>Wind</span><span style="font-family:var(--mono);color:#EAF0F4">6 mph</span></div>
+            <div style="display:flex;justify-content:space-between;padding:2pt 0"><span>Humidity</span><span style="font-family:var(--mono);color:#EAF0F4">54%</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Floats, so it takes a real shadow. Focus trapped; Escape closes.</p>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div>
+      <table class="compact">
+        <thead><tr><th style="width:32%">State</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Loading</strong></td><td>Anatomy-matched skeleton. <strong>Never a spinner, never the word "Loading"</strong></td></tr>
+          <tr><td><strong>Empty</strong></td><td>Icon, title, one factual line, and a next step where one genuinely exists</td></tr>
+          <tr><td><strong>Offline</strong></td><td>Explains what still works, not only what does not</td></tr>
+          <tr><td><strong>Error</strong></td><td>Treated as absent data, or falls back to offline</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <span class="ch">Why no error state</span>
+      <p>The application has <strong>no user-actionable errors</strong>. A failed request means a
+      value is missing, and principle 3 already says what to do about that: shorten the layout and
+      say nothing. An error dialogue would ask the user to solve a problem they cannot solve.</p>
+    </div>
+  </div>
+
+  <div class="pnum">14</div>
+</section>
+
+<!-- ===== PATTERNS ===== -->
+<section class="page">
+  <div class="rh"><span><b>07</b> &nbsp;Patterns</span><span>ScoreGenius</span></div>
+  <h1>How components combine</h1>
+
+  <h3 class="first">Scanning a long list</h3>
+  <p style="font-size:8.6pt;margin-bottom:7pt">The recipe that makes fifteen cards readable at a
+  glance. It generalises to any list in the product.</p>
+  <table class="compact">
+    <tbody>
+      <tr><td style="width:5%" class="num">1</td><td style="width:30%"><strong>A fixed anchor column</strong></td><td>An abbreviation chip starts each row, so the eye locks on without parsing a long name.</td></tr>
+      <tr><td class="num">2</td><td><strong>A fixed value column</strong></td><td>Right-aligned and tabular, so values align down the list regardless of digit count.</td></tr>
+      <tr><td class="num">3</td><td><strong>Contrast marks importance</strong></td><td>The item of interest keeps full contrast; the rest recede. No extra chrome.</td></tr>
+      <tr><td class="num">4</td><td><strong>Rare signals get one loud treatment</strong></td><td>Colour, border and rail together — not several quiet hints.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Absence and fallback</h3>
+  <table class="compact">
+    <thead><tr><th style="width:42%">Situation</th><th>Response</th></tr></thead>
+    <tbody>
+      <tr><td>A value in a group is missing</td><td>Omit it; the group closes up</td></tr>
+      <tr><td>Every value in a group is missing</td><td>One muted line, or omit the group</td></tr>
+      <tr><td>An optional section is empty</td><td>Omit the section</td></tr>
+      <tr><td>A paired value has only one half</td><td>Omit both — half a moneyline is meaningless</td></tr>
+      <tr><td>Data is genuinely pending</td><td>Say so once, plainly</td></tr>
+    </tbody>
+  </table>
+  <small style="margin-top:4pt"><strong>Never "N/A". Never an em-dash placeholder. Never an empty
+  row where a value would be.</strong></small>
+
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div>
+      <h4>State encoded in form</h4>
+      <table class="compact">
+        <tbody>
+          <tr><td style="width:38%">Live</td><td>Orange, pulsing dot, rail</td></tr>
+          <tr><td>Finished</td><td>66% opacity, score held</td></tr>
+          <tr><td>Model's pick</td><td>Full contrast + triangle</td></tr>
+          <tr><td>High edge</td><td>Rail, border, wash, glow</td></tr>
+        </tbody>
+      </table>
+      <small style="margin-top:4pt">Each survives a squint, and none depends on colour alone.</small>
+    </div>
+    <div>
+      <h4>Progressive disclosure</h4>
+      <p style="font-size:8.4pt">Collapsed carries what you need to decide whether to look closer;
+      expanded carries the rest. The chevron indicates state and rotates on open. On desktop, where
+      there is room, cards open by default.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="ch">Per-sport variation is additive</span>
+    <p>The card is one component across baseball, American football and basketball. The differences
+    are three: probable pitchers appear for baseball only, the weather chip is dome-aware for
+    football and absent for basketball, and <strong>the value column is sized for the widest case
+    across all three</strong> so its edge never moves.</p>
+  </div>
+
+  <div class="pnum">15</div>
+</section>
+
+<!-- ===== ACROSS THE APP ===== -->
+<section class="page">
+  <div class="rh"><span><b>08</b> &nbsp;Across the app</span><span>ScoreGenius</span></div>
+  <h1>The system applied</h1>
+  <p class="lede">Games is built and live. The remaining screens have direction and inherit the same
+  components — <strong>none requires a new visual language.</strong></p>
+
+  <table>
+    <thead><tr><th style="width:20%">Screen</th><th style="width:15%">State</th><th style="width:32%">Components used</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Games</strong></td><td class="ok">Built &amp; live</td><td>Card, chips, edge chip, segmented control, header, bottom bar, skeleton, empty</td><td>All states, all three sports, all fallbacks</td></tr>
+      <tr><td><strong>Game detail</strong></td><td class="muted">Direction</td><td>Card, chips, modal</td><td>Expands in place; inherits the card language directly</td></tr>
+      <tr><td><strong>Stats</strong></td><td class="muted">Direction</td><td>Data table, segmented control, input, skeleton, empty</td><td>Five tables behind a sport selector and sub-tabs</td></tr>
+      <tr><td><strong>How to Use</strong></td><td class="muted">Direction</td><td>Prose layout, numbered timeline</td><td>The one prose screen — wider measure, more space</td></tr>
+      <tr><td><strong>More</strong></td><td class="muted">Direction</td><td>List rows, buttons, offline notice</td><td>Needs one new component: the settings list row</td></tr>
+    </tbody>
+  </table>
+
+  <div class="spacer"></div>
+  <h3>Games, assembled</h3>
+  <div class="app app--dark" style="padding:9pt">
+    <div class="hdr" style="margin-bottom:6pt">
+      <span class="hdr-w">SCOREGENIUS</span>
+      <span class="seg"><b class="on">MLB</b><b>NBA</b><b>NFL</b></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 2pt 6pt">
+      <span style="font-size:7.5pt;font-weight:700;color:#EAF0F4">13 games <span style="color:#5E6E7C;font-weight:400">· Aug 13</span></span>
+      <span style="font-family:var(--mono);font-size:6pt;color:#8FA0AE;border:.75pt solid #2E3B47;border-radius:999pt;padding:2pt 6pt">Aug 13</span>
+    </div>
+    <div class="stack">
+      <article class="c c--high">
+        <div class="c-rail"><span class="c-edge c-edge--high"><span class="d"></span>High edge · DET</span><span class="c-time">1:10 PM</span></div>
+        <div class="c-team c-team--fade"><span class="c-abbr">CLE</span><span class="c-name">Cleveland Guardians</span><span class="c-num"><i class="c-pick c-pick--h"></i>3.7</span></div>
+        <div class="c-team"><span class="c-abbr">DET</span><span class="c-name">Detroit Tigers</span><span class="c-num"><i class="c-pick"></i>4.5</span></div>
+        <div class="c-foot"><span class="c-mkt"><k>ML</k> +114 / −119<span class="dot">·</span><k>O/U</k> 8</span><span class="c-chev">▾</span></div>
+      </article>
+      <article class="c">
+        <div class="c-rail"><span class="c-edge c-edge--med">Medium edge · NYY</span><span class="c-time">1:35 PM</span></div>
+        <div class="c-team c-team--fade"><span class="c-abbr">SEA</span><span class="c-name">Seattle Mariners</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.0</span></div>
+        <div class="c-team"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick"></i>4.6</span></div>
+        <div class="c-foot"><span class="c-mkt"><k>ML</k> +118 / −124<span class="dot">·</span><k>O/U</k> 8.5</span><span class="c-chev">▾</span></div>
+      </article>
+      <article class="c c--live">
+        <div class="c-rail"><span class="c-live"><span class="p"></span>LIVE</span><span class="c-time">Started 7:05 PM</span></div>
+        <div class="c-team c-team--fade"><span class="c-abbr">STL</span><span class="c-name">St. Louis Cardinals</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.1</span></div>
+        <div class="c-team c-team--fade"><span class="c-abbr">NYY</span><span class="c-name">New York Yankees</span><span class="c-num"><i class="c-pick c-pick--h"></i>4.9</span></div>
+        <div class="c-foot"><span class="c-mkt"><k>ML</k> +131 / −138<span class="dot">·</span><k>O/U</k> 9</span><span class="c-chev">▾</span></div>
+      </article>
+    </div>
+    <div style="height:6pt"></div>
+    <div class="btab">
+      <div class="on"><span class="ic">▦</span>Games</div><div><span class="ic">▥</span>Stats</div>
+      <div><span class="ic">?</span>How To Use</div><div><span class="ic">⋯</span>More</div>
+    </div>
+  </div>
+  <p class="cap">Header, segmented control, day bar, three card variants, and the bottom bar — every
+  element drawn from the library on the preceding pages.</p>
+
+  <div class="pnum">16</div>
+</section>
+
+<!-- ===== ACCESSIBILITY ===== -->
+<section class="page">
+  <div class="rh"><span><b>09</b> &nbsp;Accessibility</span><span>ScoreGenius</span></div>
+  <h1>WCAG 2.1 AA</h1>
+  <p class="lede">Treated as a build requirement rather than an audit item. Several of these rules
+  <strong>shaped the palette and the state encoding directly.</strong></p>
+
+  <table>
+    <thead><tr><th style="width:26%">Requirement</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Text contrast</strong></td><td>4.5:1 for body; 3:1 for 18px+ or 14px bold. <em>This is why the lifted and deep greens exist.</em></td></tr>
+      <tr><td><strong>Non-text contrast</strong></td><td>3:1 for control borders, focus rings and the edge chip's border</td></tr>
+      <tr><td><strong>Touch targets</strong></td><td>44 × 44px minimum, reached with padding where the visible element is smaller</td></tr>
+      <tr><td><strong>Focus</strong></td><td>Every interactive element has a visible focus state: a 2px green ring at 2px offset. <strong>Suppressing the outline without a replacement is a defect</strong></td></tr>
+      <tr><td><strong>Motion</strong></td><td>All animation respects the reduced-motion preference; meaning never depends on movement</td></tr>
+      <tr><td><strong>Colour independence</strong></td><td>No meaning is carried by colour alone — the edge tier also varies by border, glow and label; the pick also has a triangle; live also has a word</td></tr>
+      <tr><td><strong>Semantics</strong></td><td>Cards are articles; expandable regions carry expanded state; toggles carry pressed state; sortable headers carry sort state</td></tr>
+      <tr><td><strong>Screen reader</strong></td><td>Predicted scores carry a label giving both numbers and their meaning, since splitting them across two rows loses that context visually</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">Colour independence, worked through</span>
+    <p>A user who cannot distinguish the green tiers still reads "High edge" in the chip, sees the
+    heavier border, and sees the rail on the card's edge. A user who cannot see the orange live dot
+    still reads the word LIVE. <strong>Every signal in the system has at least two encodings.</strong></p>
+  </div>
+
+  <div class="callout warn">
+    <span class="ch">Found in the pre-existing interface</span>
+    <p>Three failures were recorded during the audit: a focus outline suppressed with no replacement,
+    leaving the sport selector with no keyboard indication; a reduced-motion preference honoured by
+    exactly one rule; and white heading text on a near-white panel, which is invisible rather than
+    merely low-contrast. All three are scheduled.</p>
+  </div>
+
+  <div class="pnum">17</div>
+</section>
+
+<!-- ===== VOICE + GOVERNANCE ===== -->
+<section class="page">
+  <div class="rh"><span><b>10</b> &nbsp;Voice and governance</span><span>ScoreGenius</span></div>
+  <h1>How the product speaks</h1>
+  <p class="lede">Plain, factual, unhedged. <strong>The app reports; it does not persuade or
+  apologise.</strong></p>
+
+  <table>
+    <thead><tr><th style="width:44%">Write this</th><th>Not this</th></tr></thead>
+    <tbody>
+      <tr><td class="ok">Odds not yet posted</td><td class="muted">Odds unavailable at this time</td></tr>
+      <tr><td class="ok">No NBA games on August 4</td><td class="muted">Sorry, nothing to show!</td></tr>
+      <tr><td class="ok">Roof closed</td><td class="muted">Weather N/A</td></tr>
+      <tr><td class="ok">Started 7:05 PM</td><td class="muted">Game in progress since 7:05 PM</td></tr>
+      <tr><td class="ok">High edge · DET</td><td class="muted">Strong value pick!</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols2" style="margin-top:9pt">
+    <div>
+      <h4>Rules</h4>
+      <ul style="font-size:8.4pt;padding-left:11pt;margin:0;color:var(--doc-ink-2)">
+        <li style="margin-bottom:3pt"><strong>Never imply certainty the model lacks.</strong> No "lock", "guaranteed", "sure thing".</li>
+        <li style="margin-bottom:3pt">State facts, not feelings.</li>
+        <li style="margin-bottom:3pt">Sentence case for headings and buttons; uppercase only for monospaced micro-labels.</li>
+        <li style="margin-bottom:3pt">Team names in full in prose; abbreviations only in chips.</li>
+        <li>No exclamation marks. No emoji.</li>
+      </ul>
+    </div>
+    <div class="callout">
+      <span class="ch">Why this matters here specifically</span>
+      <p>The product sits next to betting markets. Language that oversells a prediction is both a
+      credibility risk and a regulatory one. <strong>Understatement is the safer and the more
+      convincing register.</strong></p>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h1 style="font-size:15pt">Governance</h1>
+  <table>
+    <thead><tr><th style="width:30%">Situation</th><th>What to do</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Need a colour that is not in the palette</strong></td><td>The palette is missing something. Add it to the system first, in both themes, with a contrast check — never inline in a component.</td></tr>
+      <tr><td><strong>Need a component that does not exist</strong></td><td>Add it to the library rather than styling it locally. One new component is owed already: the settings list row.</td></tr>
+      <tr><td><strong>Need a size off the type scale</strong></td><td>One of the sixteen roles is probably right. If none is, add a role rather than a one-off value.</td></tr>
+      <tr><td><strong>A change looks right in one theme</strong></td><td>It is not finished. Both themes ship together.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="ch">The system's own record</span>
+    <p>This document summarises a specification maintained in the repository alongside the code, so
+    it travels with the product rather than living in a design tool. That specification also records
+    <strong>what the application actually knows</strong> — including two facts the code implies but
+    does not deliver, which had already misled a reader once.</p>
+  </div>
+
+  <div style="border-top:2.5pt solid var(--green);padding-top:9pt;margin-top:11pt">
+    <p style="font-size:8.2pt;color:var(--doc-ink-2);margin:0">
+      <strong style="color:var(--doc-ink)">ScoreGenius — Design System, version 1.1.</strong>
+      Prepared 14 August 2026. The foundations and the Games screen describe running code;
+      the remaining screens describe the target. Every interface image in this document is rendered from the system's
+      own token values. Statistical figures in table specimens are sample data for layout
+      illustration only.
+    </p>
+  </div>
+
+  <div class="pnum">18</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,2454 @@
+/* frontend/src/index.css */
+
+/* -------------------------------------------------------------
+ * Tailwind layers
+ * ----------------------------------------------------------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------------------------------------------
+ * CSS variables — light theme (root)
+ * ----------------------------------------------------------- */
+/* Force the nav‑arrow SVGs to use our --color-text-primary */
+.rdp-root {
+  --rdp-accent-color: var(--color-text-primary) !important;
+  --rdp-accent-background-color: var(--color-panel) !important;
+}
+
+:root {
+  /* -------------------------------------------------------------
+   * Design-system tokens v1 — light. See docs/design_system.md §5.1.
+   * The --color-* variables further down are the previous generation.
+   * They are still read by screens not yet migrated and retire in
+   * stage 6; do not add new usages.
+   * ----------------------------------------------------------- */
+
+  /* Surfaces */
+  --ground: #f4f7f6;
+  --panel: #ffffff;
+  --panel-2: #f7faf9;
+  --line: #dfe7e3;
+  --line-2: #c6d2cc;
+
+  /* Row hover on a panel surface. panel-2 cannot do this job: it is
+   * #f7faf9 against a #ffffff panel here, a 1.5% step that is invisible
+   * as a hover. It also already means "table header", and a row that
+   * hovers into the header's colour reads as a category error. */
+  --panel-hover: #eef3f1;
+
+  /* Ink */
+  --ink: #0d1117;
+  --ink-2: #56655d;
+  --ink-3: #84948b;
+
+  /* Brand. Green and orange are fills; the *-text variants are the
+   * contrast-corrected forms for type on this ground. Measured against
+   * --panel and --ground: brand green as text is 2.85:1 here and must
+   * never be used for type in light mode. */
+  --brand-green: #00b140;
+  --green-text: #00762c;
+  --brand-orange: #ff7f00;
+  --orange-text: #b25600;
+
+  /* The green fill for a selected control — segmented control now,
+   * primary buttons when §6.4 lands — with the text colour that is
+   * guaranteed legible on it. These differ per theme where the fills
+   * above do not: brand green carries white at only 2.85:1, so light
+   * mode fills with green-deep (white on it measures 5.79:1) while
+   * dark mode keeps brand green under near-black ink (6.65:1). */
+  --accent-fill: #00762c;
+  --accent-fill-ink: #ffffff;
+
+  /* Surfaces */
+  --color-bg: #ffffff;
+  --color-panel: #f8fafc;
+  --color-accent-neutral: #64748b;
+
+  /* Text */
+  --color-text-primary: #0d1117;
+  --color-text-secondary: #475569;
+
+  /* Brand */
+  --color-brand-green: #00b140;
+  --color-brand-green-light: #34d058;
+  --color-brand-orange: #ff7f00;
+
+  /* MODIFIED: Use the calculated opaque green shade from Dark Mode for better visual consistency and contrast in Light Mode */
+  --color-btn-snapshot: rgb(
+    28,
+    112,
+    64
+  ); /* Previously var(--color-brand-green) */
+  --color-badge-weather: rgb(
+    28,
+    112,
+    64
+  ); /* Previously var(--color-brand-green) */
+  --color-border-subtle: #cbd5e1;
+  --color-border-strong: #94a3b8;
+
+  --color-pred-badge: #028034;
+
+  /* -------------------------------------------------------------
+   * These three were previously declared only inside .dark but are
+   * consumed unconditionally — .app-card:hover, the date pill in
+   * game_screen, and the table wrapper in stats_screen. In light mode
+   * they resolved to an invalid value, so hovering a card removed its
+   * background entirely. See docs/design_system.md §3.4.
+   * ----------------------------------------------------------- */
+  --color-surface-hover: #eef3f1;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 4px 10px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* -------------------------------------------------------------
+ * Dark theme overrides (activated via <html class="dark">)
+ * ----------------------------------------------------------- */
+.dark {
+  /* -------------------------------------------------------------
+   * Design-system tokens v1 — dark. See docs/design_system.md §5.1.
+   * ----------------------------------------------------------- */
+
+  /* Surfaces */
+  --ground: #0b1016;
+  --panel: #151c24;
+  --panel-2: #1b232c;
+  --line: #232e38;
+  --line-2: #2e3b47;
+  --panel-hover: #1e2833;
+
+  /* Ink */
+  --ink: #eaf0f4;
+  --ink-2: #8fa0ae;
+  --ink-3: #5e6e7c;
+
+  /* Brand. Only the text variants change between themes; the fills do
+   * not. The lifted green is a legibility choice at small sizes rather
+   * than a contrast requirement — brand green measures 6.02:1 on
+   * --panel here and would pass on its own. */
+  --green-text: #3ade72;
+  --orange-text: #ff9e3d;
+
+  /* Brand green is legible as a fill here, so the active control keeps
+   * the brand hue rather than the deepened one. */
+  --accent-fill: #00b140;
+  --accent-fill-ink: #07130b;
+
+  --color-bg: #0d1117; /* Github Dark */
+  --color-panel: #161b22;
+  --color-surface-hover: #1f242c;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #9ca3af;
+
+  --color-btn-snapshot: rgba(
+    34,
+    197,
+    94,
+    0.5
+  ); /* Using lighter brand green for better contrast in dark mode */
+  --color-badge-weather: rgba(34, 197, 94, 0.5);
+  --color-border-subtle: rgba(51, 65, 85, 0.6);
+  --color-accent-neutral: #94a3b8;
+
+  --color-pred-badge: #16a34a;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 1px 1px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 4px 10px rgba(0, 0, 0, 0.65),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* -------------------------------------------------------------
+ * Base element styling
+ * ----------------------------------------------------------- */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply antialiased font-sans bg-[var(--color-bg)] text-[var(--color-text-primary)];
+}
+
+/* Hide scrollbars in WebKit while preserving scrollability */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.4); /* slate-500/40 */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* -------------------------------------------------------------
+ * Utility classes (extend Tailwind without a plugin)
+ * ----------------------------------------------------------- */
+
+/* Card / panel wrapper */
+.app-card {
+  @apply rounded-xl border bg-[var(--color-panel)] py-5 px-4 transition;
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 160ms ease, transform 160ms ease, background 120ms;
+}
+.app-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  background: var(--color-surface-hover);
+  transform: translateY(-2px);
+}
+
+/* Compact variant (mobile collapsed cards) */
+.app-card--compact {
+  @apply py-3 px-3;
+  border-radius: 0.75rem;
+}
+
+/* The .quick-action-chip block stood here. Its only consumer was the
+ * snapshot button, which now uses the §6.2 action chip (.gc-chip)
+ * alongside the weather and injuries chips. The --icon-only modifier
+ * had no consumer at all. Defects 31 and 32. */
+
+/* Prediction badge */
+.pred-badge {
+  @apply inline-flex flex-col items-center justify-center
+         rounded-xl px-3 py-1.5 text-xs font-semibold
+         whitespace-nowrap shrink-0 text-center !important;
+  background: var(--color-pred-badge) !important;
+  color: var(--color-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 0 4px rgba(22, 163, 74, 0.3);
+  line-height: 1.1;
+}
+
+.pred-badge .score {
+  @apply text-[13px] leading-tight;
+}
+
+.pred-badge .label {
+  @apply text-[9px] opacity-75 leading-tight;
+}
+.pred-badge span {
+  @apply text-[10px] font-normal opacity-80;
+}
+
+.pred-badge {
+  @apply rounded-xl;
+}
+
+@media (max-width: 400px) {
+  .pred-badge {
+    @apply px-1.5;
+  }
+}
+
+/* Filters bar — the sticky toolbar at the top of a list. §6.6: a second
+ * sticky row below the header, given the same treatment as the header.
+ * It was on panel, which is the card surface; that made the bar read as
+ * a card spanning the screen rather than as chrome. Its background and
+ * blur now come from the shared .chrome-surface rule further down.
+ *
+ * This rule sets NO horizontal padding, which is what closes defect 24.
+ * It used to carry a flat px-6. Because the rule is emitted after the
+ * utilities layer, that padding beat Stats' own px-6 md:px-8 lg:px-12 at
+ * equal specificity while the matching -mx-6 md:-mx-8 lg:-mx-12 still
+ * applied -- so the bar broke out to full bleed and then re-padded by
+ * the wrong amount, sitting 8px wider than its content at md and 24px
+ * wider at lg. Padding is now the screen's business, and both callers
+ * pass their own. */
+.filters-bar {
+  @apply sticky top-0 z-10 flex items-center justify-between gap-3 py-3;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Tabs for detail screen */
+.tab-bar {
+  @apply flex space-x-6 border-b mb-4;
+  border-color: var(--color-border-strong);
+}
+.tab {
+  @apply pb-3 text-sm font-medium text-text-secondary cursor-pointer relative;
+}
+.tab-active {
+  @apply text-text-primary;
+}
+.tab-active::after {
+  content: "";
+  @apply absolute left-0 bottom-0 h-0.5 w-full bg-brand-green;
+}
+
+/* Ripple (simple CSS fallback; JS optional) */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+.ripple:active::after {
+  opacity: 0.08;
+}
+
+/* Thin divider utility */
+.hr-subtle {
+  border-color: var(--color-border-subtle);
+}
+
+/* Muted label text */
+.text-muted {
+  color: var(--color-text-secondary);
+}
+
+/* Reduced motion.
+ * This once covered .card-chevron--touch-glow only, leaving every
+ * other transition and animation running. Applied app-wide instead.
+ * Animations are reduced to a single near-instant pass rather than
+ * removed outright, so anything that waits on animationend still fires.
+ * Meaning must never depend on movement: the live indicator keeps its
+ * colour and label when its pulse stops. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Right-edge depth hint ---------- */
+.edge-gradient {
+  position: relative;
+}
+.edge-gradient::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
+  opacity: 0.5;
+  pointer-events: none;
+}
+.dark .edge-gradient::after {
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.tooltip-edge-clamp {
+  inset-inline-start: clamp(
+    0.5rem,
+    50% - var(--tw-tooltip-half),
+    calc(100vw - var(--tw-tooltip-w) - 0.5rem)
+  );
+}
+
+/* Pill badge (status chips, sport selector) */
+.pill {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+}
+/* .pill-green and .pill-orange lived here. The guide was the last thing
+ * using the green one; the orange one had already lost its last caller. */
+
+.group-open > .rotate-180 {
+  transition: transform 200ms ease-in-out;
+}
+
+/* hide the full word-mark by default (mobile first) */
+.logo-desktop {
+  display: none;
+}
+.logo-mobile {
+  display: inline-block;
+  height: 32px; /* pick your mobile navbar height */
+  width: auto;
+}
+
+/* The legacy .howto-* block stood here: eight rules on stock slate
+ * ramps, of which seven had no consumer at all. The eighth,
+ * .howto-step-num, was worse than dead — it was emitted after the
+ * utilities layer, so it silently beat its own call site's h-9 w-9 and
+ * font-bold, and its -2.5rem margin left every step number 20px clear of
+ * the rule it was meant to sit on. Replaced by the htu- block. */
+
+.layout-container {
+  contain: layout;
+}
+
+.contain-layout {
+  contain: layout;
+}
+
+/* Focus ring for interactive elements */
+@layer components {
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green;
+  }
+}
+
+/* =============================================================
+ * Sticky chrome surface — header, filters bar, bottom navigation.
+ * See docs/design_system.md §5.5 and §6.6: ground with a blur and a
+ * single hairline, never a shadow. On a near-black ground a shadow is
+ * invisible anyway, and stacking a black bar on a #0d1117 ground is
+ * what produced the seam across the top of every screen (defect 11).
+ *
+ * The alpha is what makes the blur visible; a fully opaque ground
+ * renders it inert. color-mix is guarded so an older WebView falls
+ * back to the opaque ground -- the blur is lost, the colour is still
+ * right, and the seam still does not come back.
+ *
+ * Note the header's blur has nothing to blur today: main scrolls
+ * internally, so content never passes under it. It is kept because the
+ * filters bar and the fixed bottom nav do have content moving beneath
+ * them, and because wiring scroll to the document would immediately
+ * make the header's matter too.
+ * ========================================================== */
+.chrome-surface,
+.filters-bar {
+  background: var(--ground);
+  backdrop-filter: blur(8px);
+}
+@supports (background: color-mix(in srgb, red 50%, transparent)) {
+  .chrome-surface,
+  .filters-bar {
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+  }
+}
+
+/* Bottom navigation active indicator — see docs/design_system.md §6.6.
+ * The active item carries a shape, not only a hue: colour alone puts the
+ * whole "which screen am I on" burden on the least reliable channel.
+ *
+ * The pill wraps the ICON ONLY. Wrapping icon plus label needs ~76px and
+ * "How To Use" is ~62px of text at 11px, so it would clip the label or
+ * push the bar past a 320px viewport — the constraint behind defect 23.
+ *
+ * The tint is brand green at opacity rather than a new hex, matching the
+ * gc- edge tiers, so the palette stays closed. */
+.tabbar-slot {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  transition: background-color 160ms ease;
+}
+.tabbar-item--on .tabbar-slot {
+  background: rgb(0 177 64 / 0.14);
+}
+
+/* =============================================================
+ * Segmented control — design system v1. See docs/design_system.md §6.3.
+ *
+ * Prefixed sc-. One component replacing three hand-rolled versions:
+ * the header sport switcher, the Stats sub-tabs and the Stats season
+ * selector. Nothing consumes these classes yet.
+ *
+ * Unselected labels are ink-2, not the ink-3 §6.3 first specified.
+ * These are interactive labels at 10.5px, which is nowhere near the
+ * large-text threshold, so they need 4.5:1 — and ink-3 measures
+ * 3.27:1 on panel. ink-2 measures 6.38:1 dark and 6.15:1 light.
+ * ========================================================== */
+
+.sc-track {
+  @apply inline-flex items-center gap-0.5 rounded-full;
+  padding: 3px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.sc-item {
+  @apply relative shrink-0 cursor-pointer rounded-full border-0 bg-transparent
+         font-mono font-bold uppercase;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.085em;
+  line-height: 1.35;
+  color: var(--ink-2);
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+/* Reaches the §6.4 minimum touch target without inflating the visible
+ * pill, which would make the header noticeably taller. Confined to the
+ * item's own horizontal box, so it cannot swallow a neighbour's taps —
+ * it only extends into the bar's vertical padding, which is empty. */
+.sc-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
+}
+
+.sc-item:hover:not([aria-pressed="true"]) {
+  color: var(--ink);
+}
+
+.sc-item[aria-pressed="true"] {
+  background: var(--accent-fill);
+  color: var(--accent-fill-ink);
+}
+
+/* A real outline, so it follows the 999px radius. An OS-default focus
+ * rectangle ignores the radius and cuts the corners off. */
+.sc-item:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+}
+
+/* No prefers-reduced-motion block here on purpose: the global rule
+ * near the top of this file already collapses every transition with
+ * !important, so a local one would be dead weight that also implies
+ * reduced motion is handled per component. It is not. */
+
+/* =============================================================
+ * Game card — design system v1. See docs/design_system.md §8.1.
+ *
+ * Prefixed gc- so nothing here collides with .app-card, which is
+ * still used by injury_report, game_detail_screen and the games
+ * skeleton and retires in stage 6.
+ *
+ * Nothing consumes these classes yet; the card adopts them in
+ * stage 5. Tier tints are brand green (#00B140) at opacity rather
+ * than new hexes, so the palette stays closed.
+ * ========================================================== */
+
+.gc {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 11px 13px 10px;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.gc--compact {
+  padding: 9px 11px 8px;
+}
+
+/* Machined top highlight. Reads better than a shadow on a near-black
+ * ground, where a shadow is effectively invisible. */
+.dark .gc::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.07) 22%,
+    rgb(255 255 255 / 0.07) 78%,
+    transparent
+  );
+}
+
+/* ---------- status rail ---------- */
+.gc-rail {
+  @apply flex items-center justify-between;
+  gap: 10px;
+  min-height: 17px;
+  margin-bottom: 9px;
+}
+.gc-time {
+  @apply font-mono uppercase whitespace-nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  color: var(--ink-3);
+}
+.gc-state {
+  @apply font-mono uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+}
+
+/* ---------- edge chip ----------
+ * The tier ladder is carried by background, border and glow rather
+ * than by three different greens, so High and Medium stay legibly
+ * apart without leaving the palette. */
+.gc-edge {
+  @apply inline-flex items-center font-mono uppercase whitespace-nowrap;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.gc-edge .gc-edge-dot {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+.gc-edge--high {
+  color: var(--green-text);
+  background: rgb(0 177 64 / 0.17);
+  border-color: rgb(0 177 64 / 0.5);
+  box-shadow: 0 0 12px -2px rgb(0 177 64 / 0.45);
+}
+.gc-edge--med {
+  color: var(--green-text);
+  background: rgb(0 177 64 / 0.09);
+  border-color: rgb(0 177 64 / 0.22);
+}
+.gc-edge--low {
+  color: var(--ink-3);
+  border-color: var(--line-2);
+}
+
+/* ---------- card variants ---------- */
+.gc--high {
+  border-color: rgb(0 177 64 / 0.3);
+  background: radial-gradient(
+      120% 90% at 0% 0%,
+      rgb(0 177 64 / 0.1),
+      transparent 58%
+    ),
+    var(--panel);
+}
+.gc--high::after,
+.gc--live::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+.gc--high::after {
+  background: var(--brand-green);
+}
+.gc--live {
+  border-color: rgb(255 127 0 / 0.3);
+}
+.gc--live::after {
+  background: var(--brand-orange);
+}
+.gc--done {
+  opacity: 0.68;
+}
+.gc--done .gc-name {
+  color: var(--ink-2);
+}
+.gc--done .gc-num {
+  color: var(--ink);
+}
+
+/* ---------- live indicator ----------
+ * Under prefers-reduced-motion the global rule collapses this to a
+ * single near-instant pass. The keyframes end at full opacity so the
+ * dot stays visible — the state must not depend on movement. */
+.gc-live {
+  @apply inline-flex items-center font-mono;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--orange-text);
+}
+.gc-live-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: gc-pulse 1700ms ease-in-out infinite;
+}
+@keyframes gc-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- matchup rows ---------- */
+.gc-team {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+}
+.gc-abbr {
+  @apply font-mono text-center;
+  padding: 3px 0;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  background: rgb(13 17 23 / 0.055);
+}
+.dark .gc-abbr {
+  background: rgb(255 255 255 / 0.055);
+}
+.gc-name {
+  @apply truncate;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.gc-num {
+  @apply flex items-center justify-end font-mono;
+  gap: 7px;
+  /* Fixed so the column edge never moves — between sports, or when a
+   * basketball score crosses 100. Sized for the widest case, 118.9. */
+  min-width: 74px;
+  font-variant-numeric: tabular-nums;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.gc-team--fade .gc-name {
+  color: var(--ink-2);
+  font-weight: 550;
+}
+.gc-team--fade .gc-num {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+/* The model's pick. visibility rather than display, so the marker
+ * still occupies its 5px and the two scores stay aligned. */
+.gc-pick {
+  width: 0;
+  height: 0;
+  flex: none;
+  border-left: 5px solid var(--green-text);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+.gc-pick--hidden {
+  visibility: hidden;
+}
+
+/* ---------- market strip ---------- */
+.gc-foot {
+  @apply flex items-center justify-between;
+  gap: 10px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.gc-mkt {
+  @apply font-mono truncate text-right;
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--ink-2);
+}
+.gc-mkt-key {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+.gc-mkt-sep {
+  color: var(--ink-3);
+  opacity: 0.6;
+  margin: 0 6px;
+}
+.gc-mkt--none {
+  color: var(--ink-3);
+  opacity: 0.85;
+}
+
+/* Affordance for the expand control. The label is what tells a first-time
+ * reader the card opens at all — it replaces a one-off tooltip that used to
+ * do that job. 26px tall, padded to a 44px target via the pseudo-element. */
+.gc-chev {
+  @apply relative inline-flex items-center;
+  flex: none;
+  gap: 5px;
+  height: 26px;
+  padding: 0 7px;
+  /* No negative left margin. The button carries its own background, so it
+   * reads as a chip like the team abbreviation above it, and the two line
+   * up on their box edges rather than glyph-to-box. */
+  margin: -6px 0;
+  border-radius: 7px;
+  color: var(--ink-3);
+  background: rgb(13 17 23 / 0.04);
+  transition: color 160ms ease, background 160ms ease;
+}
+.dark .gc-chev {
+  background: rgb(255 255 255 / 0.04);
+}
+.gc-chev:hover {
+  color: var(--ink-2);
+}
+.gc-chev::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+}
+.gc-chev-label {
+  @apply font-mono uppercase;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+/* Only the glyph turns. Rotating the button would invert the label with it. */
+.gc-chev svg {
+  transition: transform 200ms ease;
+}
+.gc-chev[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+/* ---------- expanded ---------- */
+.gc-exp {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.gc-lean-track {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgb(13 17 23 / 0.07);
+}
+.dark .gc-lean-track {
+  background: rgb(255 255 255 / 0.06);
+}
+.gc-lean-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: var(--green-text);
+}
+.gc-lean-mid {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: rgb(13 17 23 / 0.2);
+}
+.dark .gc-lean-mid {
+  background: rgb(255 255 255 / 0.22);
+}
+.gc-lean-cap {
+  @apply flex justify-between font-mono uppercase;
+  margin-top: 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.gc-lean-cap b {
+  color: var(--ink-2);
+  font-weight: 700;
+}
+
+.gc-pitch {
+  @apply flex flex-wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.gc-pitch-label {
+  @apply font-mono uppercase not-italic;
+  margin-right: 6px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.gc-pitch-tbd {
+  opacity: 0.55;
+}
+
+/* ---------- action chips ---------- */
+.gc-chips {
+  @apply flex flex-wrap;
+  gap: 7px;
+}
+.gc-chip {
+  @apply inline-flex items-center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.dark .gc-chip {
+  background: rgb(255 255 255 / 0.03);
+}
+.gc-chip:hover {
+  border-color: var(--ink-3);
+}
+/* Stated, not tappable — the dome weather chip. Must not look pressable. */
+.gc-chip--static {
+  opacity: 0.78;
+  cursor: default;
+}
+.gc-chip--static:hover {
+  border-color: var(--line-2);
+}
+
+/* Weather in flight. Holds the chip's footprint so the row does not
+ * reflow when it resolves. Stops moving under prefers-reduced-motion via
+ * the app-wide rule. */
+.gc-chip--skeleton {
+  width: 104px;
+  border-color: transparent;
+  background: linear-gradient(
+    90deg,
+    var(--panel-2),
+    var(--line),
+    var(--panel-2)
+  );
+  background-size: 200% 100%;
+  animation: gc-shimmer 1400ms ease-in-out infinite;
+}
+@keyframes gc-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.gc-caveat {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* =============================================================
+ * Modal — design system v1. See docs/design_system.md §6.7.
+ *
+ * Prefixed sgm- so nothing collides with the gc- card block or
+ * the legacy .app-card vocabulary. One shell, used by the
+ * snapshot, weather and injury modals; before this the three
+ * had three separate chromes agreeing on nothing.
+ *
+ * Nothing consumes these classes yet — the modals adopt them in
+ * later stages.
+ * ========================================================== */
+
+/* Above the header and bottom navigation (z-40) and the date
+ * popover (z-50), all of which the modal must cover. */
+.sgm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: sgm-fade 140ms ease;
+}
+
+/* The panel floats above the page, so unlike a card it takes a
+ * real shadow rather than a top highlight alone (§5.5). */
+.sgm {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  /* dvh so the panel is not clipped behind mobile browser chrome.
+   * The vh line is the fallback for engines without dvh. */
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.22), 0 2px 6px rgb(0 0 0 / 0.06);
+  animation: sgm-rise 140ms ease-out;
+}
+@media (min-width: 640px) {
+  .sgm {
+    max-width: 520px;
+  }
+}
+.dark .sgm {
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.45), 0 4px 10px rgb(0 0 0 / 0.18);
+}
+
+/* Same machined highlight as the card, for the same reason: on a
+ * near-black ground a shadow alone does not read. */
+.dark .sgm::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.07) 22%,
+    rgb(255 255 255 / 0.07) 78%,
+    transparent
+  );
+}
+
+/* Motion confirms the change without announcing it (§5.6). Both
+ * are collapsed to a single near-instant pass by the app-wide
+ * prefers-reduced-motion rule. */
+@keyframes sgm-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sgm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- header ---------- */
+.sgm-head {
+  @apply flex items-start justify-between;
+  flex: none;
+  gap: 10px;
+  padding: 13px 13px 11px 15px;
+  border-bottom: 1px solid var(--line);
+}
+.sgm-title {
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.sgm-sub {
+  @apply font-mono uppercase;
+  font-variant-numeric: tabular-nums;
+  margin-top: 3px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+/* A real 44px box rather than a small one padded out by a
+ * pseudo-element, which is how .gc-chev reaches the same target.
+ * That approach does not survive here: .sgm sets overflow hidden
+ * to clip the panel's corners, so an ::after extending past the
+ * head's padding is cut off. Measured at 43x43 with the right
+ * edge dead — the two sides nearest the panel edge were being
+ * clipped away. The box is transparent until hover, so the
+ * control still reads as a 16px glyph.
+ *
+ * The focus ring is --green-text rather than the app-wide
+ * .focus-ring utility, which uses brand green: that measures
+ * 2.85:1 on the light panel and misses the 3:1 non-text
+ * requirement in §9. See the defect register. */
+.sgm-x {
+  @apply grid place-items-center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -11px -11px 0 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+.sgm-x:hover {
+  color: var(--ink);
+  background: rgb(13 17 23 / 0.05);
+}
+.dark .sgm-x:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+.sgm-x:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+}
+
+/* ---------- body ----------
+ * The header stays put and the body scrolls, so a long snapshot
+ * never scrolls its own title out of view. */
+.sgm-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 13px 15px 15px;
+}
+
+/* For content that manages its own padding. A modifier rather than a
+ * utility passed at the call site: this block is emitted after the
+ * utilities layer, so at equal specificity `p-0` would lose to the rule
+ * above — the mechanism behind defects 24 and 26. */
+.sgm-body--flush {
+  padding: 0;
+}
+
+/* ---------- shared content vocabulary ---------- */
+
+/* Section rule. Replaces the stack of centred headings, which gave
+ * every section identical weight and no scanning anchor. */
+.sgm-sect {
+  @apply flex items-center;
+  gap: 9px;
+  margin: 16px 0 8px;
+}
+.sgm-sect:first-child {
+  margin-top: 0;
+}
+.sgm-sect > span {
+  @apply font-mono uppercase whitespace-nowrap;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.sgm-sect > i {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Label/value rows. Hairline separated, value right-aligned and
+ * tabular so a column of them lines up (§7.1). */
+.sgm-stat {
+  @apply flex items-baseline justify-between;
+  gap: 14px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+.sgm-stat:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.sgm-stat-k {
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+.sgm-stat-v {
+  @apply font-mono whitespace-nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* One muted line standing in for a group whose values are all
+ * absent (§7.3). Not an error, and never N/A. */
+.sgm-note {
+  padding: 2px 0 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ---------- weather ---------- */
+.sgm-wx-hero {
+  @apply flex items-center;
+  gap: 14px;
+  padding: 2px 0 14px;
+}
+.sgm-wx-glyph {
+  flex: none;
+  color: var(--ink-2);
+}
+.sgm-wx-temp {
+  @apply font-mono;
+  font-variant-numeric: tabular-nums;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+/* The feed's descriptions arrive lower case — "overcast clouds". */
+.sgm-wx-desc {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  text-transform: capitalize;
+}
+
+/* 1px gap over a line-coloured ground draws the dividers, so the cells
+ * share one border rather than doubling it where they meet. */
+.sgm-wx-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+  overflow: hidden;
+}
+.sgm-wx-cell {
+  background: var(--panel);
+  padding: 9px 11px;
+}
+.sgm-wx-k {
+  @apply font-mono uppercase;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.sgm-wx-v {
+  @apply font-mono;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.sgm-wx-wind {
+  @apply flex items-center;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.sgm-wx-dial {
+  flex: none;
+}
+.sgm-wx-rel {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+/* ---------- injuries ----------
+ * Teams are hairline-separated sections rather than nested cards. The
+ * old list drew each team as an .app-card inside the panel, which turned
+ * one object into a stack of panels — §7.2. */
+.sgm-inj-team {
+  @apply flex items-center justify-between;
+  gap: 10px;
+  margin: 14px 0 2px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+.sgm-inj-team:first-child {
+  margin-top: 0;
+}
+/* The team name is a section heading and has to outrank the player
+ * names under it. It was 13px/650 against players at 13.5px/600 — the
+ * heading was literally smaller than its own contents, which is why the
+ * two would not separate.
+ *
+ * The colour is --orange-text, the contrast-corrected token, not raw
+ * brand orange: 8.35:1 dark and 4.97:1 light, so it clears AA on both
+ * panels. NOTE: §5.1 reserves orange for the live state, and this is
+ * the first use outside it — either that rule gets amended or this
+ * reverts to ink. Flagged with the owner. */
+.sgm-inj-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--orange-text);
+}
+.sgm-inj-count {
+  @apply font-mono;
+  font-variant-numeric: tabular-nums;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+/* Collapsible form, for the schedule screens where a full slate can run
+ * to a dozen teams. The modal shows two and does not collapse them. */
+.sgm-inj-summary {
+  @apply flex cursor-pointer items-center justify-between;
+  gap: 10px;
+  margin: 14px 0 2px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+.sgm-inj-summary::-webkit-details-marker {
+  display: none;
+}
+.sgm-inj-summary:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+}
+details:first-of-type > .sgm-inj-summary {
+  margin-top: 0;
+}
+.sgm-inj-summary svg {
+  flex: none;
+  color: var(--ink-3);
+  transition: transform 200ms ease;
+}
+details[open] > .sgm-inj-summary svg {
+  transform: rotate(180deg);
+}
+
+.sgm-inj-row {
+  @apply flex items-center justify-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.sgm-inj-row:last-child {
+  border-bottom: 0;
+}
+.sgm-inj-player {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.sgm-inj-type {
+  margin-top: 1px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* "Out" is categorically different from the four degrees of doubt
+ * beside it — the player is not playing — so it takes the filled,
+ * full-contrast treatment and the rest stay a hairline outline. The
+ * ladder is carried by weight and fill rather than by a red/amber ramp,
+ * which §5.1 deliberately does not have. */
+.sgm-inj-badge {
+  @apply font-mono uppercase whitespace-nowrap;
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.sgm-inj-badge--out {
+  color: var(--ink);
+  border-color: var(--ink-3);
+  background: rgb(13 17 23 / 0.05);
+}
+.dark .sgm-inj-badge--out {
+  background: rgb(255 255 255 / 0.06);
+}
+
+/* ---------- snapshot ----------
+ * The matchup, stated the way the card states it. A reader arrives here
+ * one tap after seeing these two rows, so repeating them in the card's
+ * own shape is what makes the modal feel continuous with it — the
+ * previous "(Home: Atlanta Falcons) vs. (Away: Denver Broncos)" made
+ * them parse a sentence for what they had just been shown. */
+.sgm-vs {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.sgm-vs-row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+}
+.sgm-vs-abbr {
+  @apply font-mono text-center;
+  padding: 3px 0;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  background: rgb(13 17 23 / 0.055);
+}
+.dark .sgm-vs-abbr {
+  background: rgb(255 255 255 / 0.055);
+}
+.sgm-vs-name {
+  @apply truncate;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.sgm-vs-tag {
+  @apply font-mono uppercase;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+/* Charts sit in their own bordered box rather than on a raised panel,
+ * so the modal stays one object instead of a stack of cards (§7.2). */
+.sgm-chart {
+  padding: 8px 8px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.sgm-foot {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.sgm-foot a {
+  @apply inline-flex items-center;
+  gap: 4px;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.sgm-foot a:hover {
+  color: var(--ink);
+}
+.sgm-foot a:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ---------- skeleton ----------
+ * Mirrors the row anatomy so nothing reflows when the data lands, and
+ * replaces the word "Loading" (§6.8). */
+.sgm-skel {
+  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--panel-2),
+    var(--line),
+    var(--panel-2)
+  );
+  background-size: 200% 100%;
+  animation: sgm-shimmer 1400ms ease-in-out infinite;
+}
+@keyframes sgm-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* =============================================================
+ * Offline notice — design system v1. See §6.9.
+ *
+ * Two shapes, one vocabulary: a centred block for a screen that
+ * cannot render at all, and an inline card for a screen that can
+ * still render but has lost part of itself.
+ *
+ * Closes defect 3, which turned out to be on five rendered
+ * surfaces rather than the two the register listed —
+ * offline_centered.tsx is drawn by Games twice and by Stats, on
+ * top of the two hand-rolled copies in How to Use and More. All
+ * of them set text-white on --color-panel, which is #f8fafc in
+ * light: 1.05:1.
+ *
+ * Nothing consumes these classes yet.
+ * ========================================================== */
+.ofl {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  padding: 16px;
+}
+.ofl--centred {
+  max-width: 380px;
+  padding: 22px 20px;
+  text-align: center;
+}
+.ofl-title {
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.ofl-body {
+  margin-top: 5px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.ofl--centred .ofl-body {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 42ch;
+}
+
+/* =============================================================
+ * Guided-tour tooltip — design system v1. See §6.7.
+ *
+ * Prefixed jrt- and deliberately NOT reusing the sgm- block. A
+ * tooltip is not a dialog: Joyride owns its positioning, and a
+ * focus trap would fight the tour. It matches sgm- on tokens,
+ * radius, border and shadow so the two read as siblings, while
+ * staying independent of the modal work running in parallel.
+ *
+ * Nothing consumes these classes yet.
+ * ========================================================== */
+.jrt {
+  width: 100%;
+  max-width: 336px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 14px 15px 12px;
+  box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.22), 0 2px 6px rgb(0 0 0 / 0.06);
+}
+.dark .jrt {
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.45), 0 4px 10px rgb(0 0 0 / 0.18);
+}
+
+.jrt-head {
+  @apply flex items-center justify-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* Nine steps across three screens with no sense of progress is a
+ * reason people abandon a tour. Mono, because it is a number. */
+.jrt-step {
+  @apply font-mono uppercase whitespace-nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.jrt-dots {
+  @apply flex;
+  gap: 4px;
+}
+.jrt-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--line-2);
+}
+.jrt-dot--on {
+  background: var(--green-text);
+}
+
+.jrt-body {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.jrt-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.jrt-note {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.jrt-foot {
+  @apply flex items-center justify-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.jrt-btns {
+  @apply flex;
+  gap: 6px;
+}
+
+/* §6.4 ghost, secondary and primary.
+ *
+ * The focus outline is --green-text rather than the app-wide
+ * .focus-ring utility, which uses brand green — 2.85:1 on the
+ * light panel, short of the 3:1 non-text requirement in §9. Same
+ * reasoning as .sgm-x. */
+.jrt-skip,
+.jrt-back,
+.jrt-next {
+  @apply relative inline-flex items-center justify-center;
+  min-height: 30px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease,
+    filter 160ms ease;
+}
+.jrt-skip:focus-visible,
+.jrt-back:focus-visible,
+.jrt-next:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+}
+
+/* Padded to a 44px target by a pseudo-element so the tooltip
+ * stays compact. Back and Next expand vertically only: they sit
+ * 6px apart, and expanding them sideways as well would overlap
+ * their hit areas so a press between the two could land on
+ * either. Skip stands alone, so it takes the width. */
+.jrt-skip::after,
+.jrt-back::after,
+.jrt-next::after {
+  content: "";
+  position: absolute;
+  inset: -7px 0;
+}
+.jrt-skip::after {
+  inset: -7px -8px;
+}
+
+.jrt-skip {
+  border: 0;
+  background: transparent;
+  padding: 0 2px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.jrt-skip:hover {
+  color: var(--ink-2);
+}
+
+.jrt-back {
+  padding: 0 11px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.jrt-back:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.jrt-next {
+  padding: 0 13px;
+  border: 0;
+  font-weight: 700;
+  background: var(--accent-fill);
+  color: var(--accent-fill-ink);
+}
+.jrt-next:hover {
+  filter: brightness(1.06);
+}
+/* Held while the next step's anchor is still mounting — switching sport
+ * swaps the Games grid for skeletons, so the wait is real. Dimmed rather
+ * than relabelled: the button still does what it says, just not yet. */
+.jrt-next:disabled {
+  opacity: 0.6;
+  cursor: default;
+  filter: none;
+}
+
+/* =============================================================
+ * How to Use — design system v1. See §8.3.
+ *
+ * The one prose screen: wider measure, more spacing, and the
+ * numbered timeline retained, because the steps here genuinely
+ * are sequential and the numbering therefore encodes something
+ * true rather than decorating the list.
+ *
+ * The card specimen inside the guide is built from the shipping
+ * gc- rules rather than redrawn, so a restyle of the card
+ * restyles the guide with it. That removes most of the drift
+ * that made this refresh necessary — not all of it, since the
+ * markup is still a copy of the card's structure.
+ *
+ * Nothing consumes these classes yet.
+ * ========================================================== */
+.htu-title {
+  @apply flex items-center;
+  gap: 9px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.htu-sub {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+
+.htu-sec {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.htu-eyebrow {
+  @apply font-mono uppercase;
+  margin-bottom: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.htu-h2 {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.htu-p {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+
+/* The timeline. The rule stops short at both ends so it reads as
+ * spanning the steps rather than running off them, and each
+ * number sits centred on it inside a ring of ground.
+ *
+ * The old .howto-step-num pulled itself left with a -2.5rem
+ * margin and landed 20px clear of the rule it was meant to sit
+ * on. This positions against the same offset the rule uses. */
+.htu-ol {
+  @apply relative flex flex-col;
+  gap: 24px;
+  margin: 0;
+  padding: 0 0 0 40px;
+  list-style: none;
+}
+.htu-ol::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  bottom: 11px;
+  left: 11px;
+  width: 1px;
+  background: var(--line);
+}
+.htu-li {
+  position: relative;
+}
+.htu-num {
+  @apply absolute inline-flex items-center justify-center font-mono;
+  left: -40px;
+  top: 0;
+  width: 23px;
+  height: 23px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--accent-fill);
+  color: var(--accent-fill-ink);
+  /* Punches the rule out behind the number rather than drawing
+   * over it, so it works on either ground. */
+  box-shadow: 0 0 0 4px var(--ground);
+}
+
+/* Annotated card: the specimen beside its parts list. Stacks
+ * below 620px so the card never shrinks past legibility. */
+.htu-anno {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 620px) {
+  .htu-anno {
+    grid-template-columns: minmax(0, 300px) 1fr;
+  }
+}
+.htu-anno-list {
+  @apply flex flex-col;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.htu-anno-k {
+  @apply block font-mono uppercase;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.htu-anno-v {
+  @apply block;
+  margin-top: 2px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* ---------- prose spacing ----------
+ * Every block of running prose on this screen, and the emphasis
+ * inside it, are tuned together here rather than three times over.
+ *
+ * The complaint this answers is that bold runs read as clogged and
+ * as though the space after them were missing. Measured, the
+ * spaces are all present and the source is correct — an inter-word
+ * gap renders at 3.79px against a 14px body, which is the face's
+ * own 0.27em space. The problem is optical: emphasis changes
+ * weight *and* jumps from --ink-2 to --ink (6.38:1 to 14.93:1), so
+ * a bold run reads as a dense block and the ordinary gap either
+ * side of it looks tighter than it is.
+ *
+ * So the gap is widened rather than the weight reduced, and the
+ * bold gets a little tracking to open the letterforms. Both are
+ * deliberately small — this is legibility tuning, not a change to
+ * how loudly emphasis speaks.
+ *
+ * The tracking matters more off this machine than on it. macOS
+ * resolves the stack to SF, which has a true 600. Android has no
+ * 600 for Roboto, so CSS font matching searches upward from a
+ * weight above 500 and lands on Bold — a heavier face than the
+ * design asks for, and the one the screenshots were taken on. */
+.htu-sub,
+.htu-p,
+.htu-anno-v,
+.htu-limits li {
+  word-spacing: 0.05em;
+  text-wrap: pretty;
+}
+
+.htu-p strong,
+.htu-anno-v strong {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* What the app does not do. A panel rather than a callout rail:
+ * it states scope, it does not warn. */
+.htu-limits {
+  margin-top: 26px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.htu-limits ul {
+  @apply flex flex-col;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.htu-limits li {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* §6.4 primary. */
+.htu-cta {
+  @apply relative inline-flex items-center justify-center;
+  margin-top: 26px;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent-fill);
+  color: var(--accent-fill-ink);
+  transition: filter 160ms ease;
+}
+.htu-cta:hover {
+  filter: brightness(1.06);
+}
+.htu-cta:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: 2px;
+}
+
+/* =============================================================
+ * Stats screen — design system v1. See docs/design_system.md §8.2
+ * for the screen and §6.5 for the table.
+ *
+ * Prefixed st-. The prefix was confirmed unused across frontend/src
+ * before this block was written. Nothing consumes these classes yet;
+ * the screen adopts them in the rewrite commit.
+ *
+ * The organising idea is that the sorted column is the subject of the
+ * page. It keeps full ink while every other numeric column recedes to
+ * ink-2, and a neutral bar behind each figure gives the column a shape.
+ * The bar reports magnitude, never quality — the app does not know
+ * which direction is good for def_rtg, tov_pct, sos or pace, so no
+ * treatment here may imply one. §8.2 records the reasoning.
+ * ========================================================== */
+
+/* ---------- toolbar ----------
+ * Two segmented controls, wrapping to a second row where they do not
+ * fit side by side. The screen passes its own horizontal padding;
+ * .filters-bar no longer sets any, which is what closes defect 24 —
+ * its flat 24px used to beat Stats' responsive steps on specificity,
+ * leaving the bar 8px wider than the content beneath it. */
+.st-toolbar {
+  @apply flex flex-wrap items-center justify-between;
+  gap: 8px 12px;
+}
+
+/* Five NBA season labels ("2025-26") do not fit a narrow viewport, so
+ * the track scrolls rather than wrapping mid-control. Scrollbar hidden:
+ * the pills are their own affordance, and a bar under a 32px control
+ * is more noise than signal. */
+.st-seasons {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.st-seasons::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- heading ----------
+ * Names the column the table is sorted by, so the page always states
+ * what the reader is looking at. */
+.st-head {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0;
+}
+.st-head-key {
+  color: var(--green-text);
+  font-style: normal;
+}
+/* ink-2 rather than the ink-3 §5.1 allows for micro-labels: this line
+ * carries the season and the row count, which a reader needs, and ink-3
+ * measures 2.96:1 on ground in light mode — under even the 3:1 that
+ * concession assumes. */
+.st-cap {
+  @apply font-mono uppercase;
+  margin-top: 3px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+}
+
+/* ---------- search (§6.4 input) ---------- */
+.st-search {
+  @apply w-full;
+  max-width: 260px;
+  min-height: 38px;
+  padding: 0 11px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 14px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.st-search::placeholder {
+  color: var(--ink-3);
+}
+.st-search:focus {
+  outline: none;
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 1px var(--brand-green);
+}
+
+/* ---------- table ----------
+ * The wrapper is a real scroll port in BOTH axes. overflow-x alone
+ * computes overflow-y to auto but leaves the box unconstrained, so it
+ * never scrolls vertically and a sticky thead inside it is inert —
+ * which is how this header sat sticky and unstuck for its whole life
+ * (defect 52). The max-height is what makes sticky work. */
+.st-wrap {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  overflow: auto;
+  max-height: calc(100vh - 260px);
+  min-height: 180px;
+}
+
+.st-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Numeric columns take their natural width so values sit together
+ * instead of a hand's width apart; the name column is the only elastic
+ * one. The old table was min-w-full with as few as four columns across
+ * a desktop viewport. */
+.st-table th,
+.st-table td {
+  width: 1%;
+  white-space: nowrap;
+}
+.st-table th.st-th--txt,
+.st-table td.st-td--txt {
+  width: auto;
+}
+
+/* ---------- header ---------- */
+.st-th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0;
+  text-align: right;
+  vertical-align: middle;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line);
+}
+.st-th--txt {
+  text-align: left;
+}
+
+/* A button filling the cell, so the whole cell is the target AND it is
+ * keyboard-operable. The previous header was an onClick on a bare th
+ * with tabIndex -1: aria-sort announced a sortable column that no
+ * keyboard could sort (defect 53). */
+.st-sort {
+  @apply inline-flex w-full cursor-pointer items-center font-mono uppercase;
+  gap: 5px;
+  justify-content: flex-end;
+  padding: 9px 12px;
+  border: 0;
+  background: transparent;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  /* ink-2, not the ink-3 §6.5 first specified — the same correction §6.3
+   * already made for the segmented control's unselected labels, for the
+   * same reason. A column header names the data; it is not a decorative
+   * micro-label, and ink-3 measures 3.03:1 on panel-2 in light mode.
+   * ink-2 measures 6.15:1 light and 6.38:1 dark, and the sorted column
+   * still steps up to ink, so the hierarchy survives. */
+  color: var(--ink-2);
+  transition: color 160ms ease;
+}
+.st-th--txt .st-sort {
+  justify-content: flex-start;
+}
+.st-sort:hover {
+  color: var(--ink);
+}
+.st-th--on .st-sort {
+  color: var(--ink);
+}
+/* Inset, because an outset ring on a sticky header cell is clipped by
+ * the wrapper's overflow on the top row. */
+.st-sort:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: -2px;
+}
+
+.st-caret {
+  flex: none;
+  opacity: 0.3;
+  transition: opacity 160ms ease;
+}
+.st-sort:hover .st-caret {
+  opacity: 0.6;
+}
+.st-th--on .st-caret {
+  opacity: 1;
+  color: var(--green-text);
+}
+
+/* The rank gutter's header has no label and nothing to sort. */
+.st-th--rank {
+  padding: 9px 6px 9px 12px;
+}
+
+/* ---------- body ---------- */
+.st-td {
+  @apply font-mono;
+  position: relative;
+  padding: 8px 12px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  color: var(--ink-2);
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Words are not mono — §5.2.
+ *
+ * Deliberately not truncated. §6.5 pins this column so the name stays
+ * visible, and an ellipsis plus a `title` would put the full name behind
+ * a hover that never fires on touch — the same reason "Click to sort"
+ * was removed from the header. The column takes its natural width and
+ * the table scrolls instead. */
+.st-td--txt {
+  @apply font-sans;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+}
+.st-td--sub {
+  @apply font-sans;
+  text-align: left;
+  font-weight: 400;
+}
+/* ink-2, not ink-3. The rank is a value a reader uses, not a
+ * micro-label, so it needs 4.5:1 rather than the 3:1 §5.1 allows for
+ * 700-weight uppercase labels. ink-3 measures 3.27:1 on panel and
+ * 2.84:1 once a row hover lifts the surface — a real failure at 11px.
+ * ink-2 measures 6.38:1 and 5.55:1. It is still quieter than the sorted
+ * column, which is all the hierarchy needed. */
+.st-td--rank {
+  padding: 8px 6px 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* The sorted column, at full contrast. No background tint: the column
+ * of bars already marks it, and §3 prefers one loud treatment to
+ * several quiet ones. */
+.st-td--on {
+  color: var(--ink);
+}
+
+/* No zebra striping (§6.5). The hover is a solid rather than an alpha
+ * because the pinned first column must stay opaque as the numerics
+ * scroll under it. */
+.st-row:hover .st-td {
+  background: var(--panel-hover);
+}
+.st-table tbody tr:last-child .st-td {
+  border-bottom: 0;
+}
+
+/* ---------- pinned first column ----------
+ * Keeps the team or player name anchored while the numerics scroll.
+ * The header's own pinned cell needs the higher z-index, being sticky
+ * on both axes at once. */
+.st-pin {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.st-th.st-pin {
+  z-index: 3;
+}
+
+/* ---------- magnitude bar ----------
+ * Width is the value's place in its own column's range. Neutral ink at
+ * 7%, never green: this reports how big the number is, which is a fact,
+ * and stops short of whether that is good, which the app cannot know. */
+.st-bar {
+  position: absolute;
+  right: 0;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 2px 0 0 2px;
+  background: rgb(13 17 23 / 0.062);
+  pointer-events: none;
+}
+.dark .st-bar {
+  background: rgb(255 255 255 / 0.075);
+}
+.st-val {
+  position: relative;
+}
+
+/* ---------- skeleton ----------
+ * Rows at the real 33px so nothing reflows when the data lands (§6.8),
+ * rather than the generic 32px bars this screen used to show. Stops
+ * moving under prefers-reduced-motion via the app-wide rule. */
+/* 34px matches the real row, measured at 33.7px on the running app:
+ * 16px vertical padding, a 13px/1.3 line box, and the 1px rule. Matched
+ * by measurement rather than by arithmetic, because the line box rounds. */
+.st-skel-row {
+  @apply flex items-center;
+  gap: 12px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+.st-skel-row:last-child {
+  border-bottom: 0;
+}
+.st-skel {
+  height: 9px;
+  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--panel-2),
+    var(--line),
+    var(--panel-2)
+  );
+  background-size: 200% 100%;
+  animation: st-shimmer 1400ms ease-in-out infinite;
+}
+@keyframes st-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* =============================================================
+ * List row — design system v1. See docs/design_system.md §6.12.
+ *
+ * The component §6 said this library was missing. Prefixed lr-,
+ * confirmed unused across frontend/src before this block was
+ * written.
+ *
+ * The organising idea is that a settings list is one surface with
+ * rows in it, not fourteen surfaces stacked up. More previously
+ * drew every row as its own bordered card, which in light mode
+ * put a #ffffff row on a #ffffff page separated only by a
+ * hairline — the list had no surface of its own at all. A single
+ * panel per section, with rows divided by the same hairline the
+ * card uses, is the §6.1 card language applied to a list.
+ *
+ * Rows are real anchors and buttons. The 48px min-height clears
+ * the §9 touch target on its own, so unlike .sc-item there is no
+ * ::before to extend it.
+ *
+ * Focus is --green-text rather than the app-wide .focus-ring
+ * utility, which is brand green: 2.85:1 on the light panel,
+ * short of the 3:1 §9 requires of a control. Same reasoning, and
+ * the same value, as .sgm-x, .jrt-next and .htu-cta. The offset
+ * is negative because the group clips to its own radius, and an
+ * outline drawn outside the row would be cut off by it.
+ *
+ * Nothing consumes these classes yet.
+ * ========================================================== */
+.lr-group {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+/* The same machined top highlight the card carries, for the same
+ * reason: on a near-black ground a shadow is invisible. */
+.dark .lr-group::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.07) 22%,
+    rgb(255 255 255 / 0.07) 78%,
+    transparent
+  );
+}
+
+.lr {
+  @apply flex w-full items-center text-left;
+  gap: 11px;
+  min-height: 48px;
+  padding: 11px 13px;
+  font-size: 14px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  transition: background-color 160ms ease;
+}
+
+/* One divider rule for every child pairing, so a tile grid or a
+ * settings row divides from a link row without each combination
+ * needing its own selector.
+ *
+ * It must stay *after* `.lr`, and this is not cosmetic. `.lr` resets
+ * `border` to 0 because a row can be a <button>, and `.lr-group > * + *`
+ * has exactly the same specificity — one class, two universals — so at
+ * equal weight the later rule wins. With this block written first, every
+ * divider computed to `border-top: 0px none` and the group rendered as
+ * one undivided slab. Measured on the running app before it was moved,
+ * which is the only way it would have been noticed: it looks like a
+ * design choice, not a bug. Same cascade mechanism as defects 24 and 26. */
+.lr-group > * + * {
+  border-top: 1px solid var(--line);
+}
+a.lr {
+  text-decoration: none;
+}
+button.lr {
+  cursor: pointer;
+}
+
+.lr:hover {
+  background: var(--panel-hover);
+}
+.lr:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+
+.lr-ico {
+  flex: none;
+  color: var(--ink-2);
+}
+.lr-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.lr-trail {
+  @apply inline-flex items-center;
+  flex: none;
+  color: var(--ink-3);
+}
+
+/* ---------- tiles ----------
+ * Four accounts that differ only by which service they are. As
+ * four full-width rows they were a quarter of the screen saying
+ * the same handle three times. Icon above an 11px label is the
+ * one arrangement §5.7 permits an icon to lead, and it is what
+ * the bottom navigation already does. */
+.lr-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.lr-tile {
+  @apply flex flex-col items-center justify-center;
+  gap: 5px;
+  min-height: 62px;
+  padding: 10px 4px;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.lr-tile + .lr-tile {
+  border-left: 1px solid var(--line);
+}
+.lr-tile:hover {
+  background: var(--panel-hover);
+  color: var(--ink);
+}
+.lr-tile:focus-visible {
+  outline: 2px solid var(--green-text);
+  outline-offset: -3px;
+  border-radius: 10px;
+}
+
+/* =============================================================
+ * More screen — design system v1. See docs/design_system.md §8.4.
+ *
+ * Prefixed mor-, not mr-, because mr- is Tailwind's margin-right
+ * scale and a grep for it would return several hundred lines of
+ * unrelated markup.
+ *
+ * Only the screen's own furniture lives here; every row comes
+ * from the lr- block above.
+ *
+ * Nothing consumes these classes yet.
+ * ========================================================== */
+.mor {
+  @apply mx-auto flex w-full flex-col;
+  max-width: 42rem;
+  gap: 22px;
+  padding: 18px 12px 26px;
+  padding-bottom: calc(26px + env(safe-area-inset-bottom));
+}
+@media (min-width: 640px) {
+  .mor {
+    gap: 26px;
+    padding: 24px 24px 34px;
+    padding-bottom: calc(34px + env(safe-area-inset-bottom));
+  }
+}
+
+.mor-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.mor-sec {
+  @apply flex flex-col;
+  gap: 9px;
+}
+
+/* Left-aligned at every width. The previous heading centred on
+ * mobile and left-aligned from sm up, so on a phone every
+ * heading sat over a column of rows it did not line up with. */
+.mor-h2 {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* The segmented control sits on a row that is already --panel, so
+ * its own --panel track would read as a floating border. --panel-2
+ * is the nested-surface token and is what that case is for. */
+.mor-theme .sc-track {
+  background: var(--panel-2);
+  border-color: var(--line-2);
+}
+
+.mor-ver {
+  @apply font-mono text-center;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}

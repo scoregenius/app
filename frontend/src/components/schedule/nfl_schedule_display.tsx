@@ -1,0 +1,185 @@
+// frontend/src/components/schedule/nfl_schedule_display.tsx
+import React, { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { startOfDay, isBefore } from "date-fns";
+import { useDate } from "@/contexts/date_context";
+import { useNFLSchedule } from "@/api/use_nfl_schedule";
+import { useOnline } from "@/contexts/online_context";
+import type { UnifiedGame } from "@/types";
+
+import SkeletonBox from "@/components/ui/skeleton_box";
+import EmptyState from "@/components/ui/empty_state";
+import { CalendarOff, CircleCheck } from "lucide-react";
+import { useInjuries, type Injury } from "@/api/use_injuries";
+const LazyInjuryReport = lazy(
+  () => import("@/components/shared/injury_report"),
+);
+const LazyGameCard = lazy(() => import("@/components/games/game_card"));
+
+const formatLocalDate = (d: Date | null | undefined): string =>
+  !d
+    ? ""
+    : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+        d.getDate(),
+      ).padStart(2, "0")}`;
+
+const NFLScheduleDisplay: React.FC = () => {
+  const { date } = useDate()!;
+  const online = useOnline(); // ✅ single source of truth for connectivity
+
+  const isoDate = formatLocalDate(date);
+  const displayDate = date?.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+
+  const today = startOfDay(new Date());
+  const selectedDay = date ? startOfDay(date) : null;
+  const isPastDate = selectedDay ? isBefore(selectedDay, today) : false;
+
+  // Used to filter out concluded games near real time
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const { data: games = [], isLoading, isError } = useNFLSchedule(isoDate);
+  const {
+    data: injuries = [],
+    isLoading: isLoadingInjuries,
+    error: injuriesError,
+  } = useInjuries("NFL", isoDate);
+
+  const playingTeams = useMemo(() => {
+    const set = new Set<string>();
+    games.forEach(({ homeTeamName, awayTeamName }) => {
+      [homeTeamName, awayTeamName].forEach((t) => {
+        if (t) set.add(t.trim().toLowerCase());
+      });
+    });
+    return set;
+  }, [games]);
+
+  const injuriesByTeam = useMemo(() => {
+    const grouped: Record<string, Injury[]> = {};
+    injuries.forEach((inj) => {
+      const t = inj.team_display_name?.trim();
+      if (!t) return;
+      const key = t.toLowerCase();
+      if (!playingTeams.has(key)) return;
+      (grouped[t] ||= []).push(inj);
+    });
+    return grouped;
+  }, [injuries, playingTeams]);
+
+  const teamsWithInjuries = useMemo(
+    () => Object.keys(injuriesByTeam).sort(),
+    [injuriesByTeam],
+  );
+
+  const filteredGames = useMemo(() => {
+    if (isPastDate) return games;
+
+    const bufferMs = 3.5 * 60 * 60 * 1000;
+    const nowUtc = Date.now() + new Date().getTimezoneOffset() * 60 * 1000;
+
+    return games.filter(({ gameTimeUTC }: UnifiedGame) => {
+      const kickoffUtc = new Date(gameTimeUTC ?? "").getTime();
+      if (Number.isNaN(kickoffUtc)) return true;
+
+      // Hide once 3.5h after kickoff UTC, but guard for next-day rollovers
+      const hideAfter = kickoffUtc + bufferMs;
+      return nowUtc < hideAfter;
+    });
+  }, [games, now, isPastDate]);
+
+  const noGamesInitiallyScheduled = games.length === 0;
+  const allGamesFilteredOut = games.length > 0 && filteredGames.length === 0;
+
+  return (
+    <div className="pt-4">
+      {/* 📶 Connectivity: show offline ONLY when provider says so */}
+      {!online ? (
+        <p className="text-center text-slate-500 dark:text-slate-400">
+          Live NFL schedule for {displayDate} requires internet. Please
+          reconnect.
+        </p>
+      ) : isLoading ? (
+        <div className="p-4">
+          <h2 className="text-lg font-semibold mb-3 italic animate-pulse text-gray-500 dark:text-text-primary">
+            Loading NFL games for {displayDate}…
+          </h2>
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonBox key={i} className="h-24 w-full" />
+            ))}
+          </div>
+        </div>
+      ) : isError ? (
+        // 🔴 Treat HTTP/throw as DATA ERROR, not offline
+        <p className="text-center text-slate-500 dark:text-slate-400">
+          Error fetching NFL games for {displayDate}.
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {filteredGames.length ? (
+            <Suspense
+              fallback={
+                <div className="space-y-4">
+                  {Array.from({ length: filteredGames.length }).map((_, i) => (
+                    <SkeletonBox key={i} className="h-24 w-full" />
+                  ))}
+                </div>
+              }
+            >
+              <div className="space-y-4">
+                {filteredGames.map((g) => (
+                  <LazyGameCard key={g.id} game={g} />
+                ))}
+              </div>
+            </Suspense>
+          ) : noGamesInitiallyScheduled ? (
+            <EmptyState
+              icon={CalendarOff}
+              title={`No NFL games on ${displayDate}`}
+              description="Nothing is scheduled for this date. Pick another date from the calendar, or switch sport above."
+            />
+          ) : allGamesFilteredOut ? (
+            <EmptyState
+              icon={CircleCheck}
+              title={`All NFL games have finished`}
+              description={`Every game on ${displayDate} has ended.`}
+            />
+          ) : null}
+        </div>
+      )}
+
+      {games.length > 0 && (
+        <div className="mt-8 border-t border-line pt-6">
+          <h2 className="mb-3 text-left text-lg font-semibold text-slate-800 dark:text-text-primary">
+            Daily Injury Report
+          </h2>
+          <Suspense
+            fallback={
+              <p className="text-left text-sm italic text-text-secondary">
+                Loading injury report…
+              </p>
+            }
+          >
+            <LazyInjuryReport
+              displayDate={displayDate as string}
+              isPastDate={isPastDate}
+              allGamesFilteredOut={allGamesFilteredOut}
+              isLoadingInjuries={isLoadingInjuries}
+              injuriesError={injuriesError ?? undefined}
+              teamsWithInjuries={teamsWithInjuries}
+              injuriesByTeam={injuriesByTeam}
+            />
+          </Suspense>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default NFLScheduleDisplay;

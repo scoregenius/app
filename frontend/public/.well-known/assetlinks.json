@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.scoregenius.app",
+      "sha256_cert_fingerprints": [
+        "5A:A0:9B:BD:E6:F4:04:F2:28:CF:75:6D:8B:64:0A:16:D3:4E:ED:8F:9E:27:7D:7E:8E:7D:35:C5:AE:D7:51:E3"
+      ]
+    }
+  }
+]
