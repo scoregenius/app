@@ -1,21 +1,28 @@
 # ScoreGenius Design System
 
-**Version:** 1.7
-**Status:** Foundations, the Games screen, the shared chrome, How to Use, the guided tour, the three
-Games modals, the Stats screen and More are **built and live**. Game detail has direction but is not
-yet specified.
-**Approved:** 2026-08-13 · **Games screen shipped:** 2026-08-14 · **Chrome shipped:** 2026-08-14 ·
-**How to Use and tour shipped:** 2026-08-14 · **Modals shipped:** 2026-08-14 ·
-**Stats shipped:** 2026-08-15 · **More shipped:** 2026-08-15
+**Version:** 1.12 · **Last revised:** 2026-08-17
+**Status:** Every screen a user can reach is **built and live** on this system — Games, Stats, How to
+Use, More, the shared chrome, the guided tour and the three Games modals. Two things are not: the
+**§5.2** sans typeface, which is specified but not served, and **§6.4** buttons and inputs, which is
+specification rather than a shared component. **§8.5** game detail was never built and its legacy
+stand-in was deleted on 2026-08-17. The rest of the outstanding work is listed in §12.
+**Approved:** 2026-08-13 · **Games screen, chrome, How to Use, tour and modals shipped:** 2026-08-14
+· **Stats and More shipped:** 2026-08-15 · **Register closed:** 2026-08-16
 **Scope:** the app interior served at `/app` from `frontend/src`. The marketing pages and the brand
-layer (icon, splash, wordmark) are governed separately.
+layer (icon, splash, wordmark) are governed separately — see
+[`handover/graphics/README.md`](./handover/graphics/README.md).
 
 This is the reference for the app-wide redesign.
 
-The foundations in §5, the Games screen in §8.1 and the chrome in §6.3 and §6.6 are implemented —
-the tokens, the card, its states and fallbacks, the segmented control and the navigation all
-describe running code, so where this document and those disagree, **that is a bug in one of them**.
-For the screens still on the old styling, this document is the target and wins.
+**Almost all of this document now describes running code**, not a target. The tokens, the card, its
+states and fallbacks, the segmented control, the navigation, the modal shell, the data table, the
+list row, the tour and the chart palette are all built, so where this document and the code
+disagree, **that is a bug in one of them**. Three places still describe something that does not
+ship, and each says so on the spot: the sans typeface in **§5.2**, the button and input components
+in **§6.4**, and game detail in **§8.5**, which is direction for a screen that has never existed.
+
+Each §6 component carries a **Built** or **Specification** marker for exactly this reason — so a
+reader can tell at a glance which sections are a description and which are an instruction.
 
 ---
 
@@ -34,6 +41,7 @@ For the screens still on the old styling, this document is the target and wins.
 11. [Defect register](#11-defect-register)
 12. [Implementation plan](#12-implementation-plan)
 13. [Decisions](#13-decisions)
+14. [Provenance](#14-provenance)
 
 ---
 
@@ -46,8 +54,13 @@ the environment traps that will otherwise cost you an afternoon.
 **Designing a new screen:** read §2–§4 for the stance, then build from §6 components and §7
 patterns. If you need something §6 does not have, add it to §6 rather than styling it locally.
 
-**Changing an existing screen:** check §11 first — the screen may already have a known defect that
-your change should absorb.
+**Changing an existing screen:** check §11 first. The register is fully closed, so nothing there is
+outstanding work — but it is the record of what went wrong on that screen before, and several
+entries are the argument for a rule elsewhere in this document that your change should not undo.
+
+**Taking this project over:** read §2–§4, then §12's list of what remains. §4 is the section to
+read first if you read only one — it documents what the app genuinely knows, which the code implies
+otherwise and has already misled a reader on this project.
 
 **Settling an argument:** §3 decides most of them. If it doesn't, the tiebreaker is whichever option
 better serves a user scanning fifteen items at arm's length.
@@ -130,7 +143,11 @@ Documented because the code implies otherwise, and has already misled a reader o
 ### 4.1 A game has three states
 
 Scheduled → in progress → final. **"In progress" is inferred client-side** from the start time plus
-3.5 hours (`GAME_STALE_MS` in `game_card.tsx`), not reported by any feed.
+3.5 hours (`GAME_STALE_MS`), not reported by any feed. That constant is declared three times — once
+in `game_card.tsx` and twice in `game_screen.tsx` — with the same value in each. **Change one and
+you must change all three**, or a card and the list holding it will disagree about whether the same
+game has started. It is the same duplication hazard as `venues.ts` against `stadium_data.json`
+(§4.4), without the test that closes that one.
 
 There is **no live score, inning, quarter, clock, possession or drive data**, and none is planned.
 Any design showing live game detail is designing for data that does not exist.
@@ -181,8 +198,9 @@ round-trip and never displays the wrong thing.
 
 ### 5.1 Colour
 
-Brand green and orange are fixed. What the system adds is a *lifted* green for text on dark ground
-and a *deep* green for text on light — brand green at body sizes fails AA on a light ground.
+Brand green and orange are fixed. What the system adds is `green-text`: a *lifted* green on dark
+ground and a *deep* green on light, carried by one token with two theme values, because brand green
+at body sizes fails AA on a light ground.
 
 All ratios below were measured, not estimated, and two of them corrected values this document
 previously asserted. **Brand green on the dark panel measures 6.02:1 and passes on its own**, so the
@@ -194,9 +212,8 @@ light panel it measures 2.85:1 and genuinely fails, which is what `green-text` e
 | Token | Dark | Light | Role |
 |---|---|---|---|
 | `brand-green` | `#00B140` | `#00B140` | Fills, rails, active states, progress |
-| `green-lift` | `#3ADE72` | — | Green **text** and icons on dark ground |
-| `green-deep` | — | `#00762C` | Green **text** and icons on light ground |
-| `brand-orange` | `#FF7F00` | `#FF7F00` | **Live state only** |
+| `green-text` | `#3ADE72` | `#00762C` | Green **text**, icons and focus rings — the contrast-corrected form |
+| `brand-orange` | `#FF7F00` | `#FF7F00` | **Live state only** (one shipped exception, below) |
 | `orange-text` | `#FF9E3D` | `#B25600` | Orange text, contrast-corrected |
 | `ground` | `#0B1016` | `#F4F7F6` | App background |
 | `panel` | `#151C24` | `#FFFFFF` | Card and surface background |
@@ -224,7 +241,7 @@ Against `panel`, which is the surface almost all text sits on. Re-measure whenev
 | `ink` | 14.93:1 | 18.92:1 | 4.5 |
 | `ink-2` | 6.38:1 | 6.15:1 | 4.5 |
 | `ink-3` — micro-labels only, 700 weight uppercase | 3.27:1 | 3.19:1 | 3 |
-| `green-lift` / `green-deep` | 9.70:1 | 5.79:1 | 4.5 |
+| `green-text` | 9.70:1 | 5.79:1 | 4.5 |
 | `orange-text` | 8.35:1 | 4.97:1 | 4.5 |
 | **`brand-green` used as text** | 6.02:1 | **2.85:1 — fails** | 4.5 |
 
@@ -243,13 +260,32 @@ Two consequences worth stating plainly:
   tokens is the single largest source of the current inconsistency.
 - **Orange is reserved for the live state.** Not a second accent, not a warning colour, not
   decoration. If something needs to look urgent and it is not a live game, it is probably not
-  urgent.
+  urgent. **One shipped use breaks this rule and is unresolved:** `.sgm-inj-name` in `index.css`
+  colours the injury modal's team headings `orange-text` at the owner's request. It passes AA on
+  both panels (8.35:1 dark, 4.97:1 light), so it is a rule question rather than a defect — either
+  this bullet gains an exception for section headings inside a modal, or those headings revert to
+  `ink`. Recorded here rather than only in the 1.4 changelog, because a rule and its counterexample
+  belong on the same page.
 - **Green has two jobs:** the model's output (prediction badge, edge, lean bar) and the app's own
   active chrome (selected tab, active nav item). Nothing else is green.
 - **No colour may be defined in only one theme.** Every token above has a value in both columns, or
   is explicitly theme-scoped with a documented reason.
 - **Never hardcode a hex in a component.** If you need a colour that is not in this table, the table
   is missing something — add it here first.
+
+#### The previous token generation
+
+`index.css` also still defines a `--color-*` set — `--color-bg`, `--color-panel`,
+`--color-text-primary`, `--color-text-secondary` and the `--color-brand-*` pair. **That is the
+generation this system replaced, and it is not part of it.** It survives because a handful of call
+sites still read it — since 2026-08-17 the only fully legitimate one is the calendar's selected day,
+which uses `--color-bg` as a *foreground* on a green fill rather than as a page colour (see defect
+71). `.pred-badge` was the other, and went with the screen that rendered it (§8.5).
+
+Two rules follow. **Do not add a usage**, and do not reach for a `--color-*` name when the table
+above has one. And **do not assume the two agree**: `--color-panel` is `#f8fafc` in light where
+`--panel` is `#ffffff`, which is how a white heading landed on a near-white panel at 1.05:1 (defect
+3). Retiring the set entirely is the one piece of foundations work this document still owes.
 
 #### Semantic colour
 
@@ -267,10 +303,19 @@ Two faces doing two clearly separated jobs.
 | Names, UI, headings, prose | **Archivo** | Inter Tight, system-ui, -apple-system, "Segoe UI", sans-serif |
 | **All numerals and micro-labels** | **JetBrains Mono** | IBM Plex Mono, ui-monospace, "SF Mono", Consolas, monospace |
 
-Archivo is a grotesque, slightly condensed, strong at heavy weights — it replaces Source Sans 3.
-PT Serif remains available but is unused in the app interior; a serif has no job in a scoreboard.
+Archivo is a grotesque, slightly condensed, strong at heavy weights — it is specified to replace
+Source Sans 3. PT Serif remains configured but is unused in the app interior; a serif has no job in
+a scoreboard.
 
 **Self-host both.** Do not add a third-party font request.
+
+> **The sans row is the target, not what ships.** `tailwind.config.cjs` still sets `sans` to Source
+> Sans 3, and no font file is served, so body text resolves to the system UI sans and the mono stack
+> resolves to Consolas. This is **decision 4, still open** (§13): Archivo is the part worth a
+> webfont, and adopting it means self-hosting the files, not adding a request. What was a defect here
+> is fixed — `app.html` used to fetch Inter from Google Fonts, which no CSS rule referenced (defect
+> 72) — so the position today is that nothing loads and nothing is requested. **The mono rule below
+> is unaffected and does ship**, because it holds on the fallback stack.
 
 #### The monospace rule
 
@@ -299,6 +344,7 @@ Words — team names, player names, headings, body copy, button labels — stay 
 | Table cell, text | 13px | 400 | 0 | Archivo |
 | Market strip | 11.5px | 400 | +0.01em | Mono |
 | Chip label | 12px | 600 | 0 | Archivo |
+| Abbreviation chip | 10.5px | 700 | +0.04em | Mono |
 | Edge chip | 10px | 700 | +0.12em, uppercase | Mono |
 | Time | 11px | 400 | +0.07em, uppercase | Mono |
 | State label (LIVE / FINAL) | 10px | 700 | +0.16em, uppercase | Mono |
@@ -395,7 +441,13 @@ navigation, where the label sits directly beneath. **No emoji as interface eleme
 
 The shared vocabulary. Build screens from these; if something is missing, add it here.
 
-### 6.1 Card
+**Built** means the section describes shipped code and the code is the arbiter of any disagreement.
+**Specification** means it does not exist yet and this section is the instruction. Only §6.4 is
+specification.
+
+### 6.1 Card — built
+
+**Built** — `components/games/game_card.tsx` over the `gc-` block in `index.css`.
 
 The primary container. `panel` background, 14px radius, 1px `line` border, top highlight on dark.
 
@@ -407,7 +459,9 @@ marked `data-action`. On desktop cards are expanded by default.
 
 Full anatomy for the game card is in §8.1.
 
-### 6.2 Chips
+### 6.2 Chips — built
+
+**Built** — the `.gc-chip` block, adopted by all three action chips since defect 31 closed.
 
 One component, three uses.
 
@@ -420,11 +474,11 @@ One component, three uses.
 Action chips lay out in a horizontal wrapping row at the foot of an expanded card, never in a
 vertical column. Non-interactive chips must not use hover or active styling.
 
-### 6.3 Segmented control
+### 6.3 Segmented control — built
 
-**Built** — `components/ui/segmented_control.tsx`, styled by the `sc-` block in `index.css`. Adopted
-by the header. Available to the Stats sub-tabs and season selector, which are still hand-rolled until
-stage 5.
+**Built** — `components/ui/segmented_control.tsx`, styled by the `sc-` block in `index.css`. Every
+segmented control in the app is this one: the header's sport switcher, the Stats sub-tabs and season
+selector, and the theme control on More.
 
 - Track: `panel` background, 1px `line`, 999px radius, 3px padding
 - Item: 999px radius, mono 10.5px 700, tracked `0.085em`, uppercased by the stylesheet so callers
@@ -449,22 +503,34 @@ handler. The views these switch between are not marked up as tabpanels, so tab s
 promise a relationship the DOM does not have. Arrow-key traversal is a reasonable future addition;
 it is not required for the control to be operable.
 
-### 6.4 Buttons and inputs
+### 6.4 Buttons and inputs — specification
+
+**Not built.** This is the one §6 section that is still an instruction rather than a description.
+There is no `.btn` or `.input` block in `index.css` and no shared component; buttons are styled at
+each call site today, which is the same starting condition that produced defect 13 (three segmented
+controls) and defect 31 (three chip styles). **The next screen that needs a button should build this
+rather than style another one locally.**
 
 | Type | Appearance |
 |---|---|
-| **Primary** | `brand-green` fill (dark) / `green-deep` (light), 8px radius, 38px min height, 13px 700 label |
+| **Primary** | `accent-fill` with `accent-fill-ink`, 8px radius, 38px min height, 13px 700 label — the same selected-control pair §5.1 defines, not `brand-green`, which carries white at 2.85:1 on light |
 | **Secondary** | Transparent, 1px `line-2`, `ink-2` label |
 | **Ghost** | No border, `ink-2` label, background tint on hover |
-| **Input** | `panel` background, 1px `line-2`, 8px radius, 38px min height, 14px text; focus swaps the border to `brand-green` and adds a 1px ring |
+| **Input** | `panel` background, 1px `line-2`, 8px radius, 38px min height, 14px text; focus swaps the border to `green-text` and adds a 1px ring |
 
 Every interactive element gets a visible focus state and a minimum 44px touch target (padding may
 extend beyond the visible bounds to reach it).
 
-### 6.5 Data table
+**The focus border is `green-text`, not `brand-green`.** This row asked for brand green until this
+audit, which is exactly the mistake defect 41 closed app-wide: brand green measures 2.85:1 on the
+light panel and misses the 3:1 §9 requires of a non-text control indicator. Whoever builds this
+should use the shared `.focus-ring` utility rather than re-deriving the colour.
 
-The Stats screen's core component, prefixed `st-`. One configured `DataTable` renders all five
-datasets; §8.2 specifies how the screen uses it.
+### 6.5 Data table — built
+
+**Built** — `components/stats/data_table.tsx` over the `st-` block, with `table_skeleton.tsx` for
+its loading state. One configured `DataTable` renders all five datasets; §8.2 specifies how the
+screen uses it.
 
 - Wrapper: 14px radius, 1px `line`, `overflow: auto` with a `max-height`
 - Header: `panel-2` background, sticky at `top: 0`, mono 9.5px 700 uppercase tracked **`ink-2`**,
@@ -482,14 +548,19 @@ datasets; §8.2 specifies how the screen uses it.
 - `aria-sort` on the `<th>`, not on the button
 - **Header qualifier**, where the label alone would misdescribe the value: a second line under it, mono
   8px 600, same `ink-2` as the label. Set per column and stacked rather than run on, so a column keeps
-  its natural width. It reads after the label in the accessible name — "Pts total" — and the screen's
-  heading reads it *before*: "NBA players by Total Pts"
+  its natural width. It reads after the label in the accessible name — "Pts per game" — and the
+  screen's heading reads it the same way: "NBA players by Pts per game"
 
 **A column header must say which figure it holds.** The NBA players feed sends season totals, and Pts,
-Reb, Ast and Min are the headers every stats site uses for per-game averages. A caption saying so is
-not enough: the header is sticky and the caption is not, so the reader who scrolls — which is the
-reader sorting a 585-row table — keeps the ambiguous label and loses the correction (defect 61). The
-qualifier goes in the header, and the values stay as the API sent them.
+Reb, Ast and Min are the headers every stats site uses for per-game averages (defect 61). The table
+divides by the games played the same row carries and says `PER GAME` in the header. The division is
+exact arithmetic on two supplied numbers, and it gives the reader the figure the header was already
+claiming.
+
+**A derived column says so in the header, not only in the caption.** The caption scrolls away and the
+header is sticky, so a reader sorting several hundred rows keeps the label and loses everything the
+caption told them. This is the rule the qualifier exists for; the first attempt at defect 61 put
+"season totals" in the caption alone and left the ambiguity on screen.
 
 **First column pins** where horizontal scrolling is likely, so the player or team name stays
 visible.
@@ -503,7 +574,7 @@ unstuck on this screen for its whole life (defect 52). The `max-height` is what 
 not focusable and has no key handler. A correct `aria-sort` describes a control the keyboard cannot
 operate, which is worse than no affordance at all because it announces one (defect 53).
 
-### 6.6 Navigation
+### 6.6 Navigation — built
 
 **Built** — all three bars share one surface rule, `.chrome-surface` in `index.css`, so they cannot
 drift apart again. Ground with `backdrop-filter: blur(8px)` and a single 1px `line` hairline. **No
@@ -574,7 +645,7 @@ each against a 46px slot, and every label stays on one line.
 > real scroller would be a new feature** and should be decided as one — along with the modal guard,
 > which would then genuinely be needed.
 
-### 6.7 Modal
+### 6.7 Modal — built
 
 **Built** — `components/ui/modal.tsx` over the `sgm-` block. One shell used by the snapshot, weather
 and injury modals, which were previously three separate implementations agreeing on almost nothing:
@@ -605,7 +676,10 @@ Six things about the implementation are load-bearing:
 
 The trigger chips are §6.2 action chips, all three on `.gc-chip` since defect 31 closed.
 
-### 6.8 Skeleton
+### 6.8 Skeleton — built
+
+**Built** — `components/ui/skeleton_box.tsx` over the shared `.skel` class, with `.st-skel` for the
+table's row-height variant.
 
 Skeletons **mirror the anatomy of the thing that is loading**, so nothing reflows when data lands. A
 game card skeleton has a rail, two team rows and a footer; a table skeleton has rows at the real row
@@ -616,9 +690,9 @@ Base `panel-2`, shimmer sweeping to a 6% lighter stop over 1400ms, 5px radius. S
 
 Never show a spinner. Never show the word "Loading".
 
-### 6.9 Empty, offline and error states
+### 6.9 Empty, offline and error states — built
 
-**Empty** — centred, and always offers the next action:
+**Empty** — `components/ui/empty_state.tsx`. Centred, and always offers the next action:
 
 - 46px icon in a 12px-radius `line-2` box, `ink-3`
 - Title 15px 700 `ink`
@@ -641,7 +715,7 @@ not promise data the app lacks: the previous version offered "Live scores", whic
 **Error** — the app has no user-actionable errors. A failed request is treated as absent data (§3,
 principle 3) or, where the whole screen depends on it, falls back to the offline state.
 
-### 6.10 Guided tour
+### 6.10 Guided tour — built
 
 **Built** — `joyride_tour.tsx` over react-joyride, with `custom_joyride_tooltip.tsx` styled by the
 `jrt-` block. Nine steps across three screens, filtered per sport.
@@ -665,8 +739,8 @@ Any screen refresh that touches these elements must carry the attribute across.
 | `snapshot-button` | `snapshot_button.tsx` — inside the expanded card only |
 | `weather-badge` | `game_card.tsx` — absent on NBA and on request failure; the step is filtered out to match |
 | `tab-stats`, `tab-more` | `BottomTabBar.tsx` |
-| **`stats-subtab-advanced`** | **`stats_screen.tsx` — stage 5 must preserve** |
-| **`stats-column-winpct`** | **`stats_screen.tsx` — stage 5 must preserve.** Placed from `WIN_PCT_KEYS`, because the teams tab renders two header sets that spell the column differently (`wins_all_percentage` for MLB and NBA, `winPct` for NFL) |
+| `stats-subtab-advanced` | `stats_screen.tsx` |
+| `stats-column-winpct` | `stats_screen.tsx`. Placed from `WIN_PCT_KEYS`, because the teams tab renders two header sets that spell the column differently (`wins_all_percentage` for MLB and NBA, `winPct` for NFL) |
 | `theme-toggle` | `more_screen.tsx`, on both the online and offline branches |
 
 > **If you extract a component that carries an anchor, check `grep -rn "data-tour"` still finds it.**
@@ -784,7 +858,7 @@ really is missing, `TARGET_NOT_FOUND` skips the step, which is the correct outco
 > use `wins_all_percentage`. Filtering hid the missing anchor and cost NFL two steps for months.
 > Check the anchor before you conclude a screen lacks the control.
 
-### 6.11 Chart colour
+### 6.11 Chart colour — built
 
 **Built** — `utils/chart_theme.ts` and `utils/chart_data.ts`, consumed by the three snapshot charts.
 
@@ -828,7 +902,7 @@ live in `utils/chart_data.ts` and are shared by the chart components and the mod
 cannot disagree and leave a heading over an empty frame. All-zero counts as nothing: a two-slice pie
 of `0.0` and `0.0` draws no sectors but still produced a legend reading "Home (0.0)".
 
-### 6.12 List row
+### 6.12 List row — built
 
 **Built** — `components/ui/list_row.tsx` over the `lr-` block. The component §6 had been recording
 as missing since this document was written, and §8.4 deferred until More was specified.
@@ -1237,9 +1311,27 @@ instead. Same arrangement, and same hazard, as the sport switcher (§6.10).
 ever set the variable, and the line silently never appeared. `version_stamp.test.mjs` fails if the
 define is removed, because nothing else would.
 
-### 8.5 Game detail — direction
+### 8.5 Game detail — direction only
 
-**Game detail** expands in place from a card; it inherits the card language directly.
+Game detail expands in place from a card and inherits the card language directly. That is the whole
+of the design intent, and it is deliberately short: §7.2's progressive disclosure already gives the
+expanded card most of what a detail view would carry, so this is the one screen the redesign has
+never had to build.
+
+> **A legacy screen stood here, and was deleted on 2026-08-17.**
+> `screens/game_detail_screen.tsx` was a 201-line screen from before this system, routed at
+> `games/:gameId` with a five-tab layout (Overview, H2H, Weather, Odds, Snapshots). **Nothing linked
+> to it** — no `Link`, no `navigate()` and no `href` produced that path, so it was reachable only by
+> typing a URL. It was NBA-only, calling `useNBASchedule` unconditionally, so an MLB or NFL id found
+> nothing. And it was the last surface in the app still on the old styling.
+>
+> It went with its route, its `lazy()` import, `components/games/pred_badge.tsx` — its only consumer
+> — the `.pred-badge` stylesheet block and the `--color-pred-badge` token. Lint and build are clean
+> and no chunk for it is emitted. **Removing it also removed one of the two reasons §5.1 gives for
+> keeping the `--color-*` generation alive:** the calendar's selected day is now the only one left.
+
+Building game detail properly, if it is ever wanted, starts from the direction above and from the
+expanded card — not from anything that used to be here.
 
 ---
 
@@ -1252,7 +1344,7 @@ Target: **WCAG 2.1 AA**.
 | Text contrast | 4.5:1 for body, 3:1 for text 18px+ or 14px bold. Measured values in §5.1 |
 | Non-text contrast | 3:1 for control borders, focus rings, and the edge chip's border |
 | Touch targets | 44×44px minimum, achieved with padding where the visible element is smaller |
-| Focus | Every interactive element has a visible focus state: 2px `green-lift` / `green-deep` ring at 2px offset. **`outline: none` without a replacement is a defect** |
+| Focus | Every interactive element has a visible focus state: 2px `green-text` ring at 2px offset, from the shared `.focus-ring` utility. **`outline: none` without a replacement is a defect** |
 | Motion | All animation respects `prefers-reduced-motion: reduce` |
 | Colour independence | No meaning is carried by colour alone. The edge tier also varies by border, glow and label; live also has a label; the model's pick also has a triangle |
 | Semantics | Cards are `<article>`; expandable headers carry `aria-expanded`; segmented controls carry `aria-pressed`; sortable headers carry `aria-sort`; live regions use `aria-live="polite"` |
@@ -1284,17 +1376,18 @@ Rules:
 
 ## 11. Defect register
 
-Seventy-four defects are on record — eighteen found while writing this document, one while briefing
-the chrome work, six while building it, eight during the How to Use and tour refresh, thirteen during
-the modal refresh, five more from running the guided tour by hand, ten from the Stats rebuild, eleven
-from the More refresh and two from the backward-routing fix. **All seventy-four are fixed**, as of
-2026-08-16. The register stays rather than being deleted: it is the record of what the redesign
-found, and several entries are the argument for rules elsewhere in this document.
+**All seventy-seven defects on this register are fixed**, as of 2026-08-16 — one of them in the
+database rather than in this repository. They were found across eleven passes: eighteen while writing
+this document, one while briefing the chrome work, six while building it, eight during the How to Use
+and tour refresh, thirteen during the modal refresh, five from running the guided tour by hand, ten
+from the Stats rebuild, eleven from the More refresh, two from the backward-routing fix, two from the
+per-game change, and one from reading the finished table. The register stays rather than being
+deleted: it is the record of what the redesign found, and several entries are the argument for rules
+elsewhere in this document.
 
-> Counted from the rows below rather than carried forward: fixed are 1–74; none is open. The running
+> Counted from the rows below rather than carried forward: fixed are 1–77; none is open. The running
 > total in this paragraph had drifted from the table twice, so re-count it rather than incrementing
-> it. An empty **Open** section is deliberate — removing the heading would make the next open defect
-> look like a new kind of entry rather than the next row.
+> it.
 
 The last eight closed together on 2026-08-16, and three of them were the ones this register had
 carried longest as needing their own pass: the focus ring's contrast (41), the missing ground (71)
@@ -1310,7 +1403,7 @@ the argument for §6.10's rule that a filter is not a fix.
 
 > **That constraint no longer holds, and it is worth knowing before the next tour change.** Four
 > entries in this changelog and one row of the SOP's trap table record that
-> `requestAnimationFrame` does not fire in the agent's browser pane, so the tooltip never lays out
+> `requestAnimationFrame` does not fire in the headless test browser, so the tooltip never lays out
 > past step one. Re-measured on 2026-08-15: `document.hidden` is **`false`**, `visibilityState` is
 > `visible`, rAF fires, and the full nine-step tour can be walked in both directions from the pane —
 > which is how defects 50 and 73 were confirmed as a before-and-after rather than by reading.
@@ -1396,7 +1489,10 @@ injuries case turned out to describe a status vocabulary the feed has never sent
 | 69 | **Section headings centred on mobile** (`text-center sm:text-left`) over left-aligned rows, so on a phone every heading sat over a column it did not line up with | Stage 8 — `.mor-h2` |
 | 50 | **Back could not go back across a screen boundary.** `goBack` set the index with no target check and no wait, while `advance` waited up to 3s on the next anchor — and `TARGET_NOT_FOUND` only ever incremented, so a Back onto an unmounted anchor was not refused but reversed. Six of nine steps were unaffected, which is why it read as intermittent: they sit on the reader's current screen or point at chrome. Verified as an A/B on one build with only the tooltip swapped — Back on step 8 of 9 from More gave step 8 before and step 7 on Stats after | Stage 6 follow-up — the tour routes backwards, §6.10 |
 | 74 | **Every navigation to Games or Stats reset the sport to NBA**, discarding the reader's choice. A route effect ran `setSport((prev) => (prev === "NBA" ? prev : "NBA"))` in *both* branches, so both resolved to NBA, while the comments above described two different behaviours — "/stats → NFL always" and "/games → MLB baseline". Pick NFL on Games, open Stats, come back: NBA, which in August has no games. It also made the guided tour's first step untrue, since switching sport is step 1 and the next navigation undid it | Removed rather than corrected — the switcher is in chrome present on every screen (§6.6), so nothing needed a per-route sport. The availability resolver now defers to an explicit choice, so the same complaint cannot reappear on a date change |
-| 61 | **The NBA players table showed season totals under per-game labels.** `Pts 2212`, `Min 3003`, `GP 85` sat under headers — Pts, Reb, Ast, Min — that every stats site uses for per-game averages | Stage 5 put "season totals" in the caption, which narrowed the ambiguity rather than closing it: the caption scrolls away and the sticky header does not, so a reader sorting 585 rows had the label on screen and the correction off it. Each of the four counting columns now carries its own qualifier — `PTS` over `TOTAL` (§6.5) — and the heading reads "NBA players by Total Pts". The values are still as sent: dividing by GP would put a figure on screen the API never sent |
+| 61 | **The NBA players table showed season totals under per-game labels.** `Pts 2212`, `Min 3003`, `GP 85` sat under headers — Pts, Reb, Ast, Min — that every stats site uses for per-game averages | 2026-08-16 — **the four counting columns now divide by games played**, and each says `PER GAME` under its label (§6.5). Stage 5's decision not to divide is reversed: total ÷ GP is exact arithmetic on two supplied numbers, and it is the figure the header was already claiming. The derivation runs once per row in `perGame`, on its own key, so sorting and the magnitude bar read the same number the cell shows; no games played gives `null`, which renders blank and sorts last. It changes the leaderboard, which is the point — Doncic at 33.6 leads on merit where 60 games had him fifth on totals |
+| 75 | **Seven players sat on the leaderboard with no club beside them** — Wembanyama, Murray, Towns, Avdija, Siakam, Sengun and Powell. Not a rendering fault: the player-stats aggregate had attributed each of them to `Team World`, and the screen blanks any team it does not recognise as a club (§4.3), so a wrong team surfaced as a missing one. It hit these seven and not the other All-Stars because the aggregate takes `MAX(team_name)` — San Antonio, Denver, New York, Portland, Indiana, Houston and Miami all sort *before* "Team World"; Toronto and Utah would have sorted after it and been fine | 2026-08-16 — a repair step in the API service restores the club from the player's most recent non-exhibition game, reusing the exhibition list the advanced-stats path already keeps. It runs only when the aggregate actually returned an exhibition side, so the normal case costs no extra query. Verified against the live database: 7 of 7 repaired, no other row touched. **The cause was defect 76**, fixed in the database later the same day — so this repair is now a no-op, kept as the guard for the next exhibition name the database fix's pattern does not catch |
+| 76 | **The database's player-stats aggregate picked a player's club with `MAX(team_name)`** — the alphabetically last name across his games, which is not a fact about anything. Two consequences beyond the exhibition case 75 repaired. A player **traded mid-season** got whichever club sorts later rather than his current one, silently: **forty players were wrong this way**, including Harden reading Clippers against 41 games for Cleveland since February, and Vucevic reading Bulls against 22 for Boston. And the exhibition game was **counted in `COUNT(*)` and summed into every total**, so each All-Star's games played was one too many and his per-game averages diluted by a game that officially does not count | 2026-08-16 — a database migration, **applied to the live database and verified there**. It aggregates over non-exhibition rows only and takes the club from the most recent game. Simulated against the live data before it ran: 47 clubs corrected, 7 games removed, 578 of 585 players byte-identical, none dropped or added — and that is what it did. A standing smoke check re-derives the properties from the source rows in one statement; 14 of 14 pass |
+| 77 | **`FT%` on the players table was built on attempts the feed does not really have.** 37 players read exactly **100%**, on lines no rotation player produces: Marcus Sasser 14-for-14 across 39 games, Jeff Green 5-for-5 across 30, Chris Paul 1-for-1 across 15. `ft_attempted` is under-reported in the same way `fg_attempted` is, which arrives **null for every player** — so the percentage was not imprecise, it was wrong, and confidently: a rate is only as good as its denominator, and this one is missing most of its. A further 20 players had no attempts at all and rendered `0.0%`, absence dressed as a measurement | 2026-08-16 — **the column is removed** from the players table. The value is not correctable client-side: nothing in the payload says which attempts are missing. The API still sends `ft_pct` and `stats_format` still formats it, so the column returns as a one-line change if the provider is ever fixed. `3P%` was checked the same way and is sound — no player exceeds 100%, and no row has makes above attempts |
 | 73 | **The step array shrank under the reader on every run.** The weather chip is a Games element, so following "Open the Stats tab" unmounted it and the observer dropped its step: 9 steps became 8 beneath a reader at index 4, and that index silently became a different step, counter and content included. The note above `CONDITIONAL_ANCHORS` had described this hazard since it was written without anything enforcing it | Stage 6 follow-up — `freezeDrops`, pinned by `tour_steps.test.mjs` |
 | 33 | The schedule feed rendered **`St.Louis Cardinals`** without a space. The abbreviation lookup normalised it (§4.3); the displayed name did not | 2026-08-16 — `canonicalName` in `team_abbr.ts` returns the club's name as the map spells it, applied to the displayed name only. The moneyline object is keyed by the feed's exact spelling, so what the lookups receive is deliberately unchanged |
 | 41 | **`.focus-ring` used brand green**, which measures 2.85:1 on the light panel and misses the 3:1 non-text requirement in §9. Every consumer app-wide was affected, and `.sgm-x` and the tour's controls had each worked around it locally | 2026-08-16 — the utility's `--tw-ring-color` is `--green-text`, **5.79:1** on the light panel. The local workarounds now agree with the shared utility instead of compensating for it |
@@ -1412,9 +1508,9 @@ injuries case turned out to describe a status vocabulary the feed has never sent
 None. Every row above is closed as of 2026-08-16.
 
 The heading stays so the next open defect is filed as the next row rather than as a new kind of
-entry. What went in here was never only a bug list: entries 20 to 23 are why §6.6 says to measure the
-chrome rather than read the brief for it, 47 to 49 are why §6.10 says a filter is not a fix, and 61
-is why §6.5 requires a header qualifier where the label alone would misdescribe the value.
+entry. What went in here was never only a bug list: entries 20 to 23 are why §6.6 says to measure the chrome rather than read the brief for it,
+47 to 49 are why §6.10 says a filter is not a fix, and 61 is why §6.5 requires a header qualifier
+where the label alone would misdescribe the value.
 
 ### Found since
 
@@ -1425,18 +1521,20 @@ Tour" button threw on press; two `snapshot_modal` chart titles written as discar
 NFL snapshots showed the NBA fallback titles; and hooks running after early returns in three
 components, which React throws on when the branch flips.
 
-**Still outstanding from that pass**, re-counted 2026-08-15 rather than carried forward: **22
-warnings, 0 errors** across the whole of `src` — 13 `no-explicit-any`, 6 `no-unused-vars` and 3
-`react-hooks/exhaustive-deps`. The `no-console` warnings this line used to report are gone, and the
-`no-explicit-any` count has come down from 65 as the screens were rebuilt. All are visible in
-`npm run lint` without failing it, and are worth a separate sweep.
+**Still outstanding from that pass**, re-counted by running `npm run lint` on 2026-08-17 rather than
+carried forward: **20 warnings, 0 errors** across the whole of `src` — 13 `no-explicit-any`, 5
+`no-unused-vars` and 2 `react-hooks/exhaustive-deps`. The `no-console` warnings this line used to
+report are gone, and the `no-explicit-any` count has come down from 65 as the screens were rebuilt.
+All are visible without failing the script, and are worth a separate sweep. **Re-run the command
+rather than trusting this number** — it has drifted twice.
 
 > **`npm run check` does not run on Node 20.** `test:utils` passes a glob to `node --test`, which
 > only expands it from Node 22, and the `.test.mjs` files import `.ts` directly, which needs type
 > stripping — on by default only from Node 22.18. On an older runtime the script reports
 > "Could not find src/**/*.test.mjs" and exits 1 without running a single test, which reads exactly
 > like a missing-file error rather than a version one. Run the three parts separately, or use a
-> current Node. All 122 tests pass on Node 22.14 with `--experimental-strip-types`.
+> current Node. The suite is seven `.test.mjs` files declaring 152 tests, and last passed whole on
+> Node 22.14 with `--experimental-strip-types`.
 
 ---
 
@@ -1451,9 +1549,20 @@ Order matters — each stage depends on the one before.
 | **3 — Game card** | The §8.1 rewrite. Defects 4, 5, 9, 10 | ✅ Shipped 2026-08-14 |
 | **4 — Fallbacks** | Odds, pitchers, weather. Defects 6, 7, 8, 17 | ✅ Shipped 2026-08-14 |
 | **5 — Stats** | The §8.2 rewrite: one `DataTable`, both segmented controls, search, skeletons. Defects 24, 25, 42, 52–58 | ✅ Shipped 2026-08-15 |
-| **6 — Remaining screens** | How to Use and the guided tour per §8.3 and §6.10; the shared offline notice per §6.9. Defects 3, 26–30 | ✅ Shipped 2026-08-14 — Game detail still to do |
+| **6 — Remaining screens** | How to Use and the guided tour per §8.3 and §6.10; the shared offline notice per §6.9. Defects 3, 26–30 | ✅ Shipped 2026-08-14 |
 | **7 — Games modals** | The §6.7 shell and the three modals on it; §6.11 chart colour; the §6.2 chip adopted. Defects 31, 32, 34–40, 46 | ✅ Shipped 2026-08-14 |
 | **8 — More** | The §8.4 rewrite: the §6.12 list row, the theme control on §6.3, the version stamp. Defects 62–70 | ✅ Shipped 2026-08-15 |
+
+**All eight stages are shipped, and the plan is finished.** What remains is not a ninth stage but
+five independent pieces of work. None blocks another, and none is a defect — the register is closed.
+
+| Outstanding | Where it is specified | Size |
+|---|---|---|
+| Retire the `--color-*` token generation | §5.1 | Smaller since 2026-08-17 — the calendar is the last real consumer |
+| Build §6.4 as a shared button and input component | §6.4 | Do it with the next screen that needs a button |
+| Settle decision 4 — self-host Archivo, or stay on the fallback stack | §5.2, §13 | A decision first, then a day |
+| Clear the 20 ESLint warnings | §11, *Found since* | A sweep, no behaviour change |
+| See a focus ring render, by eye | §12, below | Minutes, but needs a human at a keyboard |
 
 Stages 1, 3 and 4 were built as seven commits, sequenced so the first four were invisible in the app
 — tokens, stylesheet, helpers and components all landed before anything consumed them. That left one
@@ -1466,9 +1575,9 @@ component landed first with nothing consuming it — which is what unblocked the
 How-to-Use briefs, all three of which would otherwise have hand-rolled their own segmented control
 and re-created defect 13.
 
-**§6.2 chip was dropped from this stage.** It was listed here but the chrome contains no chips; the
-action chip already ships as part of the Games card (§8.1), and the Stats screen is where a shared
-chip would next earn its keep. It moves to stage 5.
+**§6.2 chip was dropped from stage 2.** It was listed there but the chrome contains no chips; the
+action chip already ships as part of the Games card (§8.1). It was reassigned to stage 5 and
+actually landed in stage 7, when defect 31 put all three action chips on `.gc-chip`.
 
 Stage 2 was built without a dev server and **verified against the running app afterwards**. All four
 screens, both themes: one shared surface with no seam, every contrast ratio measured and passing
@@ -1476,10 +1585,15 @@ screens, both themes: one shared surface with no seam, every contrast ratio meas
 present in the rendered DOM, and the 320px overflow closed. Full measurements in
 [`chrome_implementation.md`](./chrome_implementation.md) §8.
 
-**One gap remains: the guided tour past its first step.** Step 1 was confirmed to land on
-`[data-tour="sport-switch"]` with pixel-accurate geometry, but the tour cannot be advanced from the
-agent's browser pane — `document.hidden` is `true` and `requestAnimationFrame` never fires, so the
-tooltip never lays out. It needs a human to click through once.
+**That gap is closed.** Stage 2 recorded the guided tour as verified only as far as step 1, on the
+grounds that `requestAnimationFrame` does not fire in the headless test browser. Re-measured
+2026-08-15, **that was wrong**: rAF fires, `document.hidden` is `false`, and the full nine-step tour
+walks in both directions from the pane — which is how defects 50 and 73 were confirmed as a
+before-and-after rather than by reading. The limitation that does hold is
+`document.hasFocus() === false`, so `:focus` never matches and **focus styles remain the one thing
+in this system that has never been seen to render.** They are correct by construction and by
+stylesheet inspection; they have not been photographed. That is the outstanding verification item,
+and it needs a human at a keyboard rather than a tool.
 
 Because the app is a Trusted Web Activity loading `scoregenius.io/app` at runtime, every stage ships
 through Render with no Android build and is reversible within minutes.
@@ -1518,6 +1632,75 @@ probability, edge percentage and z-score. See §4.2.
 
 ### Changelog
 
+**1.12 — 2026-08-17.** The legacy game-detail screen is deleted — §8.5's recommendation from earlier
+the same day, carried out. It was 201 lines behind a route nothing linked to, NBA-only, and the last
+surface in the app on the old styling; **its whole visible history was that it did not appear.** The
+route, the `lazy()` import, `pred_badge.tsx`, the `.pred-badge` block and `--color-pred-badge` went
+with it, because each existed only to serve it. Lint holds at 20 warnings and 0 errors, the build
+emits 70 chunks with none for the deleted screen, and §12 drops from six outstanding items to five.
+
+The interesting consequence is in §5.1. `.pred-badge` was one of the two call sites that justified
+keeping the `--color-*` generation alive, so **deleting a screen made a foundations cleanup
+cheaper** — the calendar's selected day is now the only real consumer left. Dead code is rarely just
+dead weight; it holds things in place behind it.
+
+**1.11 — 2026-08-17.** An audit pass against the running code. No design decision changed; what
+changed is that the document stopped describing a state the repository had left behind. Nine
+corrections, and the pattern in them is worth naming: **every one was a claim that was true when
+written and was never revisited.**
+
+The status block still said 1.7 and still called the guided tour unverifiable past step one — a
+claim §11 and the SOP had both retracted two days earlier, in this same document. §6.3 and §6.10
+still spoke of stage 5 in the future tense, three days after stage 5 shipped. The lint counts were
+two warnings out and the test count twenty-one out; both are now stated with the instruction to
+re-run rather than to trust, because both have drifted twice.
+
+Three were substantive rather than clerical. **§5.1's palette named two tokens, `green-lift` and
+`green-deep`, that have never existed** — the stylesheet has always carried one `green-text` with
+two theme values, which is what the rest of this document already called it and what §9 contradicted.
+**§5.1's rule reserving orange for the live state has a shipped counterexample**, `.sgm-inj-name`,
+which was flagged in a 1.4 changelog entry and nowhere a reader of the rule would find it; it now
+sits under the rule it breaks. And **§8.5 described game detail as a screen awaiting specification**
+when what is in the repository is a routed, unreachable, NBA-only screen on the old styling — the
+last surface in the app that is, and better deleted than deferred.
+
+Two things this pass added rather than corrected. Every §6 component now carries a **Built** or
+**Specification** marker, because §6.4 was the only unbuilt one and nothing said so. And §5.1 gains
+a subsection on the previous `--color-*` token generation, which is still in `index.css`, still read
+by a few call sites, and was documented only through the defects it had caused.
+
+**1.10 — 2026-08-16.** Defect 77: `FT%` removed from the players table, because the free-throw
+attempts it divides by are not real. Thirty-seven players read exactly 100% on lines like 14-for-14
+across 39 games, and `fg_attempted` arrives null for everyone — the same gap, one column over. **A
+rate is only as trustworthy as its denominator**, and a percentage is the one figure on a stats
+table a reader has no way to sanity-check: 100% looks like excellence rather than like missing data.
+Nothing in the payload says which attempts are absent, so there was no correcting it in the client
+and no honest way to keep the column. `3P%` was checked the same way and stays. The API still sends
+the field and the formatter still handles it, so this reverses in a line if the provider is fixed.
+
+**1.9 — 2026-08-16.** Defects 75 and 76, both found by looking at the per-game leaderboard rather
+than at the code: seven players were showing no club. The screen was right to blank them — it does
+not recognise `Team World` as a club — and the aggregate was wrong to send it, because it picks a
+player's team with `MAX(team_name)`. **A wrong team surfaced as a missing one**, which is worth
+remembering the next time a cell is empty: §3 principle 3 makes absence silent, and silence is
+exactly what a bad value now looks like. 75 repaired the club on the way out of the service; 76 is
+the `MAX()` itself, **fixed in the database the same day** — which also took an All-Star game back
+out of seven players' totals and games played, and corrected forty mid-season trades that had
+nothing to do with All-Star weekend and had been wrong the whole time. The first fix bought the
+second one time to be done properly; both are kept.
+
+**1.8 — 2026-08-16.** Defect 61 closed, and the stage-5 decision behind it reversed: **the NBA
+players table shows per-game averages, derived from the totals the feed sends.** Stage 5 had argued
+that dividing by games played would invent a figure the API does not send, and shipped a caption
+saying "season totals" instead. The argument does not hold — total ÷ games played is exact
+arithmetic on two supplied numbers, both already on the row, and the quotient is what the header was
+claiming all along and what a player is actually compared on. Shipping the caption first was still
+worth it: it proved the caption is not where a correction belongs, because it scrolls and the header
+does not. §6.5 gains the **header qualifier**, a second line under a label, and the rule that a
+derived column states it in the header rather than only in the caption. `perGame` is a pure helper
+with its own tests; absence stays absence, so a player with no games played renders blank and sorts
+last rather than ranking as a zero.
+
 **1.7 — 2026-08-15.** Defects 50, 73 and 74 closed, in eight commits, and the design question under
 50 settled:
 **the tour owns backward routing, the reader owns forward routing.** §6.10 gains that section and the
@@ -1548,7 +1731,7 @@ a `.ts` but not a `.tsx`. Twenty tests, two of them drift checks in the spirit o
 `chart_theme.test.mjs`: the conditional-anchor selectors against the steps they filter, and every
 route in `STEP_ROUTES` against the routes `App.tsx` defines. Checked by mutation rather than assumed.
 
-**The standing claim that this tour cannot be driven from the agent's browser pane is wrong.** It
+**The standing claim that this tour cannot be driven from the headless test browser is wrong.** It
 appears in four entries below and in the SOP's trap table. Re-measured: `document.hidden` is `false`,
 rAF fires, and the whole sequence walks in both directions. Defect 50 was therefore confirmed as an
 A/B on one build with only the tooltip swapped — Back on step 8 of 9 from More gives step 8 before
@@ -1611,7 +1794,7 @@ none` and the group rendered as one undivided slab. It looks like a design choic
 reading the stylesheet would not have found it. Same cascade mechanism as defects 24 and 26, now on
 its third appearance in this codebase.
 
-**Not verified: focus states.** `document.hidden` is true in the agent's browser pane, so `:focus`
+**Not verified: focus states.** `document.hidden` is true in the headless test browser, so `:focus`
 never matches and every focus rule reads as `none`. Defect 64 was diagnosed from
 `--tw-ring-offset-color`, which is readable regardless, but no focus ring on this screen has been
 seen to render. Nor has the guided tour past its first step, for the `requestAnimationFrame` reason
@@ -1651,9 +1834,9 @@ injury modal's team names use `--orange-text` at the owner's request — 8.35:1 
 it passes AA on both panels, but it is the first use of orange outside the live state. Either §5.1
 gains an exception or the team names revert to `ink`. Flagged, not settled.
 
-**1.4 — 2026-08-14.** The guided tour was run by hand for the first time and **failed**, which found
+**1.3.1 — 2026-08-14.** The guided tour was run by hand for the first time and **failed**, which found
 three defects nothing automated in this project can reach — `requestAnimationFrame` does not fire in
-the agent's browser pane, so the tooltip never lays out past step one.
+the headless test browser, so the tooltip never lays out past step one.
 
 Defect 47: NFL's win-percentage column never carried its tour anchor, because the teams tab renders
 two header sets spelling that column `wins_all_percentage` and `winPct`. Defect 48: the tour dropped
@@ -1692,7 +1875,7 @@ the same cascade mechanism as 24, in a second place), 27 (three hardcoded step i
 against §4.1). Three more recorded but not fixed, all on Games: 31, 32 and 33.
 
 **Not verified: the guided tour past its first step.** `requestAnimationFrame` does not fire in the
-agent's browser pane, so `react-floater` never lays the tooltip out. It needs a human pass on each
+headless test browser, so `react-floater` never lays the tooltip out. It needs a human pass on each
 sport, and NFL is the interesting one — the filter assumes NFL's team table has no win-percentage
 column, which is untested.
 
@@ -1701,8 +1884,9 @@ control replaces the header's hand-rolled toggle and is available to Stats; the 
 and bottom navigation share a single `.chrome-surface` rule on `ground`, closing the seam. Defects
 11, 12, 13 and 19 closed, and six more found by measuring rather than reading: 20 (sport labels at
 2.45:1, worse than 19), 21 (hide-on-scroll had never worked), 22 (unreachable date picker), 23
-(header overflowed at 320px), 24 (Stats filters bar misaligned at `md`+, still open) and 25
-(hardcoded `text-secondary`/`text-primary`, still open).
+(header overflowed at 320px), 24 (Stats filters bar misaligned at `md`+) and 25 (hardcoded
+`text-secondary`/`text-primary`). The last two were left open at the time and both closed in
+stage 5.
 
 Two amendments were made against measurement. §6.3 and §6.6 both specified `ink-3` for unselected and
 inactive labels; at 3.27:1 and 3.65:1 those are AA failures on interactive labels, so both become
@@ -1715,7 +1899,7 @@ the system that differs between themes.
 **Verified against the running app** after the build, once a dev server was available: every chrome
 contrast ratio measured and passing in both themes on all four screens, the shared surface confirmed
 identical across header, filters bar and nav, and defect 23 closed at a 320px viewport. The guided
-tour is confirmed only as far as step 1 — the agent's browser pane runs with `document.hidden` true
+tour is confirmed only as far as step 1 — the headless test browser runs with `document.hidden` true
 and no `requestAnimationFrame`, so the tooltip cannot position. One human click-through is
 outstanding.
 

@@ -373,7 +373,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     </div>
 
     <div class="cover-meta">
-      <div><span class="k">Prepared</span><span class="v">14 August 2026</span></div>
+      <div><span class="k">Prepared</span><span class="v">17 August 2026</span></div>
       <div><span class="k">Status</span><span class="v">Built · shipped</span></div>
       <div><span class="k">Document</span><span class="v">Handover · 1 of 1</span></div>
     </div>
@@ -414,8 +414,8 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <p>Documenting the system required auditing what existed. That audit found eighteen defects, several
   shipping to users: cards turning transparent on hover in light mode, an invisible white-on-white
   heading, placeholder zeros presented as real betting lines, and domed baseball stadiums reporting
-  outdoor weather. <strong>Fourteen are now fixed</strong>; the four remaining sit on screens the
-  redesign has not reached yet and are scheduled with them.</p>
+  outdoor weather. Continuing the work across the other screens found fifty-nine more —
+  <strong>seventy-seven in total, and every one is now closed.</strong></p>
 
   <h3>What shipped</h3>
   <p>The Games screen — the one users spend their time in — is <strong>built and live across all
@@ -559,8 +559,8 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <p class="lbl">Brand and signal</p>
       <div class="sw-grid" style="grid-template-columns:1fr">
         <div class="sw"><i style="background:#00B140"></i><span class="n">Brand green</span><span class="h">#00B140</span></div>
-        <div class="sw"><i style="background:#3ADE72"></i><span class="n">Green — lifted, text on dark</span><span class="h">#3ADE72</span></div>
-        <div class="sw"><i style="background:#00762C"></i><span class="n">Green — deep, text on light</span><span class="h">#00762C</span></div>
+        <div class="sw"><i style="background:#3ADE72"></i><span class="n">Green text — dark</span><span class="h">#3ADE72</span></div>
+        <div class="sw"><i style="background:#00762C"></i><span class="n">Green text — light</span><span class="h">#00762C</span></div>
         <div class="sw"><i style="background:#FF7F00"></i><span class="n">Brand orange — live only</span><span class="h">#FF7F00</span></div>
       </div>
       <p class="cap"><b>Orange is reserved.</b> It marks a live game and nothing else — never a
@@ -938,7 +938,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
           <tr><td><strong>Medium / Low</strong></td><td>Progressively quieter chip; no rail</td></tr>
           <tr><td><strong>No edge</strong></td><td>Rail carries only the time. Card is deliberately silent</td></tr>
           <tr><td><strong>Live</strong></td><td>Orange rail, pulsing dot, predictions dimmed and pick marker removed</td></tr>
-          <tr><td><strong>Final</strong></td><td>Card to 66% opacity, score held at full contrast, market strip hidden entirely</td></tr>
+          <tr><td><strong>Final</strong></td><td>Card to 68% opacity, score held at full contrast, market strip hidden entirely</td></tr>
           <tr><td><strong>No prediction</strong></td><td>Em-dash placeholders and a single explanatory line</td></tr>
         </tbody>
       </table>
@@ -1150,9 +1150,10 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <div class="callout">
     <span class="ch">How to read this</span>
     <p>A defect list of this length is normal for an application of this maturity that has never had
-    a design system. The material point is that <strong>all eighteen are now identified, located and
-    scheduled</strong> — eleven are closed by the seven commits on the next page, and the remainder
-    fall to later stages.</p>
+    a design system. The material point is that <strong>all eighteen were identified, located and
+    scheduled</strong> — eleven are closed by the seven commits on the next page, and the rest fell to
+    later stages. The register has since grown to seventy-seven as the remaining screens were rebuilt,
+    and all seventy-seven are closed.</p>
   </div>
 
   <div class="pnum">13</div>
@@ -1235,11 +1236,11 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <tr><td><strong>Design system specification</strong></td><td class="ok">Complete</td><td><code>docs/design_system.md</code></td></tr>
       <tr><td><strong>Build guide, Games screen</strong></td><td class="ok">Complete</td><td><code>docs/game_card_implementation.md</code></td></tr>
       <tr><td><strong>Interactive specimens</strong></td><td class="ok">Complete</td><td>Three rendered documents, all states</td></tr>
-      <tr><td><strong>Defect register</strong></td><td class="ok">14 of 18 closed</td><td>Design system, §11</td></tr>
+      <tr><td><strong>Defect register</strong></td><td class="ok">77 of 77 closed</td><td>Design system, §11</td></tr>
       <tr><td><strong>Brand refresh</strong></td><td class="ok">Shipped</td><td>Icon, splash, wordmark, favicon — live</td></tr>
-      <tr><td><strong>Games screen build</strong></td><td class="ok">Shipped</td><td>Seven commits, live across all platforms</td></tr>
-      <tr><td><strong>Automated checks</strong></td><td class="ok">Passing</td><td>Lint, 25 unit tests and build, via <code>npm run check</code></td></tr>
-      <tr><td><strong>Remaining four screens</strong></td><td class="muted">Direction set</td><td>Design system, §8.2–8.3</td></tr>
+      <tr><td><strong>All four screens built</strong></td><td class="ok">Shipped</td><td>Games, Stats, How to Use, More — plus the shared chrome, modals and guided tour</td></tr>
+      <tr><td><strong>Automated checks</strong></td><td class="ok">Passing</td><td>Lint, 143 unit tests and build, via <code>npm run check</code></td></tr>
+      <tr><td><strong>Remaining work</strong></td><td class="muted">Six items</td><td>Design system, §12 — none is a defect</td></tr>
     </tbody>
   </table>
 
@@ -1249,12 +1250,13 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     <thead><tr><th>Area</th><th style="width:16%">State</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td>Colour, typography, spacing, geometry, elevation, motion, iconography</td><td class="ok">Built</td><td>Both themes, with contrast rationale</td></tr>
-      <tr><td>Component library</td><td class="ok">Specified</td><td>Nine components; the card and its parts are built, the rest await their screens</td></tr>
+      <tr><td>Component library</td><td class="ok">Built</td><td>Twelve components; eleven built as shared code, buttons and inputs still owed</td></tr>
       <tr><td>Games screen</td><td class="ok">Built</td><td>All states, all three sports, all fallbacks — live</td></tr>
-      <tr><td>Accessibility</td><td class="ok">Specified</td><td>WCAG 2.1 AA target with per-requirement rules</td></tr>
+      <tr><td>Accessibility</td><td class="ok">Built</td><td>WCAG 2.1 AA, measured per requirement in both themes</td></tr>
       <tr><td>Content and voice</td><td class="ok">Specified</td><td>Rules plus worked examples</td></tr>
-      <tr><td>Stats screen</td><td class="muted">Direction</td><td>Components identified; one open design question</td></tr>
-      <tr><td>Game detail, How to Use, More</td><td class="muted">Direction</td><td>Inherit the card and prose patterns</td></tr>
+      <tr><td>Stats screen</td><td class="ok">Built</td><td>One configured table, five datasets; the open design question is settled</td></tr>
+      <tr><td>How to Use, More, guided tour</td><td class="ok">Built</td><td>Rebuilt on the system; the tour spans three screens</td></tr>
+      <tr><td>Game detail</td><td class="muted">Direction</td><td>Never built. The expanded card already does most of its job</td></tr>
     </tbody>
   </table>
 
@@ -1270,7 +1272,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <div style="border-top:2.5pt solid var(--green);padding-top:10pt;margin-top:6pt">
     <p style="font-size:8.4pt;color:var(--doc-ink-2);margin:0">
       <strong style="color:var(--doc-ink)">ScoreGenius — Interface Redesign &amp; Design System.</strong>
-      Prepared 14 August 2026. All interface imagery rendered from the design system's own token
+      Prepared 17 August 2026. All interface imagery rendered from the design system's own token
       values. Defect references verified against the repository at the time of writing.
     </p>
   </div>

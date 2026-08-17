@@ -73,7 +73,7 @@ Two things in there are worth a moment if you are evaluating this codebase:
 - **§4, "What the app actually knows".** The constraints above, written down, so that no screen ends
   up implying a data feed that does not exist.
 - **The defect register.** Every defect found during the rebuild, what it measured, and what closed
-  it. Sixty-five of seventy-four are closed. The open ones are listed with their reasons.
+  it. Seventy-seven are on record and all seventy-seven are closed, each with what closed it.
 
 `docs/handover/` holds two longer documents — one on what changed in the interface and why, one on
 the design system itself. Every interface specimen in them is rendered live from the design system's

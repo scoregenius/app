@@ -98,9 +98,18 @@ const NFL_TEAM_COLUMNS: ReadonlyArray<Column> = [
  * meaning should say so rather than leave the reader to notice that
  * 26.0 is not 2212.
  *
- * `3P%` and `FT%` are already rates. `GP` is the divisor, and stays: it
- * is what makes an average readable — 26.0 over 8 games is not 26.0
- * over 85 — and without it the division could not be checked.
+ * `3P%` is already a rate. `GP` is the divisor, and stays: it is what
+ * makes an average readable — 26.0 over 8 games is not 26.0 over 85 —
+ * and without it the division could not be checked.
+ *
+ * **`FT%` is deliberately absent.** The feed under-reports free-throw
+ * attempts badly enough that the percentage built on them is wrong
+ * rather than imprecise: 37 players read exactly 100%, on lines like
+ * 14-for-14 across 39 games and 1-for-1 across 15 — attempt counts no
+ * rotation player has. `ft_attempted` is unreliable in the same way
+ * `fg_attempted` is, which arrives null for every player, so there is
+ * no rate to compute and nothing to correct client-side. The API still
+ * sends `ft_pct`; this table stops rendering it. See defect 77.
  */
 const PLAYER_COLUMNS: ReadonlyArray<Column> = [
   { key: "player_name", label: "Player", type: "text" },
@@ -109,7 +118,6 @@ const PLAYER_COLUMNS: ReadonlyArray<Column> = [
   { key: "rebounds_per_game", label: "Reb", note: "Per game" },
   { key: "assists_per_game", label: "Ast", note: "Per game" },
   { key: "three_pct", label: "3P%" },
-  { key: "ft_pct", label: "FT%" },
   { key: "minutes_per_game", label: "Min", note: "Per game" },
   { key: "games_played", label: "GP" },
 ];

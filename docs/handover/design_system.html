@@ -260,8 +260,8 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       is for, how it behaves, and how it appears across every screen.</p>
     </div>
     <div class="cover-meta">
-      <div><span class="k">Version</span><span class="v">1.1</span></div>
-      <div><span class="k">Prepared</span><span class="v">14 August 2026</span></div>
+      <div><span class="k">Version</span><span class="v">1.12</span></div>
+      <div><span class="k">Prepared</span><span class="v">17 August 2026</span></div>
       <div><span class="k">Governs</span><span class="v">Application interior</span></div>
     </div>
   </div>
@@ -270,7 +270,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 <!-- ===== WHAT THIS IS ===== -->
 <section class="page">
   <div class="rh"><span><b>01</b> &nbsp;What this is</span><span>ScoreGenius</span></div>
-  <h1>One vocabulary, five screens</h1>
+  <h1>One vocabulary, four screens</h1>
   <p class="lede">A design system is not a style guide. It is the <strong>set of decisions already
   made</strong>, so that building a screen is assembly rather than invention — and so two people
   building two screens produce one product.</p>
@@ -278,9 +278,10 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <div class="colsA">
     <div>
       <h3 class="first">What it governs</h3>
-      <p style="font-size:8.6pt">Everything inside the application: the five screens users spend
-      time in, and the components they are built from. The marketing site and the brand layer — icon,
-      splash, wordmark — are governed separately and are not changed by it.</p>
+      <p style="font-size:8.6pt">Everything inside the application: the four screens users spend
+      time in — Games, Stats, How to Use and More — and the components they are built from. The
+      marketing site and the brand layer — icon, splash, wordmark — are governed separately and are
+      not changed by it.</p>
 
       <h3>How to use it</h3>
       <p style="font-size:8.5pt;margin:0"><strong>Building a screen:</strong> assemble from the
@@ -293,8 +294,8 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <div class="callout" style="margin-top:0">
         <span class="ch">The one rule that is not negotiable</span>
         <p>Every change ships in <strong>both themes</strong>. A token defined in only one theme is a
-        defect, not an omission — four such defects were found in the pre-existing interface, one of
-        which rendered a heading invisible.</p>
+        defect, not an omission — three such defects were found in the pre-existing interface, one of
+        which made a card's background go transparent on hover in light mode.</p>
       </div>
       <div class="callout">
         <span class="ch">Where it lives</span>
@@ -310,7 +311,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     <div class="toc-row"><span class="toc-n">03</span><span class="toc-t">Colour<span>Palette, roles and the rules of use</span></span><span class="toc-p">4</span></div>
     <div class="toc-row"><span class="toc-n">04</span><span class="toc-t">Typography<span>Two faces, one scale, the monospace rule</span></span><span class="toc-p">6</span></div>
     <div class="toc-row"><span class="toc-n">05</span><span class="toc-t">Space, geometry, elevation, motion<span>The physical properties</span></span><span class="toc-p">8</span></div>
-    <div class="toc-row"><span class="toc-n">06</span><span class="toc-t">Components<span>The library — nine components, rendered</span></span><span class="toc-p">10</span></div>
+    <div class="toc-row"><span class="toc-n">06</span><span class="toc-t">Components<span>The library — twelve components, rendered</span></span><span class="toc-p">10</span></div>
     <div class="toc-row"><span class="toc-n">07</span><span class="toc-t">Patterns<span>How components combine</span></span><span class="toc-p">15</span></div>
     <div class="toc-row"><span class="toc-n">08</span><span class="toc-t">Across the app<span>The system applied to each screen</span></span><span class="toc-p">16</span></div>
     <div class="toc-row"><span class="toc-n">09</span><span class="toc-t">Accessibility<span>WCAG 2.1 AA, per requirement</span></span><span class="toc-p">17</span></div>
@@ -383,24 +384,27 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 <!-- ===== COLOUR 1 ===== -->
 <section class="page">
   <div class="rh"><span><b>03</b> &nbsp;Colour · Palette</span><span>ScoreGenius</span></div>
-  <h1>Thirteen tokens, two themes</h1>
+  <h1>Fifteen tokens, two themes</h1>
   <p class="lede">Brand green and orange are fixed. The system adds <strong>contrast-corrected
-  variants</strong>, because brand green at body sizes fails accessibility standards on both grounds.</p>
+  variants</strong>, because brand green at body sizes fails accessibility standards on the light
+  ground. <strong>Every token carries a value in both themes</strong> — that is what makes the count
+  fifteen rather than thirty.</p>
 
   <div class="cols2">
     <div>
-      <h4>Brand and signal</h4>
-      <div class="sw"><i style="background:#00B140"></i><span class="n">Brand green</span><span class="h">#00B140</span></div>
-      <div class="sw"><i style="background:#3ADE72"></i><span class="n">Green — lifted</span><span class="h">#3ADE72</span></div>
-      <div class="sw"><i style="background:#00762C"></i><span class="n">Green — deep</span><span class="h">#00762C</span></div>
-      <div class="sw"><i style="background:#FF7F00"></i><span class="n">Brand orange</span><span class="h">#FF7F00</span></div>
-      <div class="sw"><i style="background:#FF9E3D"></i><span class="n">Orange text — dark</span><span class="h">#FF9E3D</span></div>
-      <div class="sw"><i style="background:#B25600"></i><span class="n">Orange text — light</span><span class="h">#B25600</span></div>
+      <h4>Brand and signal <span style="font-weight:400;color:var(--doc-ink-3)">— dark / light</span></h4>
+      <div class="sw"><i style="background:#00B140"></i><span class="n">Brand green</span><span class="h">#00B140 · both</span></div>
+      <div class="sw"><i style="background:linear-gradient(90deg,#3ADE72 50%,#00762C 50%)"></i><span class="n">Green text</span><span class="h">#3ADE72 / #00762C</span></div>
+      <div class="sw"><i style="background:#FF7F00"></i><span class="n">Brand orange</span><span class="h">#FF7F00 · both</span></div>
+      <div class="sw"><i style="background:linear-gradient(90deg,#FF9E3D 50%,#B25600 50%)"></i><span class="n">Orange text</span><span class="h">#FF9E3D / #B25600</span></div>
+      <div class="sw"><i style="background:linear-gradient(90deg,#00B140 50%,#00762C 50%)"></i><span class="n">Accent fill</span><span class="h">#00B140 / #00762C</span></div>
+      <div class="sw"><i style="background:linear-gradient(90deg,#07130B 50%,#FFFFFF 50%)"></i><span class="n">Accent fill ink</span><span class="h">#07130B / #FFFFFF</span></div>
 
       <h4>Surfaces — dark</h4>
       <div class="sw"><i style="background:#0B1016"></i><span class="n">Ground</span><span class="h">#0B1016</span></div>
       <div class="sw"><i style="background:#151C24"></i><span class="n">Panel</span><span class="h">#151C24</span></div>
       <div class="sw"><i style="background:#1B232C"></i><span class="n">Panel 2</span><span class="h">#1B232C</span></div>
+      <div class="sw"><i style="background:#1E2833"></i><span class="n">Panel hover</span><span class="h">#1E2833</span></div>
       <div class="sw"><i style="background:#232E38"></i><span class="n">Line</span><span class="h">#232E38</span></div>
       <div class="sw"><i style="background:#2E3B47"></i><span class="n">Line 2</span><span class="h">#2E3B47</span></div>
     </div>
@@ -414,6 +418,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <div class="sw"><i style="background:#F4F7F6"></i><span class="n">Ground</span><span class="h">#F4F7F6</span></div>
       <div class="sw"><i style="background:#FFFFFF"></i><span class="n">Panel</span><span class="h">#FFFFFF</span></div>
       <div class="sw"><i style="background:#F7FAF9"></i><span class="n">Panel 2</span><span class="h">#F7FAF9</span></div>
+      <div class="sw"><i style="background:#EEF3F1"></i><span class="n">Panel hover</span><span class="h">#EEF3F1</span></div>
       <div class="sw"><i style="background:#DFE7E3"></i><span class="n">Line</span><span class="h">#DFE7E3</span></div>
       <div class="sw"><i style="background:#C6D2CC"></i><span class="n">Line 2</span><span class="h">#C6D2CC</span></div>
 
@@ -444,7 +449,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     <thead><tr><th style="width:18%">Colour</th><th style="width:34%">Permitted use</th><th>Rationale</th></tr></thead>
     <tbody>
       <tr><td><strong>Green</strong></td><td>The model's output, and the app's own active chrome</td><td>The product's value is its prediction. Green marks it; nothing else competes.</td></tr>
-      <tr><td><strong>Orange</strong></td><td>Live game state, exclusively</td><td>Rare and time-sensitive. Reserving it keeps the signal strong.</td></tr>
+      <tr><td><strong>Orange</strong></td><td>Live game state<span class="muted"> — with one recorded exception</span></td><td>Rare and time-sensitive. Reserving it keeps the signal strong. The injury modal's team headings also use it, at the owner's request; that is logged as an open rule question rather than quietly allowed.</td></tr>
       <tr><td><strong>Neutrals</strong></td><td>Everything else, in three ink weights</td><td>Hierarchy comes from weight and contrast, not hue.</td></tr>
     </tbody>
   </table>
@@ -489,7 +494,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <tr><td>Ink</td><td class="num ok">14.93 : 1</td><td class="num ok">18.92 : 1</td><td>Body and scores</td></tr>
       <tr><td>Ink 2</td><td class="num ok">6.38 : 1</td><td class="num ok">6.15 : 1</td><td>Secondary text, market data</td></tr>
       <tr><td>Ink 3</td><td class="num">3.27 : 1</td><td class="num">3.19 : 1</td><td>Micro-labels only, 700 weight uppercase</td></tr>
-      <tr><td>Green — lifted / deep</td><td class="num ok">9.70 : 1</td><td class="num ok">5.79 : 1</td><td>Green text and icons</td></tr>
+      <tr><td>Green text</td><td class="num ok">9.70 : 1</td><td class="num ok">5.79 : 1</td><td>Green text, icons and focus rings</td></tr>
       <tr><td>Orange text</td><td class="num ok">8.35 : 1</td><td class="num ok">4.97 : 1</td><td>Live state</td></tr>
       <tr><td class="bad">Brand green as text</td><td class="num">6.02 : 1</td><td class="num bad">2.85 : 1</td><td class="bad">Fails on light. Fills only, never type</td></tr>
     </tbody>
@@ -497,9 +502,10 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <small style="margin-top:4pt">Measured against <code>panel</code> in each theme, not estimated, and
   re-measured whenever a token changes. Two findings worth stating: <strong>brand green passes on the
   dark panel and fails on the light one</strong>, so the single rule "never type" is safer than a
-  per-theme exception — and the lifted green is therefore a legibility choice at small sizes rather
-  than an accessibility necessity. Light orange text is <code>#B25600</code> rather than anything
-  lighter because it must also clear 4.5:1 against the ground, where it measures 4.61:1.</small>
+  per-theme exception — and the green text token is therefore a legibility choice at small sizes on
+  dark, and an accessibility necessity on light. Light orange text is <code>#B25600</code> rather
+  than anything lighter because it must also clear 4.5:1 against the ground, where it measures
+  4.61:1.</small>
 
   <div class="pnum">5</div>
 </section>
@@ -517,7 +523,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     <p style="font-size:11pt;font-weight:600;margin:0 0 5pt">Detroit Tigers · Buffalo Bills · Boston Celtics</p>
     <small><strong>Archivo</strong> — a grotesque, slightly condensed, strong at heavy weights.
     Team and player names, interface labels, headings, body copy. Fallback: Inter Tight, then the
-    system UI stack. Self-hosted; no third-party request.</small>
+    system UI stack. <strong>Specified but not yet served</strong> — see the note below.</small>
   </div>
 
   <div class="frame">
@@ -530,10 +536,20 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     stack, which is available everywhere at no download cost.</small>
   </div>
 
+  <div class="callout warn">
+    <span class="ch">The sans face is specified, not yet shipped</span>
+    <p>No font file is served today, so the interface resolves to the system UI sans and the
+    monospace stack resolves to Consolas. <strong>The monospace rule above is unaffected and does
+    ship</strong>, because it holds on the fallback stack — which is the half of this page that does
+    the work. Adopting Archivo means self-hosting the files; it is recorded as an open decision, not
+    an oversight. A previous build fetched a third face from a font CDN that no rule referenced; that
+    request was removed rather than replaced.</p>
+  </div>
+
   <div class="callout">
-    <span class="ch">A serif is available and deliberately unused</span>
-    <p>PT Serif remains loaded for the marketing pages. It has no job in a scoreboard, and does not
-    appear anywhere in the application interior.</p>
+    <span class="ch">A serif is configured and deliberately unused</span>
+    <p>PT Serif remains in the framework configuration for the marketing pages. It has no job in a
+    scoreboard, and does not appear anywhere in the application interior.</p>
   </div>
 
   <h3>Why it matters</h3>
@@ -568,7 +584,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 <section class="page">
   <div class="rh"><span><b>04</b> &nbsp;Typography · Scale</span><span>ScoreGenius</span></div>
   <h1>The scale</h1>
-  <p class="lede">Sixteen defined roles. Anything not on this list does not exist — if a new size
+  <p class="lede">Fourteen defined roles. Anything not on this list does not exist — if a new size
   seems necessary, one of these is probably the right answer.</p>
 
   <table>
@@ -777,7 +793,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
           <tr><td style="width:34%"><strong>Default</strong></td><td>Panel, hairline, highlight</td></tr>
           <tr><td><strong>High edge</strong></td><td>Green rail, tinted border, wash</td></tr>
           <tr><td><strong>Live</strong></td><td>Orange rail, pulsing dot</td></tr>
-          <tr><td><strong>Finished</strong></td><td>66% opacity, score held at contrast</td></tr>
+          <tr><td><strong>Finished</strong></td><td>68% opacity, score held at contrast</td></tr>
         </tbody>
       </table>
     </div>
@@ -837,11 +853,11 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       </div>
     </div>
   </div>
-  <p class="cap"><b>One component, two applications</b> — the sport switcher and the Stats sub-tabs.
-  The pre-existing interface had three separate implementations of this control, styled three
-  different ways.</p>
+  <p class="cap"><b>One component, four applications</b> — the sport switcher, the Stats sub-tabs,
+  the season selector and the theme control on More. The pre-existing interface had three separate
+  implementations of this control, styled three different ways; there is now exactly one.</p>
 
-  <h3>Buttons and inputs</h3>
+  <h3>Buttons and inputs <span style="font-weight:400;font-size:8pt;color:var(--orange-deep)">— specified, not yet built</span></h3>
   <div class="cols2">
     <div class="app app--dark" style="padding:9pt">
       <div style="display:flex;gap:5pt;align-items:center;flex-wrap:wrap">
@@ -860,11 +876,14 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
           <tr><td style="width:34%"><strong>Primary</strong></td><td>Green fill, 38px min height. One per view at most.</td></tr>
           <tr><td><strong>Secondary</strong></td><td>Outline, secondary ink.</td></tr>
           <tr><td><strong>Ghost</strong></td><td>No border; background tint on hover.</td></tr>
-          <tr><td><strong>Input</strong></td><td>Panel fill, control border. Focus swaps the border to green and adds a ring.</td></tr>
+          <tr><td><strong>Input</strong></td><td>Panel fill, control border. Focus swaps the border to green text and adds a ring.</td></tr>
         </tbody>
       </table>
       <small style="margin-top:5pt">Every interactive element carries a visible focus state and a
-      44px minimum touch target, reached with padding where the visible element is smaller.</small>
+      44px minimum touch target, reached with padding where the visible element is smaller.
+      <strong>This is the one component in the library not yet built as shared code</strong> —
+      buttons are still styled at each call site, which is the condition that produced three
+      segmented controls and three chip styles before them.</small>
     </div>
   </div>
 
@@ -875,8 +894,9 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 <section class="page">
   <div class="rh"><span><b>06</b> &nbsp;Components · Data table</span><span>ScoreGenius</span></div>
   <h1>Data table</h1>
-  <p class="lede">The Stats screen is five of these. <strong>Numeric columns are monospaced,
-  right-aligned and tabular</strong> — the same rule as the card, applied at scale.</p>
+  <p class="lede">One configured component renders all five of the Stats screen's datasets.
+  <strong>Numeric columns are monospaced, right-aligned and tabular</strong> — the same rule as the
+  card, applied at scale.</p>
 
   <div class="app app--dark">
     <div class="dt">
@@ -1138,7 +1158,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <table class="compact">
         <tbody>
           <tr><td style="width:38%">Live</td><td>Orange, pulsing dot, rail</td></tr>
-          <tr><td>Finished</td><td>66% opacity, score held</td></tr>
+          <tr><td>Finished</td><td>68% opacity, score held</td></tr>
           <tr><td>Model's pick</td><td>Full contrast + triangle</td></tr>
           <tr><td>High edge</td><td>Rail, border, wash, glow</td></tr>
         </tbody>
@@ -1168,22 +1188,23 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 <section class="page">
   <div class="rh"><span><b>08</b> &nbsp;Across the app</span><span>ScoreGenius</span></div>
   <h1>The system applied</h1>
-  <p class="lede">Games is built and live. The remaining screens have direction and inherit the same
-  components — <strong>none requires a new visual language.</strong></p>
+  <p class="lede">Every screen a user can reach is built and live on this system, and
+  <strong>none of them needed a new visual language.</strong></p>
 
-  <table>
-    <thead><tr><th style="width:20%">Screen</th><th style="width:15%">State</th><th style="width:32%">Components used</th><th>Notes</th></tr></thead>
+  <table class="compact">
+    <thead><tr><th style="width:17%">Screen</th><th style="width:14%">State</th><th style="width:31%">Components used</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td><strong>Games</strong></td><td class="ok">Built &amp; live</td><td>Card, chips, edge chip, segmented control, header, bottom bar, skeleton, empty</td><td>All states, all three sports, all fallbacks</td></tr>
-      <tr><td><strong>Game detail</strong></td><td class="muted">Direction</td><td>Card, chips, modal</td><td>Expands in place; inherits the card language directly</td></tr>
-      <tr><td><strong>Stats</strong></td><td class="muted">Direction</td><td>Data table, segmented control, input, skeleton, empty</td><td>Five tables behind a sport selector and sub-tabs</td></tr>
-      <tr><td><strong>How to Use</strong></td><td class="muted">Direction</td><td>Prose layout, numbered timeline</td><td>The one prose screen — wider measure, more space</td></tr>
-      <tr><td><strong>More</strong></td><td class="muted">Direction</td><td>List rows, buttons, offline notice</td><td>Needs one new component: the settings list row</td></tr>
+      <tr><td><strong>Stats</strong></td><td class="ok">Built &amp; live</td><td>Data table, segmented control, input, skeleton, empty</td><td>Five datasets, one configured table. The sorted column is the subject</td></tr>
+      <tr><td><strong>How to Use</strong></td><td class="ok">Built &amp; live</td><td>Prose layout, numbered timeline, card components</td><td>The one prose screen. Its specimen is built from the card's own parts</td></tr>
+      <tr><td><strong>More</strong></td><td class="ok">Built &amp; live</td><td>List row, segmented control, offline notice</td><td>Fourteen rows in four groups, on the library's last component</td></tr>
+      <tr><td><strong>Game detail</strong></td><td class="muted">Direction only</td><td>Card, chips, modal</td><td>Never built. It expands from a card, which already does most of its job</td></tr>
     </tbody>
   </table>
+  <small style="margin-top:4pt">The <strong>guided tour</strong> is built and live too. It is not a
+  screen but spans three of them — nine steps, filtered per sport.</small>
 
-  <div class="spacer"></div>
-  <h3>Games, assembled</h3>
+  <p class="lbl" style="margin-top:10pt">Games, assembled</p>
   <div class="app app--dark" style="padding:9pt">
     <div class="hdr" style="margin-bottom:6pt">
       <span class="hdr-w">SCOREGENIUS</span>
@@ -1219,7 +1240,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
       <div><span class="ic">?</span>How To Use</div><div><span class="ic">⋯</span>More</div>
     </div>
   </div>
-  <p class="cap">Header, segmented control, day bar, three card variants, and the bottom bar — every
+  <p class="cap">Header, segmented control, day bar, three card variants and the bottom bar — every
   element drawn from the library on the preceding pages.</p>
 
   <div class="pnum">16</div>
@@ -1235,7 +1256,7 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
   <table>
     <thead><tr><th style="width:26%">Requirement</th><th>Rule</th></tr></thead>
     <tbody>
-      <tr><td><strong>Text contrast</strong></td><td>4.5:1 for body; 3:1 for 18px+ or 14px bold. <em>This is why the lifted and deep greens exist.</em></td></tr>
+      <tr><td><strong>Text contrast</strong></td><td>4.5:1 for body; 3:1 for 18px+ or 14px bold. <em>This is why the green text token exists.</em></td></tr>
       <tr><td><strong>Non-text contrast</strong></td><td>3:1 for control borders, focus rings and the edge chip's border</td></tr>
       <tr><td><strong>Touch targets</strong></td><td>44 × 44px minimum, reached with padding where the visible element is smaller</td></tr>
       <tr><td><strong>Focus</strong></td><td>Every interactive element has a visible focus state: a 2px green ring at 2px offset. <strong>Suppressing the outline without a replacement is a defect</strong></td></tr>
@@ -1253,12 +1274,15 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     still reads the word LIVE. <strong>Every signal in the system has at least two encodings.</strong></p>
   </div>
 
-  <div class="callout warn">
-    <span class="ch">Found in the pre-existing interface</span>
+  <div class="callout">
+    <span class="ch">Found in the pre-existing interface, and closed</span>
     <p>Three failures were recorded during the audit: a focus outline suppressed with no replacement,
     leaving the sport selector with no keyboard indication; a reduced-motion preference honoured by
     exactly one rule; and white heading text on a near-white panel, which is invisible rather than
-    merely low-contrast. All three are scheduled.</p>
+    merely low-contrast. <strong>All three are fixed</strong>, along with every other accessibility
+    defect the audit found — including two contrast failures on interactive labels that were worse
+    than anything the original brief had listed, and a sortable table header that announced itself to
+    a screen reader as a control the keyboard could not operate.</p>
   </div>
 
   <div class="pnum">17</div>
@@ -1307,8 +1331,8 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
     <thead><tr><th style="width:30%">Situation</th><th>What to do</th></tr></thead>
     <tbody>
       <tr><td><strong>Need a colour that is not in the palette</strong></td><td>The palette is missing something. Add it to the system first, in both themes, with a contrast check — never inline in a component.</td></tr>
-      <tr><td><strong>Need a component that does not exist</strong></td><td>Add it to the library rather than styling it locally. One new component is owed already: the settings list row.</td></tr>
-      <tr><td><strong>Need a size off the type scale</strong></td><td>One of the sixteen roles is probably right. If none is, add a role rather than a one-off value.</td></tr>
+      <tr><td><strong>Need a component that does not exist</strong></td><td>Add it to the library rather than styling it locally. One is owed already: buttons and inputs, still styled per call site.</td></tr>
+      <tr><td><strong>Need a size off the type scale</strong></td><td>One of the fourteen roles is probably right. If none is, add a role rather than a one-off value.</td></tr>
       <tr><td><strong>A change looks right in one theme</strong></td><td>It is not finished. Both themes ship together.</td></tr>
     </tbody>
   </table>
@@ -1323,10 +1347,11 @@ table.compact th, table.compact td { padding: 3pt 5pt; font-size: 7.6pt; }
 
   <div style="border-top:2.5pt solid var(--green);padding-top:9pt;margin-top:11pt">
     <p style="font-size:8.2pt;color:var(--doc-ink-2);margin:0">
-      <strong style="color:var(--doc-ink)">ScoreGenius — Design System, version 1.1.</strong>
-      Prepared 14 August 2026. The foundations and the Games screen describe running code;
-      the remaining screens describe the target. Every interface image in this document is rendered from the system's
-      own token values. Statistical figures in table specimens are sample data for layout
+      <strong style="color:var(--doc-ink)">ScoreGenius — Design System, version 1.12.</strong>
+      Prepared 17 August 2026. <strong style="color:var(--doc-ink)">This document describes running
+      code</strong>, with three exceptions stated where they occur: the sans typeface, the button and
+      input components, and game detail. Every interface image in this document is rendered from the
+      system's own token values. Statistical figures in table specimens are sample data for layout
       illustration only.
     </p>
   </div>

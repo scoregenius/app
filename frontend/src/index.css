@@ -88,8 +88,6 @@
   --color-border-subtle: #cbd5e1;
   --color-border-strong: #94a3b8;
 
-  --color-pred-badge: #028034;
-
   /* -------------------------------------------------------------
    * These three were previously declared only inside .dark but are
    * consumed unconditionally — .app-card:hover, the date pill in
@@ -152,8 +150,6 @@
   --color-border-subtle: rgba(51, 65, 85, 0.6);
   --color-accent-neutral: #94a3b8;
 
-  --color-pred-badge: #16a34a;
-
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 1px 1px rgba(0, 0, 0, 0.4);
   --shadow-card-hover: 0 4px 10px rgba(0, 0, 0, 0.65),
     0 2px 4px rgba(0, 0, 0, 0.5);
@@ -176,9 +172,10 @@ body,
  * delineated by its 1px border alone, at 1.26:1 — §5.1's ground/panel pair and
  * §5.5's whole approach to elevation were inert. Defect 71.
  *
- * --color-bg itself is deliberately left alone: .pred-badge and the calendar's
- * selected day both use it as a *foreground* on a green fill, where it means
- * "the lightest surface" rather than "the page". Only the page changes here. */
+ * --color-bg itself is deliberately left alone: the calendar's selected day uses
+ * it as a *foreground* on a green fill, where it means "the lightest surface"
+ * rather than "the page". Only the page changes here. .pred-badge was the other
+ * consumer and has since been deleted with the screen that rendered it. */
 body {
   @apply antialiased font-sans bg-[var(--ground)] text-[var(--color-text-primary)];
 }
@@ -224,37 +221,14 @@ body {
  * alongside the weather and injuries chips. The --icon-only modifier
  * had no consumer at all. Defects 31 and 32. */
 
-/* Prediction badge */
-.pred-badge {
-  @apply inline-flex flex-col items-center justify-center
-         rounded-xl px-3 py-1.5 text-xs font-semibold
-         whitespace-nowrap shrink-0 text-center !important;
-  background: var(--color-pred-badge) !important;
-  color: var(--color-bg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 0 4px rgba(22, 163, 74, 0.3);
-  line-height: 1.1;
-}
-
-.pred-badge .score {
-  @apply text-[13px] leading-tight;
-}
-
-.pred-badge .label {
-  @apply text-[9px] opacity-75 leading-tight;
-}
-.pred-badge span {
-  @apply text-[10px] font-normal opacity-80;
-}
-
-.pred-badge {
-  @apply rounded-xl;
-}
-
-@media (max-width: 400px) {
-  .pred-badge {
-    @apply px-1.5;
-  }
-}
+/* The .pred-badge block stood here. Its only consumer was pred_badge.tsx,
+ * which in turn was only rendered by the legacy game-detail screen — a
+ * route nothing linked to. All three are gone. The block was declared
+ * twice and carried two !important flags, so it is no loss.
+ *
+ * It was also one of the two justifications for keeping the --color-*
+ * generation alive (design_system.md §5.1). The calendar's selected day
+ * is now the last one. */
 
 /* Filters bar — the sticky toolbar at the top of a list. §6.6: a second
  * sticky row below the header, given the same treatment as the header.
@@ -546,13 +520,12 @@ body {
 /* =============================================================
  * Game card — design system v1. See docs/design_system.md §8.1.
  *
- * Prefixed gc- so nothing here collides with .app-card, which is
- * still used by injury_report, game_detail_screen and the games
- * skeleton and retires in stage 6.
+ * Prefixed gc- so nothing here collides with .app-card, the legacy
+ * card vocabulary. That is now down to one consumer — the games
+ * skeleton in game_screen.tsx — and can retire with it.
  *
- * Nothing consumes these classes yet; the card adopts them in
- * stage 5. Tier tints are brand green (#00B140) at opacity rather
- * than new hexes, so the palette stays closed.
+ * Tier tints are brand green (#00B140) at opacity rather than new
+ * hexes, so the palette stays closed.
  * ========================================================== */
 
 .gc {

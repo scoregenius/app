@@ -120,11 +120,15 @@ describe("formatStat — the NBA players table (defect 61)", () => {
   // misread. Fixtures are a single real row — Jalen Brunson — taken from
   // the production feed on 2026-08-16.
 
-  test("both percentage columns arrive as proportions", () => {
+  test("the percentage columns arrive as proportions", () => {
     // Defect 55's shape on a different screen: a proportion under a %
-    // header. Dropping either key from proportionKeys renders "0.4"
-    // under "3P%", and nothing else would catch it.
+    // header. Dropping the key from proportionKeys renders "0.4" under
+    // "3P%", and nothing else would catch it.
     assert.equal(formatStat(0.3676222596964587, "three_pct"), "36.8%");
+    // `ft_pct` still arrives on every row and is still formatted the
+    // same way; the players table stopped rendering it because the
+    // attempts underneath it are not real (defect 77). Kept covered, so
+    // the formatting is intact if the feed is ever fixed.
     assert.equal(formatStat(0.8496993987975952, "ft_pct"), "85.0%");
   });
 
@@ -156,7 +160,7 @@ describe("formatStat — the NBA players table (defect 61)", () => {
     // shows an average to, and a whole number here would read as a
     // total again.
     assert.equal(formatStat(26.023529411764706, "points_per_game"), "26.0");
-    assert.equal(formatStat(35.327647058823529, "minutes_per_game"), "35.3");
+    assert.equal(formatStat(35.32764705882353, "minutes_per_game"), "35.3");
     assert.equal(formatStat(6.658823529411765, "assists_per_game"), "6.7");
   });
 });

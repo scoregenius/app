@@ -11,9 +11,6 @@ import GamesScreen from "./screens/game_screen";
 // ——————————————————————————————————————————————————————————————
 // 2️⃣ LAZY‑LOAD everything else (below‑the‑fold):
 // ——————————————————————————————————————————————————————————————
-const GameDetailScreen = React.lazy(
-  () => import("./screens/game_detail_screen")
-);
 const StatsScreen = React.lazy(() => import("./screens/stats_screen"));
 const MoreScreen = React.lazy(() => import("./screens/more_screen"));
 const HowToUseScreen = React.lazy(() => import("./screens/how_to_use_screen"));
@@ -65,14 +62,6 @@ const App: React.FC = () => (
                     <Route path="games" element={<GamesScreen />} />
 
                     {/* everything else wrapped in its own Suspense */}
-                    <Route
-                      path="games/:gameId"
-                      element={
-                        <Suspense fallback={<Loader message="Loading game…" />}>
-                          <GameDetailScreen />
-                        </Suspense>
-                      }
-                    />
                     <Route
                       path="stats"
                       element={
