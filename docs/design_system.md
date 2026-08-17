@@ -1,6 +1,6 @@
 # ScoreGenius Design System
 
-**Version:** 1.12 · **Last revised:** 2026-08-17
+**Version:** 1.13 · **Last revised:** 2026-08-17
 **Status:** Every screen a user can reach is **built and live** on this system — Games, Stats, How to
 Use, More, the shared chrome, the guided tour and the three Games modals. Two things are not: the
 **§5.2** sans typeface, which is specified but not served, and **§6.4** buttons and inputs, which is
@@ -1554,7 +1554,7 @@ Order matters — each stage depends on the one before.
 | **8 — More** | The §8.4 rewrite: the §6.12 list row, the theme control on §6.3, the version stamp. Defects 62–70 | ✅ Shipped 2026-08-15 |
 
 **All eight stages are shipped, and the plan is finished.** What remains is not a ninth stage but
-five independent pieces of work. None blocks another, and none is a defect — the register is closed.
+four independent pieces of work. None blocks another, and none is a defect — the register is closed.
 
 | Outstanding | Where it is specified | Size |
 |---|---|---|
@@ -1562,7 +1562,6 @@ five independent pieces of work. None blocks another, and none is a defect — t
 | Build §6.4 as a shared button and input component | §6.4 | Do it with the next screen that needs a button |
 | Settle decision 4 — self-host Archivo, or stay on the fallback stack | §5.2, §13 | A decision first, then a day |
 | Clear the 20 ESLint warnings | §11, *Found since* | A sweep, no behaviour change |
-| See a focus ring render, by eye | §12, below | Minutes, but needs a human at a keyboard |
 
 Stages 1, 3 and 4 were built as seven commits, sequenced so the first four were invisible in the app
 — tokens, stylesheet, helpers and components all landed before anything consumed them. That left one
@@ -1589,11 +1588,11 @@ present in the rendered DOM, and the 320px overflow closed. Full measurements in
 grounds that `requestAnimationFrame` does not fire in the headless test browser. Re-measured
 2026-08-15, **that was wrong**: rAF fires, `document.hidden` is `false`, and the full nine-step tour
 walks in both directions from the pane — which is how defects 50 and 73 were confirmed as a
-before-and-after rather than by reading. The limitation that does hold is
-`document.hasFocus() === false`, so `:focus` never matches and **focus styles remain the one thing
-in this system that has never been seen to render.** They are correct by construction and by
-stylesheet inspection; they have not been photographed. That is the outstanding verification item,
-and it needs a human at a keyboard rather than a tool.
+before-and-after rather than by reading. The limitation that did hold is
+`document.hasFocus() === false`, so `:focus` never matched in that environment and focus styles
+stayed correct by construction and by stylesheet inspection but never seen to render. **Seen on
+2026-08-17:** the owner walked the running app by keyboard and the focus ring renders as §9
+specifies — the last verification this system owed to human eyes.
 
 Because the app is a Trusted Web Activity loading `scoregenius.io/app` at runtime, every stage ships
 through Render with no Android build and is reversible within minutes.
@@ -1631,6 +1630,12 @@ Deliberately excluded during review: a four-stat block showing model probability
 probability, edge percentage and z-score. See §4.2.
 
 ### Changelog
+
+**1.13 — 2026-08-17.** The focus ring has been seen. The owner walked the running app by keyboard —
+the one verification §12 said needed a human rather than a tool — and the ring renders as §9
+specifies, with the ground and the loading states confirmed on the same walk. §12's outstanding
+list drops to four items, every one of them work someone may choose to do rather than verification
+owed.
 
 **1.12 — 2026-08-17.** The legacy game-detail screen is deleted — §8.5's recommendation from earlier
 the same day, carried out. It was 201 lines behind a route nothing linked to, NBA-only, and the last
