@@ -17,8 +17,8 @@
 //      is a manual-action risk, not an SEO win.
 //   2. No individual is named. The graph identifies ScoreGenius the product and
 //      the organization behind it — never a person and never a legal entity.
-//      `about.html` is written in the first person, which is why it gets an
-//      AboutPage whose mainEntity is the organization, not a Person node.
+//      `about.html` gets an AboutPage whose mainEntity is the organization,
+//      not a Person node.
 //
 // Every node carries a stable `@id` so the graph is a graph: pages reference
 // the organization, the app and the website rather than restating them, and a
@@ -359,9 +359,7 @@ export const PAGES = [
     graph: [
       organization,
       website,
-      // AboutPage, and its mainEntity is the organization. The page is written
-      // in the first person, but naming an individual here would publish an
-      // identity the site itself does not publish.
+      // AboutPage, and its mainEntity is the organization — never a person.
       webPage({
         url: `${SITE}/about`,
         name: "About ScoreGenius",

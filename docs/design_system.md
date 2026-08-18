@@ -1301,7 +1301,7 @@ step on something already in view.
 
 **The social rows are one row of tiles.** Most of the labels ended in the same handle, which §3.3
 says to delete rather than restyle. The handle moves into the accessible name, so a screen reader
-still gets it. There were four tiles until the Facebook page was deleted on 2026-08-18; the row now
+still gets it. There were four tiles until the Facebook tile was removed on 2026-08-18; the row now
 carries three, and the grid takes its column count from the tiles in it rather than from a fixed
 track list, so the row divides in three. Icon above an 11px label is the one arrangement §5.7
 permits an icon to lead, and it is what the bottom navigation already does.
@@ -1655,8 +1655,8 @@ directly instead of pointing at a procedure document. Cross-references into the 
 were removed; nothing they said about the shipped interface is lost, since §6, §8, §11 and §12
 already recorded it.
 
-**1.15 — 2026-08-18.** The social row divides by its tiles. 1.14 recorded that the Facebook
-deletion "left no gap to design around" because the row "was never a four-column grid" — `.lr-tiles`
+**1.15 — 2026-08-18.** The social row divides by its tiles. 1.14 recorded that removing the
+Facebook tile "left no gap to design around" because the row "was never a four-column grid" — `.lr-tiles`
 was `grid-template-columns: repeat(4, 1fr)`, so it was, and the fourth column outlived the tile it
 was cut for. Three tiles sat in the left three-quarters of the panel against an empty quarter, which
 reads as a rendering fault rather than a row of three, the same failure mode §6.12 was written to
@@ -1665,10 +1665,10 @@ children, and an account added or dropped needs no stylesheet change. Found by l
 running screen, not by reading the specification, which described the corrected behaviour a version
 early.
 
-**1.14 — 2026-08-18.** §8.4's row inventory catches up with the screen. The Facebook tile went
-with the page on 2026-08-18, but this document still described the More screen as fourteen rows
+**1.14 — 2026-08-18.** §8.4's row inventory catches up with the screen. The Facebook tile was
+removed on 2026-08-18, but this document still described the More screen as fourteen rows
 with a four-tile social row — it is thirteen and three. Nothing about the arrangement changed;
-the row was never a four-column grid, which is why the deletion left no gap to design around.
+the row was never a four-column grid, which is why the removal left no gap to design around.
 Documentation drift rather than a defect, recorded because a specification that miscounts the
 screen it specifies stops being checkable.
 
