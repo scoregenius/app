@@ -54,7 +54,7 @@ part of the asset and are held in a private repository, available under a signed
 
 ```
 frontend/src/components/    the card, chrome, modals, charts, shared UI
-frontend/src/screens/       Games, Stats, How to Use, More, game detail
+frontend/src/screens/       Games, Stats, How to Use, More
 frontend/src/utils/         pure helpers, unit-tested with no framework
 frontend/src/index.css      design tokens for both themes, plus component blocks
 docs/design_system.md       the system this interface is built on

@@ -5,7 +5,6 @@ import {
   BookOpen,
   ShieldCheck,
   FileText,
-  Facebook,
   Instagram,
   Twitter,
   Youtube,
@@ -178,18 +177,12 @@ const MoreScreen: React.FC = () => {
         </ListGroup>
       </section>
 
-      {/* One handle, four services. Carried in the accessible name
+      {/* One handle, three services. Carried in the accessible name
           rather than repeated down the visible labels. */}
       <section className="mor-sec">
         <h2 className="mor-h2">Connect with us</h2>
         <ListGroup>
           <TileGroup>
-            <Tile
-              href="https://facebook.com/scoregeniusapp"
-              label="Facebook"
-              icon={Facebook}
-              ariaLabel="Facebook, @scoregeniusapp"
-            />
             <Tile
               href="https://instagram.com/scoregeniusapp"
               label="Instagram"
