@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.ts",
+    "dev:live": "vite --config vite.config.ts --mode live",
     "build": "vite build --debug && node ./scripts/generate_sitemap.js",
     "seo": "node scripts/generate_structured_data.mjs",
     "seo:check": "node scripts/generate_structured_data.mjs --check",

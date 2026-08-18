@@ -98,11 +98,13 @@ Node 22 or newer.
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev:live
 ```
 
-The dev server proxies `/api` to production, so it comes up with **real games and real predictions**
-without a backend to stand up. It is the same API the published app calls.
+`dev:live` proxies `/api` to production, so the app comes up with **real games and real
+predictions** without a backend to stand up. It is the same API the published app calls, and it is
+read-only. `npm run dev` instead expects the Express API on `localhost:10000`, which is not part of
+this repository.
 
 ```bash
 npm run check     # lint, unit tests, production build

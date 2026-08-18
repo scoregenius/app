@@ -23,7 +23,7 @@ const appVersion = JSON.parse(
   readFileSync(resolve(__dirname, "package.json"), "utf8")
 ).version;
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   define: {
     "import.meta.env.VITE_APP_VERSION": JSON.stringify(appVersion),
   },
@@ -83,11 +83,16 @@ export default defineConfig({
     open: "/app",
     port: 5173,
     strictPort: true,
+    // `npm run dev` proxies /api to a local Express server on port 10000.
+    // `npm run dev:live` (mode "live") proxies to production instead, so the
+    // app comes up with real games and predictions without a backend to stand
+    // up — the same API the published app calls. Reads only; the API exposes
+    // no write route.
     proxy: {
       "/api": {
-        target: "http://localhost:10000",
+        target: mode === "live" ? "https://scoregenius.io" : "http://localhost:10000",
         changeOrigin: true,
-        secure: false,
+        secure: mode === "live",
       },
     },
   },
@@ -117,4 +122,4 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
-});
+}));

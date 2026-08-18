@@ -12,7 +12,6 @@ import { enable as enableNavigationPreload } from "workbox-navigation-preload";
 
 // --- Bypass the SW for third-party data hosts (no cache, no fallback) ---
 const BYPASS_HOSTS = [
-  "score-genius-backend.onrender.com",
   "supabase.co",
   "supabase.in",
 ];
