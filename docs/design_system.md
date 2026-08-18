@@ -1,6 +1,6 @@
 # ScoreGenius Design System
 
-**Version:** 1.13 · **Last revised:** 2026-08-17
+**Version:** 1.14 · **Last revised:** 2026-08-18
 **Status:** Every screen a user can reach is **built and live** on this system — Games, Stats, How to
 Use, More, the shared chrome, the guided tour and the three Games modals. Two things are not: the
 **§5.2** sans typeface, which is specified but not served, and **§6.4** buttons and inputs, which is
@@ -1276,17 +1276,19 @@ a decision. That, rather than any single defect, is what this pass was for.
 | **Appearance and options** | The theme control (§6.3 via `theme_control.tsx`) and Restart the tour |
 | **Feedback and support** | Report a bug, Request a feature, Support |
 | **Information** | About, Documentation, Disclaimer, Terms of Service, Privacy Policy |
-| **Connect with us** | Four tiles, one per account |
+| **Connect with us** | Three tiles, one per account |
 | Footer | The version line, mono `ink-3`, centred |
 
-**The controls come first.** Two of the fourteen rows do something in the app and twelve leave it,
+**The controls come first.** Two of the thirteen rows do something in the app and eleven leave it,
 so appearance and the tour lead and the reference links follow. It also puts the guided tour's final
 step on something already in view.
 
-**The four social rows are one row of four tiles.** Three of the four labels ended in the same
-handle, which §3.3 says to delete rather than restyle. The handle moves into the accessible name, so
-a screen reader still gets it. Icon above an 11px label is the one arrangement §5.7 permits an icon
-to lead, and it is what the bottom navigation already does.
+**The social rows are one row of tiles.** Most of the labels ended in the same handle, which §3.3
+says to delete rather than restyle. The handle moves into the accessible name, so a screen reader
+still gets it. There were four tiles until the Facebook page was deleted on 2026-08-18; the row now
+carries three, and the arrangement is unchanged because it was never a four-column grid. Icon above
+an 11px label is the one arrangement §5.7 permits an icon to lead, and it is what the bottom
+navigation already does.
 
 **The theme control names both values.** It was a single button reading "Dark Mode", and nothing
 about it said whether that was the theme you were in or the one you would get — with no
@@ -1630,6 +1632,13 @@ Deliberately excluded during review: a four-stat block showing model probability
 probability, edge percentage and z-score. See §4.2.
 
 ### Changelog
+
+**1.14 — 2026-08-18.** §8.4's row inventory catches up with the screen. The Facebook tile went
+with the page on 2026-08-18, but this document still described the More screen as fourteen rows
+with a four-tile social row — it is thirteen and three. Nothing about the arrangement changed;
+the row was never a four-column grid, which is why the deletion left no gap to design around.
+Documentation drift rather than a defect, recorded because a specification that miscounts the
+screen it specifies stops being checkable.
 
 **1.13 — 2026-08-17.** The focus ring has been seen. The owner walked the running app by keyboard —
 the one verification §12 said needed a human rather than a tool — and the ring renders as §9
