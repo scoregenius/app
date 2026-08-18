@@ -6,7 +6,7 @@
 //
 // This file exists because of a constraint rather than a preference.
 // **Nothing in this project can drive the guided tour automatically:**
-// `requestAnimationFrame` does not fire in the headless test browser, so
+// `requestAnimationFrame` does not fire in the agent's browser pane, so
 // the tooltip never lays out past the first step. Every defect the tour
 // has produced — 27, 47, 48, 49, 50, 51 — was found by a human clicking
 // through, several of them months late. So the parts that can be

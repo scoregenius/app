@@ -85,10 +85,7 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       "/api": {
-        // Points at production so the app runs with real data straight after
-        // `npm install && npm run dev`, with no backend to stand up. The API
-        // is the same one the published PWA calls from the browser.
-        target: "https://scoregenius.io",
+        target: "http://localhost:10000",
         changeOrigin: true,
         secure: false,
       },

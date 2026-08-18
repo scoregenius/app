@@ -2,18 +2,23 @@
   "name": "scoregenius",
   "version": "1.1.9",
   "description": "ScoreGenius PWA: the installable React front end delivering AI-powered NFL, NBA, and MLB score predictions, advanced metrics, and matchup context. Also the source for the Trusted Web Activity Android build.",
-  "author": "ScoreGenius",
+  "author": "ScoreGenius <support@scoregenius.io>",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.ts",
     "build": "vite build --debug && node ./scripts/generate_sitemap.js",
+    "seo": "node scripts/generate_structured_data.mjs",
+    "seo:check": "node scripts/generate_structured_data.mjs --check",
     "preview": "vite preview --port 4173 --open /app/",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,mjs}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx,mjs}\" --fix",
-    "test:utils": "node --test \"src/**/*.test.mjs\"",
-    "check": "npm run lint && npm run test:utils && npm run build"
+    "test:utils": "node scripts/check_node_version.mjs && node --test \"src/**/*.test.mjs\"",
+    "check": "npm run seo:check && npm run lint && npm run test:utils && npm run build"
+  },
+  "engines": {
+    "node": ">=22.18"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.10",

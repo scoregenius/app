@@ -12,8 +12,15 @@ async function buildSitemap() {
   const backendStatic = resolve(__dirname, "../../backend/server/static");
   const hostname = "https://scoregenius.io";
 
+  // Pages that must never be submitted for indexing. `app.html` is the PWA
+  // shell, which robots.txt already keeps crawlers out of; `404.html` is the
+  // error page, and listing it in a sitemap asserts that a real page lives at
+  // /404; `splash_screen.html` is an internal PWA asset with no standalone
+  // content. All three were being submitted.
+  const notIndexable = new Set(["app.html", "404.html", "splash_screen.html"]);
+
   const pages = readdirSync(distDir)
-    .filter((f) => f.endsWith(".html") && f !== "app.html")
+    .filter((f) => f.endsWith(".html") && !notIndexable.has(f))
     .map((f) => (f === "index.html" ? "/" : `/${f.replace(".html", "")}`));
 
   const smStream = new SitemapStream({ hostname });

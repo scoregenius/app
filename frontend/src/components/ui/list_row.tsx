@@ -182,9 +182,11 @@ export interface TileProps {
 }
 
 /**
- * A four-up grid for links that differ only by which service they are.
- * §5.7 allows an icon to lead only where a label sits directly beneath
- * it, which is the arrangement the bottom navigation already uses.
+ * One row of links that differ only by which service they are. The grid
+ * divides evenly by however many tiles are passed in, so the count is a
+ * property of the call site rather than of the stylesheet. §5.7 allows an
+ * icon to lead only where a label sits directly beneath it, which is the
+ * arrangement the bottom navigation already uses.
  */
 export const TileGroup: React.FC<{ children: React.ReactNode }> = ({
   children,

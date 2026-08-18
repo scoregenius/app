@@ -10,7 +10,7 @@ import type { TourStepId } from "@/contexts/tour_context";
  * be tested — the SOP's rule that helpers get tests and components do
  * not. That rule earns its keep here more than anywhere else in the app:
  * **nothing in this project can drive the guided tour automatically.**
- * `requestAnimationFrame` does not fire in the headless test browser, so
+ * `requestAnimationFrame` does not fire in the agent's browser pane, so
  * the tooltip never lays out past the first step, and every defect this
  * module encodes a rule against — 27, 47, 48, 49, 50, 51 — was found by a
  * human clicking through. What can be pinned by a test should be.

@@ -35,7 +35,7 @@ const readPresence = (): AnchorPresence =>
  * The tour's runtime. The step model, the anchor contract and the
  * filtering rules live in `utils/tour_steps.ts`, where they can be
  * tested — nothing in this project can drive the tour itself, because
- * `requestAnimationFrame` does not fire in the headless test browser.
+ * `requestAnimationFrame` does not fire in the agent's browser pane.
  */
 export const TourProvider = ({ children }: { children: ReactNode }) => {
   const [run, setRun] = useState(false);

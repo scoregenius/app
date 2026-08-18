@@ -2395,14 +2395,24 @@ button.lr {
 }
 
 /* ---------- tiles ----------
- * Four accounts that differ only by which service they are. As
- * four full-width rows they were a quarter of the screen saying
- * the same handle three times. Icon above an 11px label is the
- * one arrangement §5.7 permits an icon to lead, and it is what
- * the bottom navigation already does. */
+ * The accounts, which differ only by which service they are. As
+ * full-width rows they were a quarter of the screen saying the
+ * same handle over and over. Icon above an 11px label is the one
+ * arrangement §5.7 permits an icon to lead, and it is what the
+ * bottom navigation already does.
+ *
+ * The columns come from the tiles, not from a fixed track list.
+ * This was `repeat(4, 1fr)`, and when the Facebook tile was
+ * deleted the fourth column stayed behind — three tiles packed
+ * into the left three-quarters of the panel with an empty quarter
+ * beside them, which reads as a layout fault rather than a row of
+ * three. `grid-auto-flow: column` over a 1fr auto column divides
+ * the row by however many tiles it holds, so the next account
+ * added or dropped needs no rule here. */
 .lr-tiles {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
 }
 .lr-tile {
   @apply flex flex-col items-center justify-center;
