@@ -1,6 +1,6 @@
 # ScoreGenius Design System
 
-**Version:** 1.14 · **Last revised:** 2026-08-18
+**Version:** 1.16 · **Last revised:** 2026-08-18
 **Status:** Every screen a user can reach is **built and live** on this system — Games, Stats, How to
 Use, More, the shared chrome, the guided tour and the three Games modals. Two things are not: the
 **§5.2** sans typeface, which is specified but not served, and **§6.4** buttons and inputs, which is
@@ -47,9 +47,10 @@ reader can tell at a glance which sections are a description and which are an in
 
 ## 1. How to use this document
 
-**Refreshing a screen:** follow [`screen_refresh_sop.md`](./screen_refresh_sop.md) — the procedure
-derived from the Games refresh, including the sequencing that keeps the risky commit revertable and
-the environment traps that will otherwise cost you an afternoon.
+**Refreshing a screen:** land tokens, stylesheet, helpers and shared components first, each in its
+own commit with nothing consuming it, so the one commit a user would notice can be reverted alone.
+§12 records how each stage of the rebuild was sequenced that way, and §11 records what measurement
+found that reading did not.
 
 **Designing a new screen:** read §2–§4 for the stance, then build from §6 components and §7
 patterns. If you need something §6 does not have, add it to §6 rather than styling it locally.
@@ -180,6 +181,21 @@ Abbreviation chips therefore rest on a hand-maintained constant,
 relocated Athletics. Lookup is normalised on punctuation and casing, because the schedule feed
 renders `St.Louis Cardinals` while the stadium file has `St. Louis Cardinals`; exact matching would
 have missed silently. Unknown sides fall back to derived initials so the row keeps its anchor.
+
+**The same map also decides whether a side is a club at all.** `isLeagueTeam` asks it the opposite
+question to `abbr`, and the Stats screen filters through it because the MLB advanced feed carries
+`American League` and `National League` rows during a live season (32 rows for a 30-club league) and
+the NBA player feed has labelled full-season players `Team World`. It is an allowlist, not a
+denylist, because a denylist cannot promise anything about a name it has not seen. The two cases
+take opposite treatments: an exhibition **team** row is dropped; a **player** carrying an exhibition
+label keeps his row and loses the label, since dropping him would take a full season off the
+leaderboard to fix a string. Verified across ten feeds spanning four seasons and three sports: the
+filter rejects exactly those two names and nothing else.
+
+**The cost of that decision, stated plainly:** `team_abbr.ts` now gates rendering, not just
+abbreviation. A relocated or renamed franchise missing from the map loses its row until it is added
+— previously it only got wrong initials. The table caption's row count is what makes that visible,
+and a test asserts every name in the map passes its own predicate.
 
 ### 4.4 Venue indoor status
 
@@ -1286,9 +1302,9 @@ step on something already in view.
 **The social rows are one row of tiles.** Most of the labels ended in the same handle, which §3.3
 says to delete rather than restyle. The handle moves into the accessible name, so a screen reader
 still gets it. There were four tiles until the Facebook page was deleted on 2026-08-18; the row now
-carries three, and the arrangement is unchanged because it was never a four-column grid. Icon above
-an 11px label is the one arrangement §5.7 permits an icon to lead, and it is what the bottom
-navigation already does.
+carries three, and the grid takes its column count from the tiles in it rather than from a fixed
+track list, so the row divides in three. Icon above an 11px label is the one arrangement §5.7
+permits an icon to lead, and it is what the bottom navigation already does.
 
 **The theme control names both values.** It was a single button reading "Dark Mode", and nothing
 about it said whether that was the theme you were in or the one you would get — with no
@@ -1404,10 +1420,10 @@ running the tour**, which for most of this project's life nothing could do autom
 the argument for §6.10's rule that a filter is not a fix.
 
 > **That constraint no longer holds, and it is worth knowing before the next tour change.** Four
-> entries in this changelog and one row of the SOP's trap table record that
-> `requestAnimationFrame` does not fire in the headless test browser, so the tooltip never lays out
+> entries in this changelog record that `requestAnimationFrame` does not fire in the headless test
+> browser, so the tooltip never lays out
 > past step one. Re-measured on 2026-08-15: `document.hidden` is **`false`**, `visibilityState` is
-> `visible`, rAF fires, and the full nine-step tour can be walked in both directions from the pane —
+> `visible`, rAF fires, and the full nine-step tour can be walked in both directions from that browser —
 > which is how defects 50 and 73 were confirmed as a before-and-after rather than by reading.
 > **`document.hasFocus()` is still `false`**, so `:focus` never matches and focus styles still
 > cannot be measured. That is a different limitation which had been folded into this one.
@@ -1567,8 +1583,7 @@ four independent pieces of work. None blocks another, and none is a defect — t
 
 Stages 1, 3 and 4 were built as seven commits, sequenced so the first four were invisible in the app
 — tokens, stylesheet, helpers and components all landed before anything consumed them. That left one
-commit a user would notice, which could be reverted alone without losing the rest. The record is in
-[`game_card_implementation.md`](./game_card_implementation.md).
+commit a user would notice, which could be reverted alone without losing the rest.
 
 Stage 2 was deliberately deferred rather than skipped: the card was the screen users actually spend
 time in, and the header could wait. It shipped in six commits on 2026-08-14, sequenced so the shared
@@ -1583,13 +1598,12 @@ actually landed in stage 7, when defect 31 put all three action chips on `.gc-ch
 Stage 2 was built without a dev server and **verified against the running app afterwards**. All four
 screens, both themes: one shared surface with no seam, every contrast ratio measured and passing
 (nav active 10.78 dark / 5.44 light, segment selected 6.65 / 5.79), all five `data-tour` anchors
-present in the rendered DOM, and the 320px overflow closed. Full measurements in
-[`chrome_implementation.md`](./chrome_implementation.md) §8.
+present in the rendered DOM, and the 320px overflow closed.
 
 **That gap is closed.** Stage 2 recorded the guided tour as verified only as far as step 1, on the
 grounds that `requestAnimationFrame` does not fire in the headless test browser. Re-measured
 2026-08-15, **that was wrong**: rAF fires, `document.hidden` is `false`, and the full nine-step tour
-walks in both directions from the pane — which is how defects 50 and 73 were confirmed as a
+walks in both directions from that browser — which is how defects 50 and 73 were confirmed as a
 before-and-after rather than by reading. The limitation that did hold is
 `document.hasFocus() === false`, so `:focus` never matched in that environment and focus styles
 stayed correct by construction and by stylesheet inspection but never seen to render. **Seen on
@@ -1633,6 +1647,24 @@ probability, edge percentage and z-score. See §4.2.
 
 ### Changelog
 
+**1.16 — 2026-08-18.** The rebuild's per-screen build records were retired and this document
+became the only record. §4.3 now carries what the Stats record held that nothing else did: the
+exhibition-side allowlist, why team and player rows take opposite treatments, and the cost of
+letting `team_abbr.ts` gate rendering. §1's screen-refresh guidance states the sequencing rule
+directly instead of pointing at a procedure document. Cross-references into the retired records
+were removed; nothing they said about the shipped interface is lost, since §6, §8, §11 and §12
+already recorded it.
+
+**1.15 — 2026-08-18.** The social row divides by its tiles. 1.14 recorded that the Facebook
+deletion "left no gap to design around" because the row "was never a four-column grid" — `.lr-tiles`
+was `grid-template-columns: repeat(4, 1fr)`, so it was, and the fourth column outlived the tile it
+was cut for. Three tiles sat in the left three-quarters of the panel against an empty quarter, which
+reads as a rendering fault rather than a row of three, the same failure mode §6.12 was written to
+end. It is now `grid-auto-flow: column` over a 1fr auto column: the track count follows the
+children, and an account added or dropped needs no stylesheet change. Found by looking at the
+running screen, not by reading the specification, which described the corrected behaviour a version
+early.
+
 **1.14 — 2026-08-18.** §8.4's row inventory catches up with the screen. The Facebook tile went
 with the page on 2026-08-18, but this document still described the More screen as fourteen rows
 with a four-tile social row — it is thirteen and three. Nothing about the arrangement changed;
@@ -1664,7 +1696,7 @@ corrections, and the pattern in them is worth naming: **every one was a claim th
 written and was never revisited.**
 
 The status block still said 1.7 and still called the guided tour unverifiable past step one — a
-claim §11 and the SOP had both retracted two days earlier, in this same document. §6.3 and §6.10
+claim §11 had retracted two days earlier, in this same document. §6.3 and §6.10
 still spoke of stage 5 in the future tense, three days after stage 5 shipped. The lint counts were
 two warnings out and the test count twenty-one out; both are now stated with the instruction to
 re-run rather than to trust, because both have drifted twice.
@@ -1746,7 +1778,7 @@ a `.ts` but not a `.tsx`. Twenty tests, two of them drift checks in the spirit o
 route in `STEP_ROUTES` against the routes `App.tsx` defines. Checked by mutation rather than assumed.
 
 **The standing claim that this tour cannot be driven from the headless test browser is wrong.** It
-appears in four entries below and in the SOP's trap table. Re-measured: `document.hidden` is `false`,
+appears in four entries below. Re-measured: `document.hidden` is `false`,
 rAF fires, and the whole sequence walks in both directions. Defect 50 was therefore confirmed as an
 A/B on one build with only the tooltip swapped — Back on step 8 of 9 from More gives step 8 before
 and step 7 on Stats after. `document.hasFocus()` is still `false`, so focus styles remain
@@ -1798,10 +1830,9 @@ recreated exactly the two-generations problem this pass removed. Defect 72: **th
 typeface the app uses, and none of them loads** — `app.html` fetches Inter, which no rule references,
 while `document.fonts` is empty and the specified Archivo is absent.
 
-Two divergences from the SOP are worth recording rather than tidying away. **The documentation was
-written after the build, not before it** (§4), because the brief compressed the sequence to five
-commits for a screen this small; no separate `more_implementation.md` was written, and this section
-plus §8.4 carry the record instead. And **one defect was introduced during the pass and caught only
+Two divergences from the usual sequence are worth recording rather than tidying away. **The
+documentation was written after the build, not before it**, because the sequence was compressed to
+five commits for a screen this small; this section plus §8.4 carry the record. And **one defect was introduced during the pass and caught only
 by measurement**: the divider rule and `.lr` have identical specificity, and `.lr` resets `border` to
 0 for the button case, so with the divider written first every divider computed to `border-top: 0px
 none` and the group rendered as one undivided slab. It looks like a design choice, which is why
@@ -1827,9 +1858,8 @@ Register grows to 61. Nine of the eleven defects on this screen were found by dr
 app against production data rather than by reading it, and three were wrong information rather than
 wrong styling: NFL Teams arrived sorted by a column it does not render, MLB reported Win % two ways
 one tab apart, and the players table labels season totals as per-game averages. Three further
-hypotheses that looked certain from the source were killed by checking, and are recorded in
-[`stats_implementation.md`](./stats_implementation.md) §2 — reading alone would have shipped all
-three as findings.
+hypotheses that looked certain from the source were killed by checking — reading alone would have
+shipped all three as findings.
 
 Measuring the new screen corrected the specification twice, both times the same way §6.3 was
 corrected during stage 2: `ink-3` is too quiet for anything a reader actually reads. Column headers
