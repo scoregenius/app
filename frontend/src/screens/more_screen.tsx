@@ -130,12 +130,12 @@ const MoreScreen: React.FC = () => {
         <h2 className="mor-h2">Feedback and support</h2>
         <ListGroup>
           <LinkRow
-            href="mailto:hello@scoregenius.io?subject=Bug%20Report"
+            href="mailto:support@scoregenius.io?subject=Bug%20Report"
             label="Report a bug"
             icon={Bug}
           />
           <LinkRow
-            href="mailto:hello@scoregenius.io?subject=Feature%20Request"
+            href="mailto:support@scoregenius.io?subject=Feature%20Request"
             label="Request a feature"
             icon={MessageSquareText}
           />

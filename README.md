@@ -134,4 +134,4 @@ modify or distribute is granted by its being visible here.
 
 ## Contact
 
-[hello@scoregenius.io](mailto:hello@scoregenius.io)
+[support@scoregenius.io](mailto:support@scoregenius.io)
