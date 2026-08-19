@@ -65,15 +65,11 @@ docs/handover/              two documents written for readers evaluating the pro
 
 The app was rebuilt against a written design system rather than by eye. `docs/design_system.md`
 carries it: the token palette with **measured** contrast ratios for both themes, the component
-library, the patterns each screen is built from, an accessibility target of WCAG 2.1 AA, and a
-defect register.
+library, the patterns each screen is built from, and an accessibility target of WCAG 2.1 AA.
 
-Two things in there are worth a moment if you are evaluating this codebase:
-
-- **§4, "What the app actually knows".** The constraints above, written down, so that no screen ends
-  up implying a data feed that does not exist.
-- **The defect register.** Every defect found during the rebuild, what it measured, and what closed
-  it. Seventy-seven are on record and all seventy-seven are closed, each with what closed it.
+One section in there is worth a moment if you are evaluating this codebase: **§4, "What the app
+actually knows"** — the constraints above, written down, so that no screen ends up implying a data
+feed that does not exist.
 
 `docs/handover/` holds two longer documents — one on what changed in the interface and why, one on
 the design system itself. Every interface specimen in them is rendered live from the design system's
