@@ -40,6 +40,7 @@ const AUDIENCE_ID = `${SITE}/#audience`;
 // in an identity graph that is meant to stay stable for years.
 const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=io.scoregenius.app";
+const MICROSOFT_STORE_URL = "https://apps.microsoft.com/detail/9P843BS4GCGP";
 const SAMSUNG_STORE_URL =
   "https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app";
 
@@ -135,7 +136,7 @@ const website = {
 
 // What we do. Typed as all three application classes because it genuinely is
 // all three: an installable PWA, a Play/Samsung Android app via Trusted Web
-// Activity, and a plain browser app.
+// Activity (and a Microsoft Store package), and a plain browser app.
 //
 // Deliberately absent: `aggregateRating`. The store ratings are real but they
 // are not shown on this site, and rating markup that a visitor cannot see on
@@ -158,7 +159,7 @@ const application = {
   },
   installUrl: PLAY_STORE_URL,
   downloadUrl: PLAY_STORE_URL,
-  sameAs: [PLAY_STORE_URL, SAMSUNG_STORE_URL],
+  sameAs: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL],
   featureList: [
     "Daily pregame score predictions for NFL, NBA and MLB",
     "Advanced team and player statistics by season",
@@ -603,22 +604,26 @@ export const PAGES = [
         extra: {
           mainEntity: { "@id": ORGANIZATION_ID },
           breadcrumb: { "@id": `${SITE}/support#breadcrumb` },
-          significantLink: [PLAY_STORE_URL, SAMSUNG_STORE_URL],
+          significantLink: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL],
         },
       }),
       breadcrumb(`${SITE}/support`, "Support"),
       faq(`${SITE}/support`, [
         {
           q: "How often are predictions updated?",
-          a: "Predictions update in real time during games. Quarter-by-quarter models improve accuracy as games progress.",
+          a: "Predictions are generated before each game and refresh daily as new data arrives. Once a game starts, its predicted scores are cleared — ScoreGenius does not update predictions during play.",
         },
         {
           q: "How accurate are the predictions?",
-          a: "Our models achieve increasing accuracy throughout games, with fourth-quarter predictions reaching roughly 4.7 RMSE — significantly better than early-game predictions.",
+          a: "Predictions come from statistical models trained on historical results and evaluated on games the models had not seen. They are estimates, not certainties, and are provided for information and entertainment only.",
+        },
+        {
+          q: "Does ScoreGenius offer betting advice?",
+          a: "No. ScoreGenius shows posted odds and its own predictions side by side for informational and educational purposes only. It does not accept wagers, facilitate gambling, or recommend bets.",
         },
         {
           q: "Does the app work offline?",
-          a: "Yes. Previously loaded data and predictions are cached for offline viewing, though real-time updates require an internet connection.",
+          a: "Yes. Previously loaded games, stats and predictions are cached for offline viewing; new data requires an internet connection.",
         },
       ]),
     ],

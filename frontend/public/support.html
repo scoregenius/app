@@ -172,6 +172,7 @@
             },
             "significantLink": [
               "https://play.google.com/store/apps/details?id=io.scoregenius.app",
+              "https://apps.microsoft.com/detail/9P843BS4GCGP",
               "https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app"
             ]
           },
@@ -202,7 +203,7 @@
                 "name": "How often are predictions updated?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Predictions update in real time during games. Quarter-by-quarter models improve accuracy as games progress."
+                  "text": "Predictions are generated before each game and refresh daily as new data arrives. Once a game starts, its predicted scores are cleared — ScoreGenius does not update predictions during play."
                 }
               },
               {
@@ -210,7 +211,15 @@
                 "name": "How accurate are the predictions?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Our models achieve increasing accuracy throughout games, with fourth-quarter predictions reaching roughly 4.7 RMSE — significantly better than early-game predictions."
+                  "text": "Predictions come from statistical models trained on historical results and evaluated on games the models had not seen. They are estimates, not certainties, and are provided for information and entertainment only."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does ScoreGenius offer betting advice?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. ScoreGenius shows posted odds and its own predictions side by side for informational and educational purposes only. It does not accept wagers, facilitate gambling, or recommend bets."
                 }
               },
               {
@@ -218,7 +227,7 @@
                 "name": "Does the app work offline?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes. Previously loaded data and predictions are cached for offline viewing, though real-time updates require an internet connection."
+                  "text": "Yes. Previously loaded games, stats and predictions are cached for offline viewing; new data requires an internet connection."
                 }
               }
             ]
@@ -356,19 +365,22 @@
               Download ScoreGenius
             </h2>
             <p class="text-gray-300">
-              ScoreGenius is available as a free app on the 
-              <a href="https://play.google.com/store/apps/details?id=io.scoregenius.app" 
-                class="text-orange-500 hover:underline" 
+              ScoreGenius is available as a free app on the
+              <a href="https://play.google.com/store/apps/details?id=io.scoregenius.app"
+                class="text-orange-500 hover:underline"
                 target="_blank" rel="noopener">
-                Google Play Store
-              </a> 
-              and the 
-              <a href="https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app&source=GBadge_01_8385140_tag&directOpen=true&ads=ddb0e6f9&nonOrgType=fce692ba" 
-                class="text-orange-500 hover:underline" 
+                Google Play Store</a>,
+              the
+              <a href="https://apps.microsoft.com/detail/9P843BS4GCGP"
+                class="text-orange-500 hover:underline"
                 target="_blank" rel="noopener">
-                Samsung Galaxy Store
-              </a>. 
-              You can also install it directly in your browser as a Progressive Web App (PWA).
+                Microsoft Store</a>
+              and the
+              <a href="https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app&source=GBadge_01_8385140_tag&directOpen=true&ads=ddb0e6f9&nonOrgType=fce692ba"
+                class="text-orange-500 hover:underline"
+                target="_blank" rel="noopener">
+                Samsung Galaxy Store</a>.
+              You can also install it directly from your browser as a Progressive Web App (PWA).
             </p>
           </section>
 
@@ -377,17 +389,18 @@
               Quick Start Guide
             </h2>
             <p class="text-gray-300 mb-4">
-              ScoreGenius provides real-time NFL, NBA and MLB analytics, predictive insights,
-              and betting recommendations. Here's how to get started:
+              ScoreGenius provides pre-game NFL, NBA and MLB score predictions, advanced
+              statistics and matchup context, shown alongside the betting market for
+              information only. Here's how to get started:
             </p>
             <div class="bg-gray-700 rounded-lg p-4 space-y-2">
               <ul class="list-disc pl-5 text-gray-300 space-y-2">
-                <li>Install the app from your browser or device's app store</li>
-                <li>View today's NFL, NBA and MLB games and predictions</li>
+                <li>Install the app from your browser or your device's app store</li>
+                <li>Open the Games screen for today's NFL, NBA and MLB matchups, each with a predicted score</li>
                 <li>
-                  Track live game progress with real-time score predictions
+                  Compare each prediction with the moneyline, spread and total posted for that game
                 </li>
-                <li>Explore betting insights and recommendations</li>
+                <li>Open Stats for league tables, advanced metrics and player statistics, and check venue weather and injury reports from the game card</li>
               </ul>
             </div>
           </section>
@@ -402,8 +415,9 @@
                   How often are predictions updated?
                 </h3>
                 <p class="text-gray-300">
-                  Predictions update in real-time during games.
-                  Quarter-by-quarter models improve accuracy as games progress.
+                  Predictions are generated before each game and refresh daily as new
+                  data arrives. Once a game starts, its predicted scores are cleared —
+                  ScoreGenius does not update predictions during play.
                 </p>
               </div>
               <div class="bg-gray-700 rounded-lg p-4">
@@ -411,9 +425,19 @@
                   How accurate are the predictions?
                 </h3>
                 <p class="text-gray-300">
-                  Our models achieve increasing accuracy throughout games, with
-                  Q4 predictions reaching ~4.7 RMSE (significantly better than
-                  early-game predictions).
+                  Predictions come from statistical models trained on historical results
+                  and evaluated on games the models had not seen. They are estimates, not
+                  certainties, and are provided for information and entertainment only.
+                </p>
+              </div>
+              <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="font-semibold text-white mb-2">
+                  Does ScoreGenius offer betting advice?
+                </h3>
+                <p class="text-gray-300">
+                  No. ScoreGenius shows posted odds and its own predictions side by side
+                  for informational and educational purposes only. It does not accept
+                  wagers, facilitate gambling, or recommend bets.
                 </p>
               </div>
               <div class="bg-gray-700 rounded-lg p-4">
@@ -421,9 +445,8 @@
                   Does the app work offline?
                 </h3>
                 <p class="text-gray-300">
-                  Yes, previously loaded data and predictions are cached for
-                  offline viewing, though real-time updates require an internet
-                  connection.
+                  Yes. Previously loaded games, stats and predictions are cached for
+                  offline viewing; new data requires an internet connection.
                 </p>
               </div>
             </div>

@@ -3,7 +3,7 @@
 **Sports analytics PWA for NFL, NBA and MLB. Model score predictions, compared against the betting
 market.**
 
-[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app) · [Microsoft Store](https://apps.microsoft.com/detail/9P843BS4GCGP)
+[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app) · [Microsoft Store](https://apps.microsoft.com/detail/9P843BS4GCGP) · [Galaxy Store](https://galaxystore.samsung.com/detail/io.scoregenius.app)
 
 ---
 
@@ -47,7 +47,7 @@ designed around these limits rather than in spite of them:
 
 ## About this repository
 
-This is the **frontend**: the React PWA that ships to the Play Store and the web.
+This is the **frontend**: the React PWA that ships to the stores and the web.
 
 The data pipeline, feature engineering, model training and the trained models are not here. They are
 part of the asset and are held in a private repository, available under a signed agreement.
@@ -112,12 +112,13 @@ npm run check     # lint, unit tests, production build
 
 ## Distribution
 
-Three platforms, one codebase:
+Three stores and the web, one codebase:
 
 | Channel | |
 |---|---|
 | **Google Play** | [`io.scoregenius.app`](https://play.google.com/store/apps/details?id=io.scoregenius.app) — Trusted Web Activity, Play App Signing |
 | **Microsoft Store** | [`9P843BS4GCGP`](https://apps.microsoft.com/detail/9P843BS4GCGP) — MSIX, Store-delivered updates |
+| **Samsung Galaxy Store** | [`io.scoregenius.app`](https://galaxystore.samsung.com/detail/io.scoregenius.app) — the same Trusted Web Activity |
 | **Web** | Installable PWA at [scoregenius.io](https://scoregenius.io) |
 
 The Android and Windows apps both wrap the same PWA rather than reimplementing it, so **a web deploy
