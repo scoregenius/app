@@ -43,6 +43,7 @@ const PLAY_STORE_URL =
 const MICROSOFT_STORE_URL = "https://apps.microsoft.com/detail/9P843BS4GCGP";
 const SAMSUNG_STORE_URL =
   "https://apps.samsung.com/appquery/appDetail.as?appId=io.scoregenius.app";
+const AMAZON_STORE_URL = "https://www.amazon.com/gp/product/B0FF8GKK5S";
 
 // Social profiles, from the footer's "Follow Us" block. These must match the
 // links on the page exactly — `sameAs` is a claim that the profile belongs to
@@ -135,8 +136,8 @@ const website = {
 };
 
 // What we do. Typed as all three application classes because it genuinely is
-// all three: an installable PWA, a Play/Samsung Android app via Trusted Web
-// Activity (and a Microsoft Store package), and a plain browser app.
+// all three: an installable PWA, a Play/Samsung/Amazon Android app via Trusted
+// Web Activity (and a Microsoft Store package), and a plain browser app.
 //
 // Deliberately absent: `aggregateRating`. The store ratings are real but they
 // are not shown on this site, and rating markup that a visitor cannot see on
@@ -159,7 +160,7 @@ const application = {
   },
   installUrl: PLAY_STORE_URL,
   downloadUrl: PLAY_STORE_URL,
-  sameAs: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL],
+  sameAs: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL, AMAZON_STORE_URL],
   featureList: [
     "Daily pregame score predictions for NFL, NBA and MLB",
     "Advanced team and player statistics by season",
@@ -604,7 +605,7 @@ export const PAGES = [
         extra: {
           mainEntity: { "@id": ORGANIZATION_ID },
           breadcrumb: { "@id": `${SITE}/support#breadcrumb` },
-          significantLink: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL],
+          significantLink: [PLAY_STORE_URL, MICROSOFT_STORE_URL, SAMSUNG_STORE_URL, AMAZON_STORE_URL],
         },
       }),
       breadcrumb(`${SITE}/support`, "Support"),

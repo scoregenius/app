@@ -3,7 +3,7 @@
 **Sports analytics PWA for NFL, NBA and MLB. Model score predictions, compared against the betting
 market.**
 
-[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app) · [Microsoft Store](https://apps.microsoft.com/detail/9P843BS4GCGP) · [Galaxy Store](https://galaxystore.samsung.com/detail/io.scoregenius.app)
+[scoregenius.io](https://scoregenius.io) · [Google Play](https://play.google.com/store/apps/details?id=io.scoregenius.app) · [Microsoft Store](https://apps.microsoft.com/detail/9P843BS4GCGP) · [Galaxy Store](https://galaxystore.samsung.com/detail/io.scoregenius.app) · [Amazon Appstore](https://www.amazon.com/gp/product/B0FF8GKK5S)
 
 ---
 
@@ -112,13 +112,14 @@ npm run check     # lint, unit tests, production build
 
 ## Distribution
 
-Three stores and the web, one codebase:
+Four stores and the web, one codebase:
 
 | Channel | |
 |---|---|
 | **Google Play** | [`io.scoregenius.app`](https://play.google.com/store/apps/details?id=io.scoregenius.app) — Trusted Web Activity, Play App Signing |
 | **Microsoft Store** | [`9P843BS4GCGP`](https://apps.microsoft.com/detail/9P843BS4GCGP) — MSIX, Store-delivered updates |
 | **Samsung Galaxy Store** | [`io.scoregenius.app`](https://galaxystore.samsung.com/detail/io.scoregenius.app) — the same Trusted Web Activity |
+| **Amazon Appstore** | [`B0FF8GKK5S`](https://www.amazon.com/gp/product/B0FF8GKK5S) — the same Trusted Web Activity, for Fire OS devices |
 | **Web** | Installable PWA at [scoregenius.io](https://scoregenius.io) |
 
 The Android and Windows apps both wrap the same PWA rather than reimplementing it, so **a web deploy
